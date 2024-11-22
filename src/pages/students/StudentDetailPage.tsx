@@ -26,15 +26,11 @@ export default function StudentDetailPage() {
   return (
     <div className="p-10">
       <div className="flex items-center justify-between">
-        <Heading title={'Personal Details'} />
+        <Heading title="Detalle Reserva" />
         <div className="flex justify-end gap-3">
-          <Button>
-            <ShareIcon className="h-4 w-4" />
-            Share
-          </Button>
           <Button onClick={() => router.back()}>
             <ChevronLeftIcon className="h-4 w-4" />
-            Back
+            Volver
           </Button>
         </div>
       </div>
