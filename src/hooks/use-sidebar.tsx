@@ -1,9 +1,12 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState } from 'react';
 
-const SidebarContext = createContext<{
+type SidebarContextType = {
   isMinimized: boolean;
   toggle: () => void;
-}>({
+};
+
+const SidebarContext = createContext<SidebarContextType>({
   isMinimized: false,
   toggle: () => {}
 });
