@@ -8,9 +8,8 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useRouter } from '@/routes/hooks';
+import { useLogin } from '@/routes/hooks/use-auth';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -24,8 +23,7 @@ const formSchema = z.object({
 type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
-  const router = useRouter();
-  const [loading] = useState(false);
+  const { mutateAsync, isPending } = useLogin();
   const defaultValues = {
     email: '',
     password: ''
@@ -36,9 +34,11 @@ export default function UserAuthForm() {
   });
 
   const onSubmit = async (data: UserFormValue) => {
-    // TODO: make with api rest
-    console.log('data', data);
-    router.push('/');
+    try {
+      await mutateAsync(data);
+    } catch (error) {
+      console.error('Error during login:', error);
+    }
   };
 
   return (
@@ -58,7 +58,7 @@ export default function UserAuthForm() {
                   <Input
                     type="email"
                     placeholder="Ej: usuario@gmail.com"
-                    disabled={loading}
+                    disabled={isPending}
                     {...field}
                   />
                 </FormControl>
@@ -76,7 +76,7 @@ export default function UserAuthForm() {
                   <Input
                     type="password"
                     placeholder="******"
-                    disabled={loading}
+                    disabled={isPending}
                     {...field}
                   />
                 </FormControl>
@@ -85,8 +85,8 @@ export default function UserAuthForm() {
             )}
           />
 
-          <Button disabled={loading} className="ml-auto w-full" type="submit">
-            Ingresar
+          <Button disabled={isPending} className="ml-auto w-full" type="submit">
+            {isPending ? 'Cargando...' : 'Ingresar'}
           </Button>
         </form>
       </Form>
