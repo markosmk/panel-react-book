@@ -34,14 +34,15 @@ export default function Sidebar({ className }: SidebarProps) {
           isMinimized ? 'justify-center ' : 'justify-between'
         )}
       >
-        {!isMinimized && <h1 className="text-2xl font-bold">Logo</h1>}
-        <ChevronsLeft
-          className={cn(
-            'size-8 cursor-pointer rounded-full border bg-background text-foreground',
-            isMinimized && 'rotate-180'
-          )}
+        {!isMinimized && <h1 className="text-2xl font-bold">Zorzal</h1>}
+        <button
+          className="flex size-8 cursor-pointer items-center justify-center rounded-full border bg-background text-foreground"
           onClick={handleToggle}
-        />
+        >
+          <ChevronsLeft
+            className={cn('size-5 ', isMinimized && 'rotate-180')}
+          />
+        </button>
       </div>
       <div className="space-y-4 py-4">
         <div className="px-2 py-2">
