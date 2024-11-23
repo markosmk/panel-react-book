@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/tooltip';
 import { usePathname } from '@/routes/hooks';
 import { Link } from 'react-router-dom';
+import { useLogout } from '@/routes/hooks/use-auth';
 
 interface DashboardNavProps {
   items: NavItem[];
@@ -26,12 +27,11 @@ export default function DashboardNav({
 }: DashboardNavProps) {
   const path = usePathname();
   const { isMinimized } = useSidebar();
+  const { mutate, isPending } = useLogout();
 
   if (!items?.length) {
     return null;
   }
-
-  console.log('isActive', isMobileNav, isMinimized);
 
   return (
     <nav className="grid items-start gap-2">
@@ -77,6 +77,20 @@ export default function DashboardNav({
           );
         })}
       </TooltipProvider>
+      <button
+        onClick={() => {
+          if (window.confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+            mutate();
+          }
+        }}
+        disabled={isPending}
+        className="flex items-center gap-2 overflow-hidden rounded-md  py-2 text-sm font-medium text-black hover:text-black hover:text-muted-foreground"
+      >
+        <Icons.close className="ml-2.5 size-5" />{' '}
+        <span className="mr-2 truncate">
+          {isPending ? 'Saliendo...' : 'Salir'}
+        </span>
+      </button>
     </nav>
   );
 }
