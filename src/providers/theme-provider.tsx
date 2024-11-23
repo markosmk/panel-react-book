@@ -1,13 +1,10 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { CONFIG } from '@/constants/config';
+import { Theme } from '@/types/app.types';
+import * as React from 'react';
+import { createContext } from 'react';
 
-type Theme = 'dark' | 'light' | 'system';
-
-type ThemeProviderProps = {
-  children: React.ReactNode;
-  defaultTheme?: Theme;
-  storageKey?: string;
-};
-
+// Create Context
 type ThemeProviderState = {
   theme: Theme;
   setTheme: (theme: Theme) => void;
@@ -18,19 +15,27 @@ const initialState: ThemeProviderState = {
   setTheme: () => null
 };
 
-const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
+export const ThemeProviderContext =
+  createContext<ThemeProviderState>(initialState);
 
-export default function ThemeProvider({
+type ThemeProviderProps = {
+  children: React.ReactNode;
+  defaultTheme?: Theme;
+  storageKey?: string;
+};
+
+// Use Provider
+export function ThemeProvider({
   children,
-  defaultTheme = 'system',
-  storageKey = 'vite-ui-theme',
+  defaultTheme = CONFIG.defaultTheme,
+  storageKey = CONFIG.storageKey,
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
+  const [theme, setTheme] = React.useState<Theme>(
     () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     const root = window.document.documentElement;
 
     root.classList.remove('light', 'dark');
@@ -63,11 +68,11 @@ export default function ThemeProvider({
   );
 }
 
-export const useTheme = () => {
-  const context = useContext(ThemeProviderContext);
+export function useTheme() {
+  const context = React.useContext(ThemeProviderContext);
 
   if (context === undefined)
     throw new Error('useTheme must be used within a ThemeProvider');
 
   return context;
-};
+}
