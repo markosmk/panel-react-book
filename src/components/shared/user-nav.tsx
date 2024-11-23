@@ -18,9 +18,7 @@ export default function UserNav() {
         <Button variant="ghost" className="relative h-14 w-14 rounded-full">
           <Avatar className="h-14 w-14">
             <AvatarImage
-              src={
-                'https://png.pngtree.com/png-clipart/20230927/original/pngtree-man-avatar-image-for-profile-png-image_13001882.png'
-              }
+              src={'https://avatar.iran.liara.run/public/16'}
               alt={''}
             />
             <AvatarFallback>hello</AvatarFallback>
