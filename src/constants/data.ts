@@ -1,20 +1,22 @@
 import { NavItem } from '@/types';
 
+export const API_URL = 'http://localhost:8080/api/v1';
+
 export const navItems: NavItem[] = [
   {
-    title: 'Dashboard',
+    title: 'Panel',
     href: '/',
     icon: 'dashboard',
     label: 'Dashboard'
   },
   {
-    title: 'Students',
+    title: 'Reservas',
     href: '/student',
     icon: 'user',
     label: 'Student'
   },
   {
-    title: 'Login',
+    title: 'Salir',
     href: '/login',
     icon: 'login',
     label: 'Login'
