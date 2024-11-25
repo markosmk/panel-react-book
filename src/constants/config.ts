@@ -4,7 +4,9 @@ export const CONFIG: Config = {
   apiUrl: import.meta.env.VITE_API_URL,
   defaultTheme: 'system',
   storageKey: 'vite-ui-theme',
-  cookieName: 'authToken',
+  // For Authentication
+  authInjectCookie: true,
+  cookieName: 'app_user', //app_token
   tokenKey: 'accessToken',
-  authStorageMethod: 'cookie'
+  authStorageMethod: 'localStorage'
 };
