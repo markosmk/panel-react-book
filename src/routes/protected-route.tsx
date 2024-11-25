@@ -1,15 +1,10 @@
-import { Navigate } from 'react-router-dom';
-import { useCurrentUser } from './hooks/use-auth';
 import { PropsWithChildren } from 'react';
+import { Navigate } from 'react-router-dom';
+
 import { useAuth } from '@/providers/auth-provider';
 
 export function ProtectedRoute({ children }: PropsWithChildren) {
-  const { isAuthenticated } = useAuth();
-  const { data, isLoading, isError } = useCurrentUser();
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+  const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading)
     return (
@@ -18,9 +13,7 @@ export function ProtectedRoute({ children }: PropsWithChildren) {
       </div>
     );
 
-  if (isError || !data) {
-    return <Navigate to="/login" replace />;
-  }
+  if (!isAuthenticated && !isLoading) return <Navigate to="/login" replace />;
 
   return <>{children}</>;
 }
