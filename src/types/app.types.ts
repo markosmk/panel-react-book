@@ -1,5 +1,7 @@
 // types exclusive from app
 
+import { AxiosError } from 'axios';
+
 export type Theme = 'dark' | 'light' | 'system';
 
 export type Config = {
@@ -19,6 +21,8 @@ export type Config = {
   tokenKey: string;
   /** only 'cookie' or 'localStorage' for save auth, if use authInjectCookie, this is not necesary */
   authStorageMethod: 'cookie' | 'localStorage';
+  // TODO: add properties
+  app: any;
 };
 
 export interface User {
@@ -28,3 +32,10 @@ export interface User {
   password: string;
   role: string;
 }
+
+interface ApiError {
+  status: number;
+  error: number;
+  messages: Record<string, string> | string; // Puede ser un objeto de errores de campo o un mensaje de error general
+}
+export type CustomAxiosError = AxiosError<ApiError>;
