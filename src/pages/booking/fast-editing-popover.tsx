@@ -219,6 +219,12 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
                     }));
                   }}
                   className="h-8"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleFastEdition();
+                    }
+                  }}
                 />
                 <p className="text-xs text-muted-foreground">
                   No modifiques el precio a menos que sea absolutamente
@@ -233,11 +239,17 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
             </p> */}
           </div>
           <div className="mt-4 flex items-center justify-end space-x-2">
-            <Button variant="ghost" onClick={handleCancel} disabled={isPending}>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={handleCancel}
+              disabled={isPending}
+            >
               Cancelar
             </Button>
             <ButtonLoading
               variant="outline"
+              type="button"
               className="min-w-[148px]"
               // disabled={!hasUnsavedChanges || isPending}
               isWorking={isPending}
