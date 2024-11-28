@@ -25,14 +25,24 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isDirty, setIsDirty] = React.useState(false);
-  const [formValues, setFormValues] = React.useState({
-    status: booking.status || 'PENDING',
-    totalPrice: booking.totalPrice || 0
-  });
+  const initialValues = React.useMemo(
+    () => ({
+      status: booking.status || 'PENDING',
+      totalPrice: booking.totalPrice || 0
+    }),
+    [booking]
+  );
+  const [formValues, setFormValues] = React.useState(initialValues);
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormValues((prev) => ({ ...prev, [field]: value }));
     setIsDirty(true);
+  };
+
+  const resetForm = () => {
+    setFormValues(initialValues);
+    // mark has not changed
+    setIsDirty(false);
   };
 
   const handleFastEdition = async () => {
@@ -45,12 +55,7 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
   };
 
   const handleCancel = () => {
-    console.log('booking', {
-      totalPrice: booking.totalPrice,
-      status: booking.status
-    });
-    console.log('values', formValues);
-    setIsDirty(false);
+    resetForm();
     setIsOpen(false);
   };
 
@@ -65,6 +70,7 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
           // if user wants to close, but has unsaved changes
           if (!confirmClose) return;
         }
+        if (!isOpen) resetForm(); // Restaura valores si el popover se cierra
         setIsOpen(isOpen);
       }}
     >
