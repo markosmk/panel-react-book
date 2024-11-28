@@ -16,22 +16,30 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { sleep } from '@/lib/utils';
+import { cn } from '@/lib/utils';
+import { useStatusBooking } from '@/services/hooks/booking.mutation';
 import { BookingTable, Status } from '@/types/booking.types';
+import { AxiosError } from 'axios';
 import * as React from 'react';
 import { toast } from 'sonner';
 
 export function FastEditingPopover({ booking }: { booking: BookingTable }) {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
   const initialValues = React.useMemo(
     () => ({
       status: booking.status || 'PENDING',
-      totalPrice: booking.totalPrice || 0
+      totalPrice: parseFloat(booking.totalPrice) || 0
     }),
     [booking]
   );
   const [formValues, setFormValues] = React.useState(initialValues);
+
+  React.useEffect(() => {
+    setFormValues({
+      status: initialValues.status,
+      totalPrice: initialValues.totalPrice
+    });
+  }, [initialValues]);
 
   const hasUnsavedChanges = React.useMemo(() => {
     // compare form values with initial values
@@ -44,13 +52,30 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
     }, 150); // this is for animation purposes
   };
 
+  const { mutate, isPending } = useStatusBooking();
+
   const handleFastEdition = async () => {
-    setIsLoading(true);
-    await sleep(1000);
-    toast.success('Reserva actualizada ' + booking.tour_name);
-    resetForm();
-    setIsLoading(false);
-    setIsOpen(false);
+    toast.dismiss();
+    const totalPriceUpdated =
+      formValues.totalPrice !== initialValues.totalPrice
+        ? parseFloat(formValues.totalPrice.toFixed(2))
+        : undefined;
+
+    mutate(
+      {
+        id: booking.id,
+        status: formValues.status,
+        totalPrice: totalPriceUpdated
+      },
+      {
+        onSuccess: () => {
+          toast.success('Estado actualizado correctamente.');
+          setTimeout(() => {
+            setIsOpen(false);
+          }, 150);
+        }
+      }
+    );
   };
 
   const handleCancel = () => {
@@ -83,7 +108,10 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
 
         if (!isOpen && hasUnsavedChanges) {
           toast.warning(
-            'Tienes cambios sin guardar. Usa "Cancelar" o "Guardar Cambios".'
+            'Tienes cambios sin guardar. Usa "Cancelar" o "Guardar Cambios".',
+            {
+              position: 'top-right'
+            }
           );
           return;
         }
@@ -124,7 +152,12 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
               actualizarán además las estadísticas mensuales.
             </p>
           </div>
-          <div className="grid gap-y-4">
+          <div
+            className={cn(
+              'grid gap-y-4 transition-opacity',
+              isPending && 'pointer-events-none select-none opacity-50'
+            )}
+          >
             <div className="grid grid-cols-3 items-center gap-4">
               <Label htmlFor="status">Estado</Label>
               <Select
@@ -153,13 +186,13 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
                   </SelectItem>
                   <SelectItem value={Status.CONFIRMED}>
                     <span className="flex items-center">
-                      <Icons.success className="mr-2 size-4 text-green-400" />
+                      <Icons.success className="mr-2 size-4 text-green-600" />
                       Confirmado
                     </span>
                   </SelectItem>
                   <SelectItem value={Status.CANCELED}>
                     <span className="flex items-center">
-                      <Icons.canceled className="mr-2 size-4 text-red-400" />
+                      <Icons.canceled className="mr-2 size-4 text-red-600" />
                       Cancelado
                     </span>
                   </SelectItem>
@@ -175,12 +208,16 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
                   id="totalPrice"
                   type="number"
                   value={formValues.totalPrice}
-                  onChange={(e) =>
+                  onFocus={(e) => e.target.select()}
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value);
                     setFormValues((prev) => ({
                       ...prev,
-                      totalPrice: parseFloat(e.target.value)
-                    }))
-                  }
+                      totalPrice: isNaN(value)
+                        ? 0
+                        : parseFloat(value.toFixed(2))
+                    }));
+                  }}
                   className="h-8"
                 />
                 <p className="text-xs text-muted-foreground">
@@ -194,22 +231,20 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
               original que el cliente efectuo al momento de realizar la reserva
               , {formatPrice(Number(booking?.tour_price) || 0)}.
             </p> */}
-            <div className="flex items-center justify-end space-x-2">
-              <Button
-                variant="ghost"
-                onClick={handleCancel}
-                disabled={isLoading}
-              >
-                Cancelar
-              </Button>
-              <ButtonLoading
-                variant="outline"
-                isWorking={isLoading}
-                onClick={handleFastEdition}
-              >
-                Guardar Cambios
-              </ButtonLoading>
-            </div>
+          </div>
+          <div className="mt-4 flex items-center justify-end space-x-2">
+            <Button variant="ghost" onClick={handleCancel} disabled={isPending}>
+              Cancelar
+            </Button>
+            <ButtonLoading
+              variant="outline"
+              className="min-w-[148px]"
+              // disabled={!hasUnsavedChanges || isPending}
+              isWorking={isPending}
+              onClick={handleFastEdition}
+            >
+              Guardar Cambios
+            </ButtonLoading>
           </div>
         </div>
       </PopoverContent>
