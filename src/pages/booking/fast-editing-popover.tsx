@@ -17,14 +17,13 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { sleep } from '@/lib/utils';
-import { BookingTable } from '@/types/booking.types';
+import { BookingTable, Status } from '@/types/booking.types';
 import * as React from 'react';
 import { toast } from 'sonner';
 
 export function FastEditingPopover({ booking }: { booking: BookingTable }) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [isDirty, setIsDirty] = React.useState(false);
   const initialValues = React.useMemo(
     () => ({
       status: booking.status || 'PENDING',
@@ -34,22 +33,22 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
   );
   const [formValues, setFormValues] = React.useState(initialValues);
 
-  const handleInputChange = (field: string, value: string | number) => {
-    setFormValues((prev) => ({ ...prev, [field]: value }));
-    setIsDirty(true);
-  };
+  const hasUnsavedChanges = React.useMemo(() => {
+    // compare form values with initial values
+    return JSON.stringify(formValues) !== JSON.stringify(initialValues);
+  }, [formValues, initialValues]);
 
   const resetForm = () => {
-    setFormValues(initialValues);
-    // mark has not changed
-    setIsDirty(false);
+    setTimeout(() => {
+      setFormValues(initialValues);
+    }, 150); // this is for animation purposes
   };
 
   const handleFastEdition = async () => {
     setIsLoading(true);
     await sleep(1000);
     toast.success('Reserva actualizada ' + booking.tour_name);
-    setIsDirty(false);
+    resetForm();
     setIsLoading(false);
     setIsOpen(false);
   };
@@ -62,15 +61,34 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
   return (
     <Popover
       open={isOpen}
+      modal={true}
       onOpenChange={(isOpen) => {
-        if (!isOpen && isDirty) {
-          const confirmClose = window.confirm(
-            'Tienes cambios sin guardar. ¿Deseas descartarlos?'
+        // if (!isOpen && hasUnsavedChanges) {
+        //   const confirmClose = window.confirm(
+        //     'Tienes cambios sin guardar. ¿Deseas descartarlos?'
+        //   );
+
+        //   if (!confirmClose) {
+        //     // this is when user clicks cancel
+        //     setIsOpen(true); // mantain the popover open
+        //     return;
+        //   }
+
+        //   // user confirms to close
+        //   resetForm();
+        // }
+
+        // // use normal to close or open
+        // setIsOpen(isOpen);
+
+        if (!isOpen && hasUnsavedChanges) {
+          toast.warning(
+            'Tienes cambios sin guardar. Usa "Cancelar" o "Guardar Cambios".'
           );
-          // if user wants to close, but has unsaved changes
-          if (!confirmClose) return;
+          return;
         }
-        if (!isOpen) resetForm();
+
+        // use normal to close or open
         setIsOpen(isOpen);
       }}
     >
@@ -88,15 +106,15 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
         onCloseAutoFocus={(event) => {
           event.preventDefault();
         }}
-        onInteractOutside={(event) => {
-          if (isDirty) {
-            // dont close popover
-            event.preventDefault();
-            toast.warning(
-              'Tienes cambios sin guardar. Usa "Cancelar" o "Guardar Cambios".'
-            );
-          }
-        }}
+        // onInteractOutside={(event) => {
+        //   if (!isOpen && hasUnsavedChanges) {
+        //     // dont close popover
+        //     event.preventDefault();
+        //     // toast.warning(
+        //     //   'Tienes cambios sin guardar. Usa "Cancelar" o "Guardar Cambios".'
+        //     // );
+        //   }
+        // }}
       >
         <div className="grid gap-4">
           <div className="space-y-2">
@@ -112,7 +130,12 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
               <Select
                 defaultValue="pending"
                 value={formValues.status}
-                onValueChange={(value) => handleInputChange('status', value)}
+                onValueChange={(value) =>
+                  setFormValues((prev) => ({
+                    ...prev,
+                    status: value as Status
+                  }))
+                }
               >
                 <SelectTrigger
                   id="status"
@@ -122,19 +145,19 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
                   <SelectValue placeholder="Cambiar Estado" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="PENDING">
+                  <SelectItem value={Status.PENDING}>
                     <span className="flex items-center">
                       <Icons.pending className="mr-2 size-4 text-yellow-600" />
                       Pendiente
                     </span>
                   </SelectItem>
-                  <SelectItem value="CONFIRMED">
+                  <SelectItem value={Status.CONFIRMED}>
                     <span className="flex items-center">
                       <Icons.success className="mr-2 size-4 text-green-400" />
                       Confirmado
                     </span>
                   </SelectItem>
-                  <SelectItem value="CANCELED">
+                  <SelectItem value={Status.CANCELED}>
                     <span className="flex items-center">
                       <Icons.canceled className="mr-2 size-4 text-red-400" />
                       Cancelado
@@ -153,7 +176,10 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
                   type="number"
                   value={formValues.totalPrice}
                   onChange={(e) =>
-                    handleInputChange('totalPrice', Number(e.target.value))
+                    setFormValues((prev) => ({
+                      ...prev,
+                      totalPrice: parseFloat(e.target.value)
+                    }))
                   }
                   className="h-8"
                 />
