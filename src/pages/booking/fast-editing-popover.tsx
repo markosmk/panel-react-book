@@ -70,7 +70,7 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
           // if user wants to close, but has unsaved changes
           if (!confirmClose) return;
         }
-        if (!isOpen) resetForm(); // Restaura valores si el popover se cierra
+        if (!isOpen) resetForm();
         setIsOpen(isOpen);
       }}
     >
@@ -159,12 +159,15 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
                 />
                 <p className="text-xs text-muted-foreground">
                   No modifiques el precio a menos que sea absolutamente
-                  necesario. (El precio total fue calculado automáticamente,
-                  cualquier cambio aqui no afectara al precio del tour
-                  original).
+                  necesario. (El precio total fue calculado automáticamente)
                 </p>
               </div>
             </div>
+            {/* <p className="text-xs text-muted-foreground">
+              Nota: Cualquier cambio aqui no afectará al precio del tour
+              original que el cliente efectuo al momento de realizar la reserva
+              , {formatPrice(Number(booking?.tour_price) || 0)}.
+            </p> */}
             <div className="flex items-center justify-end space-x-2">
               <Button
                 variant="ghost"
