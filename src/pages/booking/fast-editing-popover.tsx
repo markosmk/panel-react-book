@@ -1,6 +1,10 @@
+import * as React from 'react';
+import { toast } from 'sonner';
+
 import { ButtonLoading } from '@/components/button-loading';
-import { Icons } from '@/components/icons';
 import { TooltipHelper } from '@/components/tooltip-helper';
+import { Icons } from '@/components/icons';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,12 +20,10 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+
 import { cn } from '@/lib/utils';
 import { useStatusBooking } from '@/services/hooks/booking.mutation';
 import { BookingTable, Status } from '@/types/booking.types';
-import { AxiosError } from 'axios';
-import * as React from 'react';
-import { toast } from 'sonner';
 
 export function FastEditingPopover({ booking }: { booking: BookingTable }) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -72,7 +74,7 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
           toast.success('Estado actualizado correctamente.');
           setTimeout(() => {
             setIsOpen(false);
-          }, 150);
+          }, 100);
         }
       }
     );
