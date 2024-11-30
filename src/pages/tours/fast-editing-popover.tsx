@@ -6,7 +6,6 @@ import { TooltipHelper } from '@/components/tooltip-helper';
 import { Icons } from '@/components/icons';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
   Popover,
@@ -18,6 +17,7 @@ import { cn } from '@/lib/utils';
 import { useEditingTour } from '@/services/hooks/tour.mutation';
 import { Tour } from '@/types/tour.types';
 import { Switch } from '@/components/ui/switch';
+import { InputNumber } from '@/components/ui/input-number';
 
 export function FastEditingPopover({ data }: { data: Tour }) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -125,7 +125,7 @@ export function FastEditingPopover({ data }: { data: Tour }) {
           </div>
           <div
             className={cn(
-              'grid gap-y-4 transition-opacity',
+              'grid gap-y-2 transition-opacity',
               isPending && 'pointer-events-none select-none opacity-50'
             )}
           >
@@ -134,11 +134,9 @@ export function FastEditingPopover({ data }: { data: Tour }) {
                 Precio
               </Label>
               <div className="col-span-2 space-y-1">
-                <Input
+                <InputNumber
                   id="price"
-                  type="number"
-                  value={formValues.price}
-                  onFocus={(e) => e.target.select()}
+                  value={Number(formValues.price)}
                   onChange={(e) => {
                     const value = parseFloat(e.target.value);
                     setFormValues((prev) => ({
@@ -146,7 +144,8 @@ export function FastEditingPopover({ data }: { data: Tour }) {
                       price: isNaN(value) ? 0 : parseFloat(value.toFixed(2))
                     }));
                   }}
-                  className="h-8"
+                  min={1}
+                  height="sm"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
@@ -163,11 +162,9 @@ export function FastEditingPopover({ data }: { data: Tour }) {
             <div className="grid grid-cols-3 items-center gap-4">
               <Label htmlFor="capacity">Capacidad</Label>
               <div className="col-span-2">
-                <Input
+                <InputNumber
                   id="capacity"
-                  type="number"
-                  value={formValues.capacity}
-                  onFocus={(e) => e.target.select()}
+                  value={Number(formValues.capacity)}
                   onChange={(e) => {
                     const value = parseInt(e.target.value);
                     setFormValues((prev) => ({
@@ -175,7 +172,8 @@ export function FastEditingPopover({ data }: { data: Tour }) {
                       capacity: isNaN(value) ? 0 : value
                     }));
                   }}
-                  className="h-8"
+                  min={1}
+                  height="sm"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
@@ -189,11 +187,9 @@ export function FastEditingPopover({ data }: { data: Tour }) {
             <div className="grid grid-cols-3 items-center gap-4">
               <Label htmlFor="duration">Duration</Label>
               <div className="col-span-2">
-                <Input
+                <InputNumber
                   id="duration"
-                  type="number"
-                  value={formValues.duration}
-                  onFocus={(e) => e.target.select()}
+                  value={Number(formValues.duration)}
                   onChange={(e) => {
                     const value = parseInt(e.target.value);
                     setFormValues((prev) => ({
@@ -201,7 +197,8 @@ export function FastEditingPopover({ data }: { data: Tour }) {
                       duration: isNaN(value) ? 0 : value
                     }));
                   }}
-                  className="h-8"
+                  min={1}
+                  height="sm"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
@@ -239,7 +236,7 @@ export function FastEditingPopover({ data }: { data: Tour }) {
               Cancelar
             </Button>
             <ButtonLoading
-              variant="outline"
+              variant="secondary"
               type="button"
               className="min-w-[148px]"
               isWorking={isPending}
