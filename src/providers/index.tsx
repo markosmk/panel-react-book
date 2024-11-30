@@ -14,6 +14,9 @@ import { AuthProvider } from './auth-provider';
 import { SidebarProvider } from '@/hooks/use-sidebar';
 // Components
 import { Button } from '@/components/ui/button';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { ModalProvider } from '@/hooks/use-modal';
+import { NotificationContainer } from '@/components/notifications';
 
 export const queryClient = new QueryClient();
 
@@ -52,10 +55,15 @@ export default function AppProvider({
           <ErrorBoundary FallbackComponent={ErrorFallback}>
             <QueryClientProvider client={queryClient}>
               <ReactQueryDevtools />
-              <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-                <SidebarProvider>
-                  <AuthProvider>{children}</AuthProvider>
-                </SidebarProvider>
+              <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+                <NotificationContainer />
+                <TooltipProvider delayDuration={400}>
+                  <ModalProvider>
+                    <SidebarProvider>
+                      <AuthProvider>{children}</AuthProvider>
+                    </SidebarProvider>
+                  </ModalProvider>
+                </TooltipProvider>
               </ThemeProvider>
             </QueryClientProvider>
           </ErrorBoundary>
