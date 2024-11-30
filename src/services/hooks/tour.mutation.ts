@@ -5,8 +5,12 @@ import { toast } from 'sonner';
 
 import { sleep } from '@/lib/utils';
 
-import { updateFastTour, updateTour } from '@/services/tour.service';
-import { TourDetail, TourRequest } from '@/types/tour.types';
+import {
+  createTour,
+  updateFastTour,
+  updateTour
+} from '@/services/tour.service';
+import { TourDetail, TourRequest, TourRequestCreate } from '@/types/tour.types';
 import { CustomAxiosError } from '@/types/app.types';
 
 type StatusProps = {
@@ -66,30 +70,33 @@ export function useCreateEditTour() {
       id,
       data
     }: {
-      id: string | number;
-      data: TourRequest;
+      id: string | number | null;
+      data: TourRequest | TourRequestCreate;
     }) => {
       await sleep(1000);
-      return updateTour(id, data);
+      if (id !== null) {
+        return updateTour(id, data);
+      }
+      return createTour(data);
     },
     onSuccess: async (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['tours'] });
-      // queryClient.invalidateQueries({ queryKey: ['tourDetail', variables.id] });
-      queryClient.setQueryData(
-        ['tourDetail', variables.id],
-        (oldData: TourDetail) => {
-          console.log('newdata', variables.data);
-          console.log('olddata', oldData);
-          if (!oldData) return null;
-          return {
-            ...oldData,
-            tour: {
-              ...oldData.tour,
-              ...variables.data
-            }
-          };
-        }
-      );
+      if (variables.id) {
+        // queryClient.invalidateQueries({ queryKey: ['tourDetail', variables.id] });
+        queryClient.setQueryData(
+          ['tourDetail', variables.id],
+          (oldData: TourDetail) => {
+            if (!oldData) return null;
+            return {
+              ...oldData,
+              tour: {
+                ...oldData.tour,
+                ...variables.data
+              }
+            };
+          }
+        );
+      }
     },
     onError: (error: CustomAxiosError) => {
       if (error.response) {
