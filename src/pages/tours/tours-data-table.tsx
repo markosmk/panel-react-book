@@ -34,11 +34,6 @@ import {
   TableRow
 } from '@/components/ui/table';
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger
-} from '@/components/ui/tooltip';
-import {
   cn,
   formatDateFriendly,
   formatDateOnly,
@@ -48,6 +43,7 @@ import {
 import { Tour } from '@/types/tour.types';
 import { Link } from 'react-router-dom';
 import { FastEditingPopover } from './fast-editing-popover';
+import { TooltipHelper } from '@/components/tooltip-helper';
 
 const columns: ColumnDef<Tour>[] = [
   {
@@ -207,35 +203,45 @@ const columns: ColumnDef<Tour>[] = [
       return (
         <>
           <div className="hidden justify-end gap-x-1 sm:flex">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  to={`/tours/${tour.id}`}
-                  title="Ver Tour"
-                  className={buttonVariants({
-                    variant: 'outline',
-                    size: 'icon'
-                  })}
-                >
-                  <Icons.edit className="h-4 w-4" />
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Ver Tour</p>
-              </TooltipContent>
-            </Tooltip>
+            <TooltipHelper content="Editar Tour">
+              <Link
+                to={`/tours/${tour.id}`}
+                title="Ver Tour"
+                className={buttonVariants({
+                  variant: 'outline',
+                  size: 'icon'
+                })}
+              >
+                <Icons.edit className="size-5" />
+              </Link>
+            </TooltipHelper>
 
             <FastEditingPopover data={tour} />
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" disabled title="Eliminar">
-                  <Icons.remove className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Eliminar</p>
-              </TooltipContent>
-            </Tooltip>
+
+            <TooltipHelper content="Gestionar Horarios">
+              <Link
+                to={`/tours/${tour.id}/schedules`}
+                title="ver Horarios"
+                className={buttonVariants({
+                  variant: 'outline',
+                  size: 'icon'
+                })}
+              >
+                <Icons.calendar className="size-5" />
+              </Link>
+            </TooltipHelper>
+
+            <TooltipHelper content="Eliminar Tour">
+              <Button
+                variant="outline"
+                size="icon"
+                disabled
+                title="Eliminar"
+                onClick={() => {}}
+              >
+                <Icons.remove className="size-5" />
+              </Button>
+            </TooltipHelper>
           </div>
           <div className="inline-flex sm:hidden">
             <DropdownMenu>
@@ -250,14 +256,17 @@ const columns: ColumnDef<Tour>[] = [
 
                 <DropdownMenuItem asChild>
                   <Link to={`/tours/${tour.id}`}>
-                    <Icons.messages className="mr-2 h-4 w-4" />
-                    Ver Tour
+                    <Icons.edit className="mr-2 h-4 w-4" />
+                    Editar Tour
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => {}}>
-                  <Icons.archive className="mr-2 h-4 w-4" />
-                  Archivar
+                <DropdownMenuItem asChild>
+                  <Link to={`/tours/${tour.id}/schedules`}>
+                    <Icons.calendar className="mr-2 h-4 w-4" />
+                    Gestionar Horarios
+                  </Link>
                 </DropdownMenuItem>
+                {/* TODO: add delete with confirm modal */}
                 <DropdownMenuItem onClick={() => {}}>
                   <Icons.remove className="mr-2 h-4 w-4" />
                   Eliminar
