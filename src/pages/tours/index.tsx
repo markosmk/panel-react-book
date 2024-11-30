@@ -1,12 +1,12 @@
 import { HeadingMain } from '@/components/heading-main';
 import { PendingContent } from '@/components/pending-content';
-// import { useModal } from '@/hooks/use-modal';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ToursDataTable } from './tours-data-table';
 import { useTours } from '@/services/hooks/tour.query';
+import { Button } from '@/components/ui/button';
 
 export default function ToursPage() {
-  // const { openModal } = useModal();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const page = Number(searchParams.get('page') || 1);
   const perPage = Number(searchParams.get('perPage') || 10);
@@ -29,7 +29,16 @@ export default function ToursPage() {
       <HeadingMain
         title="Lista de Tours"
         description="Administra tus tours desde esta seccion, puedes agregar, editar y eliminar tours."
-      />
+      >
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => navigate('/tours/create')}
+        >
+          Crear tour
+        </Button>
+      </HeadingMain>
+
       <ToursDataTable data={data ?? []} />
     </div>
   );
