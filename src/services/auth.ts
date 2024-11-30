@@ -1,8 +1,5 @@
 import { API_URL } from '@/constants/data';
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+import { sleep } from '@/lib/utils';
 
 export const authClient = {
   login: async (credentials: { email: string; password: string }) => {
