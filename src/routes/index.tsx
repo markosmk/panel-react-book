@@ -4,28 +4,29 @@ import { Suspense, lazy } from 'react';
 import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 import { ProtectedRoute } from './protected-route';
 import { PublicRoute } from './public-route';
+import { BookingPage } from '@/pages/booking';
 
 const SignInPage = lazy(() => import('@/pages/auth/signin'));
-const DashboardLayout = lazy(
-  () => import('@/components/layout/dashboard-layout')
-);
+const PanelLayout = lazy(() => import('@/components/layout/panel-layout'));
 const DashboardPage = lazy(() => import('@/pages/dashboard'));
-const StudentPage = lazy(() => import('@/pages/students'));
-const StudentDetailPage = lazy(
-  () => import('@/pages/students/StudentDetailPage')
-);
+const ToursPage = lazy(() => import('@/pages/tours'));
+const CustomersPage = lazy(() => import('@/pages/customers'));
+const SettingsPage = lazy(() => import('@/pages/settings'));
+const TourDetailPage = lazy(() => import('@/pages/tours/detail-page'));
+const TourCreatePage = lazy(() => import('@/pages/tours/create-page'));
+const TourSchedulesPage = lazy(() => import('@/pages/tours/schedules-page'));
 
 export default function AppRouter() {
-  const dashboardRoutes = [
+  const panelRoutes = [
     {
       path: '/',
       element: (
         <ProtectedRoute>
-          <DashboardLayout>
+          <PanelLayout>
             <Suspense>
               <Outlet />
             </Suspense>
-          </DashboardLayout>
+          </PanelLayout>
         </ProtectedRoute>
       ),
       children: [
@@ -34,12 +35,32 @@ export default function AppRouter() {
           index: true
         },
         {
-          path: 'student',
-          element: <StudentPage />
+          path: 'bookings',
+          element: <BookingPage />
         },
         {
-          path: 'student/details',
-          element: <StudentDetailPage />
+          path: 'tours',
+          element: <ToursPage />
+        },
+        {
+          path: 'tours/create',
+          element: <TourCreatePage />
+        },
+        {
+          path: 'tours/:tourId',
+          element: <TourDetailPage />
+        },
+        {
+          path: 'tours/:tourId/schedules',
+          element: <TourSchedulesPage />
+        },
+        {
+          path: 'customers',
+          element: <CustomersPage />
+        },
+        {
+          path: 'settings',
+          element: <SettingsPage />
         },
         {
           path: 'form',
@@ -69,7 +90,7 @@ export default function AppRouter() {
     }
   ];
 
-  const routes = useRoutes([...dashboardRoutes, ...publicRoutes]);
+  const routes = useRoutes([...panelRoutes, ...publicRoutes]);
 
   return routes;
 }
