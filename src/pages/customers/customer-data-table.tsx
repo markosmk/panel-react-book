@@ -48,6 +48,7 @@ import {
 } from '@/lib/utils';
 import { CustomerTable } from '@/types/customer.types';
 import { Link } from 'react-router-dom';
+import { TooltipHelper } from '@/components/tooltip-helper';
 
 const columns: ColumnDef<CustomerTable>[] = [
   {
@@ -130,61 +131,41 @@ const columns: ColumnDef<CustomerTable>[] = [
       return (
         <>
           <div className="hidden justify-end gap-x-1 sm:flex">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  to={`/customers/${customer.id}`}
-                  title="Ver Cliente"
-                  className={buttonVariants({
-                    variant: 'outline',
-                    size: 'icon'
-                  })}
-                >
-                  <Icons.messages className="h-4 w-4" />
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Ver Cliente</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => {
-                    toast.success('Nro copiado al portapapeles');
-                    navigator.clipboard.writeText(customer.phone.toString());
-                  }}
-                  title="Copiar Número"
-                >
-                  <Icons.copy className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Copiar Nro. Teléfono</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" disabled title="Archivar">
-                  <Icons.archive className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Archivar</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" disabled title="Eliminar">
-                  <Icons.remove className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Eliminar</p>
-              </TooltipContent>
-            </Tooltip>
+            <TooltipHelper content="Ver Cliente">
+              <Link
+                to={`/customers/${customer.id}`}
+                title="Ver Cliente"
+                className={buttonVariants({
+                  variant: 'outline',
+                  size: 'icon'
+                })}
+              >
+                <Icons.look className="h-4 w-4" />
+              </Link>
+            </TooltipHelper>
+            <TooltipHelper content="Copiar Número">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => {
+                  toast.success('Numero copiado al portapapeles');
+                  navigator.clipboard.writeText(customer.phone.toString());
+                }}
+                title="Copiar Número"
+              >
+                <Icons.copy className="h-4 w-4" />
+              </Button>
+            </TooltipHelper>
+            <TooltipHelper content="Archivar">
+              <Button variant="outline" size="icon" disabled title="Archivar">
+                <Icons.archive className="h-4 w-4" />
+              </Button>
+            </TooltipHelper>
+            <TooltipHelper content="Eliminar">
+              <Button variant="outline" size="icon" disabled title="Eliminar">
+                <Icons.remove className="h-4 w-4" />
+              </Button>
+            </TooltipHelper>
           </div>
           <div className="inline-flex sm:hidden">
             <DropdownMenu>
@@ -198,24 +179,26 @@ const columns: ColumnDef<CustomerTable>[] = [
                 <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                 <DropdownMenuItem
                   onClick={() => {
-                    toast.success('Nro. copiado al portapapeles');
+                    toast.success('Numero copiado al portapapeles');
                     navigator.clipboard.writeText(customer.phone.toString());
                   }}
                 >
                   <Icons.copy className="mr-2 h-4 w-4" /> Copiar Nro. Teléfono
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to={`/customers/${customer.id}`}>
-                    <Icons.messages className="mr-2 h-4 w-4" />
+                <DropdownMenuItem disabled>
+                  <>
+                    {/* <Link to={`/customers/${customer.id}`}> */}
+                    <Icons.look className="mr-2 h-4 w-4" />
                     Ver Cliente
-                  </Link>
+                    {/* </Link> */}
+                  </>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => {}}>
+                <DropdownMenuItem disabled>
                   <Icons.archive className="mr-2 h-4 w-4" />
                   Archivar
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => {}}>
+                <DropdownMenuItem disabled>
                   <Icons.remove className="mr-2 h-4 w-4" />
                   Eliminar
                 </DropdownMenuItem>
