@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { ButtonLoading } from '@/components/button-loading';
 import {
   Form,
   FormControl,
@@ -8,6 +8,7 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/providers/auth-provider';
 import { useLogin } from '@/routes/hooks/use-auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -23,6 +24,7 @@ const formSchema = z.object({
 type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
+  const { loginAction } = useAuth();
   const { mutateAsync, isPending } = useLogin();
   const defaultValues = {
     email: '',
@@ -35,7 +37,14 @@ export default function UserAuthForm() {
 
   const onSubmit = async (data: UserFormValue) => {
     try {
-      await mutateAsync(data);
+      await mutateAsync(data, {
+        onSuccess: (data) => {
+          console.log('login', data);
+          if (data) {
+            loginAction(data.user, data?.token ?? undefined);
+          }
+        }
+      });
     } catch (error) {
       console.error('Error during login:', error);
     }
@@ -85,9 +94,13 @@ export default function UserAuthForm() {
             )}
           />
 
-          <Button disabled={isPending} className="ml-auto w-full" type="submit">
-            {isPending ? 'Cargando...' : 'Ingresar'}
-          </Button>
+          <ButtonLoading
+            isWorking={isPending}
+            className="!w-full"
+            type="submit"
+          >
+            Ingresar
+          </ButtonLoading>
         </form>
       </Form>
     </>
