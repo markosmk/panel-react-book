@@ -12,8 +12,10 @@ export const getBookings = async (page: number = 1, perPage: number = 10) =>
     '/bookings?page=' + page + '&perPage=' + perPage
   );
 
-export const getBookingById = async (id: string | number) =>
-  await axios.get<BookingDetail>('/bookings/' + id);
+export const getBookingById = async (
+  id: string | number,
+  signal?: AbortSignal
+) => await axios.get<BookingDetail>('/bookings/' + id, { signal });
 
 export const updateStatusBooking = async (
   id: string | number,
