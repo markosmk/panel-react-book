@@ -6,8 +6,9 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
+import { cn, formatDateFriendly } from '@/lib/utils';
 import { DialogBooking } from './dialog-booking';
+import { DashboardBooking } from '@/types/dashboard.types';
 
 function DotIcon({ className }: { className?: string }) {
   return (
@@ -63,113 +64,46 @@ function Actions() {
   );
 }
 
-export default function RecentBookings() {
+export default function RecentBookings({
+  data,
+  isLoading
+}: {
+  data: DashboardBooking[] | undefined;
+  isLoading: boolean;
+}) {
+  if (isLoading) {
+    return <div className="p-5">Cargando REcents...</div>;
+  }
   return (
     <div className="space-y-8">
       <div className="space-y-4">
         {/* <div className="text-sm font-medium"></div> */}
         <div className="grid gap-6">
-          <div className="flex items-center justify-between space-x-4">
-            <div className="flex items-center space-x-4">
-              <Avatar>
-                <AvatarImage src="/avatars/03.png" />
-                <AvatarFallback>OM</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium leading-none">
-                  Olivia Martin
-                </p>
-                <p className="text-sm text-muted-foreground">hace 2 min</p>
+          {data &&
+            data.map((booking) => (
+              <div
+                key={booking.booking_id}
+                className="flex items-center justify-between space-x-4"
+              >
+                <div className="flex items-center space-x-4">
+                  <Avatar>
+                    <AvatarImage src="/avatars/03.png" />
+                    <AvatarFallback className="uppercase">
+                      {booking.customer_name.slice(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium leading-none">
+                      {booking.customer_name}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {formatDateFriendly(booking.booking_created_at)}
+                    </p>
+                  </div>
+                </div>
+                <Actions />
               </div>
-            </div>
-            <Actions />
-          </div>
-          <div className="flex items-center justify-between space-x-4">
-            <div className="flex items-center space-x-4">
-              <Avatar>
-                <AvatarImage src="/avatars/05.png" />
-                <AvatarFallback>IN</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium leading-none">
-                  Isabella Nguyen
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  ayer a las 11:30
-                </p>
-              </div>
-            </div>
-
-            <Actions />
-          </div>
-          <div className="flex items-center justify-between space-x-4">
-            <div className="flex items-center space-x-4">
-              <Avatar>
-                <AvatarImage src="/avatars/01.png" />
-                <AvatarFallback>SD</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium leading-none">Sofia Davis</p>
-                <p className="text-sm text-muted-foreground">
-                  Lunes 21 de noviembre, 2024
-                </p>
-              </div>
-            </div>
-
-            <Actions />
-          </div>
-          <div className="flex items-center justify-between space-x-4">
-            <div className="flex items-center space-x-4">
-              <Avatar>
-                <AvatarImage src="/avatars/03.png" />
-                <AvatarFallback>OM</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium leading-none">
-                  Olivia Martin
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Lunes 21 de noviembre, 2024
-                </p>
-              </div>
-            </div>
-
-            <Actions />
-          </div>
-          <div className="flex items-center justify-between space-x-4">
-            <div className="flex items-center space-x-4">
-              <Avatar>
-                <AvatarImage src="/avatars/05.png" />
-                <AvatarFallback>IN</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium leading-none">
-                  Isabella Nguyen
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Lunes 21 de noviembre, 2024
-                </p>
-              </div>
-            </div>
-
-            <Actions />
-          </div>
-          <div className="flex items-center justify-between space-x-4">
-            <div className="flex items-center space-x-4">
-              <Avatar>
-                <AvatarImage src="/avatars/01.png" />
-                <AvatarFallback>SD</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium leading-none">Sofia Davis</p>
-                <p className="text-sm text-muted-foreground">
-                  Viernes 18 de noviembre, 2024
-                </p>
-              </div>
-            </div>
-
-            <Actions />
-          </div>
+            ))}
         </div>
       </div>
     </div>
