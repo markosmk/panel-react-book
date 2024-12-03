@@ -158,7 +158,6 @@ function EditSchedule({
         <ButtonLoading
           variant="secondary"
           type="button"
-          className="min-w-[148px]"
           isWorking={isPending}
           onClick={handleSubmit}
         >
@@ -311,7 +310,6 @@ function AddSchedule({
         <ButtonLoading
           variant="secondary"
           type="button"
-          className="min-w-[148px]"
           isWorking={isPending}
           onClick={handleSubmit}
         >
@@ -376,7 +374,7 @@ export function FormSchedules({
         </div>
         <div className="flex flex-col space-y-2">
           <h3 className="text-lg font-bold">Horarios</h3>
-          {isLoading && <PendingContent withOutText sizeClassName="size-8" />}
+          {isLoading && <PendingContent withOutText sizeIcon="sm" />}
 
           {!isLoading &&
             schedulesDay.length > 0 &&

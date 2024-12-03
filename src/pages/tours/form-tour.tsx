@@ -572,7 +572,6 @@ export function FormTour({
             type="submit"
             disabled={isFetching}
             isWorking={isPending}
-            className="min-w-[148px]"
           >
             Guardar Cambios
           </ButtonLoading>

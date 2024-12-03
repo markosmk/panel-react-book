@@ -238,7 +238,6 @@ export function FastEditingPopover({ data }: { data: Tour }) {
             <ButtonLoading
               variant="secondary"
               type="button"
-              className="min-w-[148px]"
               isWorking={isPending}
               onClick={handleFastEdition}
             >
