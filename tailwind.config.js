@@ -31,24 +31,24 @@ export default {
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
-        primary: {
-          50: '#ecfdf5',
-          100: '#d2f9e4',
-          200: '#a9f1ce',
-          300: '#71e4b3',
-          400: '#38cf95',
-          500: '#14b57c',
-          600: '#089365',
-          700: '#077554',
-          800: '#085d43',
-          900: '#084c38',
-          950: '#032b20',
-          DEFAULT: '#14b57c'
-        },
         // primary: {
-        //   DEFAULT: 'hsl(var(--primary))',
-        //   foreground: 'hsl(var(--primary-foreground))'
+        //   50: '#ecfdf5',
+        //   100: '#d2f9e4',
+        //   200: '#a9f1ce',
+        //   300: '#71e4b3',
+        //   400: '#38cf95',
+        //   500: '#14b57c',
+        //   600: '#089365',
+        //   700: '#077554',
+        //   800: '#085d43',
+        //   900: '#084c38',
+        //   950: '#032b20',
+        //   DEFAULT: '#14b57c'
         // },
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))'
+        },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))'
@@ -115,7 +115,9 @@ export default {
         'scale-in':
           'scale-in var(--tw-animate-duration, 0.2s) var(--tw-animate-easing, ease) var(--tw-animate-delay, 0s) var(--tw-animate-iteration, 1) var(--tw-animate-fill, both)',
         'fade-left':
-          'fade-left var(--tw-animate-duration, 0.2s) var(--tw-animate-easing, ease) var(--tw-animate-delay, 0s) var(--tw-animate-iteration, 1) var(--tw-animate-fill, both)'
+          'fade-left var(--tw-animate-duration, 0.2s) var(--tw-animate-easing, ease) var(--tw-animate-delay, 0s) var(--tw-animate-iteration, 1) var(--tw-animate-fill, both)',
+        'fade-in':
+          'fade-in var(--tw-animate-duration, 0.2s) var(--tw-animate-easing, ease) var(--tw-animate-delay, 0s) var(--tw-animate-iteration, 1) var(--tw-animate-fill, both)'
       },
       animationTimingFunction: {
         DEFAULT: 'ease',
