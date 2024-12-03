@@ -174,7 +174,7 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
               >
                 <SelectTrigger
                   id="status"
-                  className="col-span-2 ml-auto h-8 w-full"
+                  className="col-span-2 ml-auto h-10 w-full"
                   defaultValue={'pending'}
                 >
                   <SelectValue placeholder="Cambiar Estado" />
@@ -220,7 +220,7 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
                         : parseFloat(value.toFixed(2))
                     }));
                   }}
-                  className="h-8"
+                  className="h-10"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
@@ -228,7 +228,7 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
                     }
                   }}
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="mt-2 text-xs text-muted-foreground">
                   No modifiques el precio a menos que sea absolutamente
                   necesario. (El precio total fue calculado automáticamente)
                 </p>
@@ -250,9 +250,8 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
               Cancelar
             </Button>
             <ButtonLoading
-              variant="outline"
+              variant="secondary"
               type="button"
-              className="min-w-[148px]"
               // disabled={!hasUnsavedChanges || isPending}
               isWorking={isPending}
               onClick={handleFastEdition}

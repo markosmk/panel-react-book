@@ -12,17 +12,15 @@ import {
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table';
-import { ArrowUpDownIcon, ChevronDown, MoreHorizontalIcon } from 'lucide-react';
+import { ArrowUpDownIcon, ChevronDown } from 'lucide-react';
 
 import { Icons } from '@/components/icons';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
@@ -39,13 +37,13 @@ import {
   formatDateFriendly,
   formatDateOnly,
   formatPrice,
-  isTodayOrRecent,
-  sleep
+  isTodayOrRecent
 } from '@/lib/utils';
 import { BookingTable } from '@/types/booking.types';
-import { Link } from 'react-router-dom';
 import { TooltipHelper } from '@/components/tooltip-helper';
-import { FastEditingPopover } from './fast-editing-popover';
+import { ActionsDataTable } from './actions-data-table';
+
+// const createColumns = (openModal: any) => ([
 
 const columns: ColumnDef<BookingTable>[] = [
   {
@@ -198,84 +196,7 @@ const columns: ColumnDef<BookingTable>[] = [
   {
     id: 'actions',
     enableHiding: false,
-    cell: ({ row }) => {
-      const booking = row.original;
-
-      return (
-        <>
-          <div className="hidden justify-end gap-x-1 sm:flex">
-            <TooltipHelper content="Vista Rápida">
-              <Link
-                to={`/bookings/${booking.id}`}
-                className={buttonVariants({
-                  variant: 'outline',
-                  size: 'icon'
-                })}
-              >
-                <Icons.look className="size-5" />
-              </Link>
-            </TooltipHelper>
-            <TooltipHelper content="Editar Reserva">
-              <Link
-                to={`/bookings/${booking.id}`}
-                title="Editar Reserva"
-                className={cn(
-                  buttonVariants({
-                    variant: 'outline',
-                    size: 'icon'
-                  }),
-                  'pointer-events-none opacity-50'
-                )}
-              >
-                <Icons.edit className="size-5" />
-              </Link>
-            </TooltipHelper>
-
-            <FastEditingPopover booking={booking} />
-
-            <TooltipHelper content="Eliminar">
-              <Button variant="outline" size="icon" disabled>
-                <Icons.remove className="size-5" />
-              </Button>
-            </TooltipHelper>
-          </div>
-          <div className="inline-flex sm:hidden">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontalIcon />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to={`/bookings/${booking.id}`}>
-                    <Icons.look className="mr-2 size-4" />
-                    Vista Rápida
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to={`/bookings/${booking.id}`}>
-                    <Icons.edit className="mr-2 size-4" />
-                    Editar Reserva
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => {}}>
-                  <Icons.transform className="mr-2 size-4" />
-                  Cambiar Estado
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => {}}>
-                  <Icons.remove className="mr-2 size-4" />
-                  Eliminar
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </>
-      );
-    }
+    cell: ({ row }) => <ActionsDataTable data={row.original} />
   }
 ];
 
