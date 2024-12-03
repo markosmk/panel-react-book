@@ -30,6 +30,7 @@ export interface User {
   name: string;
   email: string;
   password: string;
+  username: string;
   role: string;
 }
 
@@ -38,4 +39,15 @@ interface ApiError {
   error: number;
   messages: Record<string, string> | string; // Puede ser un objeto de errores de campo o un mensaje de error general
 }
+
 export type CustomAxiosError = AxiosError<ApiError>;
+
+export type SettingsApp = {
+  phoneWhatsapp: string;
+  email: string;
+  aditionalNote: string;
+  termsAndConditions?: string;
+  privacyPolicy?: string;
+  active: '1' | '0';
+  messageDisabled?: string;
+};
