@@ -4,9 +4,10 @@ import { tokenClient } from '@/services/token';
 import { User } from '@/types/app.types';
 import { queryClient } from '.';
 import { authClient } from '@/services/auth';
+import Cookies from 'js-cookie';
 
 interface AuthContextType {
-  user: { id: string; role: string; email: string; name?: string } | null;
+  user: User | null;
   isAuthenticated: boolean;
   loginAction: (user: User, token?: string) => void;
   logoutAction: () => Promise<void>;
@@ -15,7 +16,17 @@ interface AuthContextType {
   isClosing: boolean;
 }
 
-const AuthContext = React.createContext<AuthContextType>(null!);
+const defaultContext = {
+  user: null,
+  isAuthenticated: false,
+  loginAction: () => {},
+  logoutAction: async () => {},
+  // errors: [],
+  isLoading: true,
+  isClosing: false
+};
+
+const AuthContext = React.createContext<AuthContextType>(defaultContext);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
@@ -23,6 +34,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // const [errors, setErrors] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isClosing, setIsClosing] = React.useState(false);
+  // const [cookie, setCookie] = React.useState(Cookies.get('app_user'));
+
+  // React.useEffect(() => {
+  //   console.log('checkeando la cookie');
+  //   console.log('cookie', cookie);
+  //   if (!cookie) {
+  //     console.log('la cookie desaparecio');
+  //   }
+  // }, [cookie]);
 
   React.useEffect(() => {
     const checkLogin = async () => {
@@ -38,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const response = await authClient.getUser();
         // console.log('res', response);
         setIsAuthenticated(response ? true : false);
-        setUser(response ? response.user : null);
+        setUser(response ? response : null);
       } catch (error) {
         console.log(error);
         setIsAuthenticated(false);
