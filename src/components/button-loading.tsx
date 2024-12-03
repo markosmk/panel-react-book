@@ -1,3 +1,4 @@
+import { useElementWidth } from '@/hooks/use-element-width';
 import { Icons } from './icons';
 import { Button, ButtonProps } from './ui/button';
 
@@ -11,8 +12,17 @@ export function ButtonLoading({
   isWorking = false,
   ...props
 }: ButtonLoadingProps) {
+  const { ref, width } = useElementWidth();
   return (
-    <Button disabled={disabled || isWorking} {...props}>
+    <Button
+      ref={ref}
+      disabled={disabled || isWorking}
+      style={{
+        width: isWorking && width ? `${width}px` : 'auto',
+        transition: 'width 0.2s ease-in-out'
+      }}
+      {...props}
+    >
       {isWorking ? <Icons.spinner className="h-6 w-6" /> : children}
     </Button>
   );

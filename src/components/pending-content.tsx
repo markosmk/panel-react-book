@@ -5,12 +5,12 @@ import { Icons } from './icons';
 export function PendingContent({
   children = <>Cargando...</>,
   className,
-  sizeClassName,
+  sizeIcon = 'lg',
   withOutText = false
 }: {
   children?: React.ReactNode;
   className?: string;
-  sizeClassName?: string;
+  sizeIcon?: 'sm' | 'md' | 'lg';
   withOutText?: boolean;
 }) {
   return (
@@ -21,7 +21,13 @@ export function PendingContent({
       )}
     >
       <div className="flex flex-col items-center gap-y-2">
-        <Icons.spinner className={cn('h-12 w-12', sizeClassName)} />
+        <Icons.spinner
+          className={cn(
+            sizeIcon === 'sm' && 'size-8',
+            sizeIcon === 'md' && 'size-10',
+            sizeIcon === 'lg' && 'size-12'
+          )}
+        />
         {!withOutText && (
           <div className="animate-pulse duration-1000">{children}</div>
         )}

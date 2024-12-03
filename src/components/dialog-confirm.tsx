@@ -64,7 +64,7 @@ export function DialogConfirm({
             onClick={onConfirm}
             disabled={isProcessing}
             isWorking={isProcessing}
-            className="min-w-28"
+            // className="min-w-28"
           >
             {textConfirm}
           </ButtonLoading>

@@ -4,7 +4,7 @@ import { IconSVG, Icons } from './icons';
 import { Badge, BadgeProps } from './ui/badge';
 import { Status } from '@/types/booking.types';
 
-type ButtonLoadingProps = BadgeProps & {
+type BadgeStatusProps = BadgeProps & {
   status: Status | 'Default';
   useIcons?: boolean;
 };
@@ -27,7 +27,7 @@ export function BadgeStatus({
   status = 'Default',
   useIcons = false,
   ...props
-}: ButtonLoadingProps) {
+}: BadgeStatusProps) {
   const {
     variant,
     icon: Icon,
