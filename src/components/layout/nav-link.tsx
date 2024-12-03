@@ -28,19 +28,25 @@ export function NavLink({
           <>
             <li
               className={cn(
-                'group relative mb-1 flex cursor-pointer flex-col rounded-md bg-transparent px-3 py-2.5 text-base transition-all duration-100 hover:bg-gray-active hover:text-accent-foreground',
+                'group relative mb-1 flex cursor-pointer flex-col rounded-md bg-transparent px-3 py-2.5 text-base transition-transform duration-200 active:scale-[.97]',
+                // hover:bg-gray-active hover:text-accent-foreground
                 isActive && 'bg-gray-active',
                 !isActive && 'text-muted-foreground',
                 disabled && 'pointer-events-none select-none opacity-50'
               )}
             >
+              {/* <div className="absolute inset-0 scale-75 rounded-md bg-gray-active opacity-0 transition-transform duration-200 group-hover:scale-100 group-hover:opacity-100"></div> */}
+              <div className="absolute inset-0 scale-75 rounded-md bg-gray-active opacity-0 transition-transform duration-200 ease-in-out group-hover:animate-scale-in"></div>
+
               <button
                 type="button"
                 role="menuitem"
-                className={cn('flex w-full items-center overflow-auto')}
+                className={cn(
+                  'z-[1] flex w-full items-center overflow-auto transition-colors duration-200 ease-in-out group-hover:text-accent-foreground'
+                )}
                 disabled={disabled}
               >
-                {/* mark */}
+                {/* mark active */}
                 {isActive && (
                   <div className="visible absolute left-0 h-6 w-1 animate-scale-in rounded-md bg-primary"></div>
                 )}
