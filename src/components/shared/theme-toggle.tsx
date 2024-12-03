@@ -5,6 +5,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useTheme } from '@/providers/theme-provider';
@@ -31,6 +32,7 @@ export function ModeToggle() {
         <DropdownMenuItem onClick={() => setTheme('system')}>
           System
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
       </DropdownMenuContent>
     </DropdownMenu>
   );
