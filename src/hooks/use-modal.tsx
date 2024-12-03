@@ -173,7 +173,6 @@ const ModalViewContent: React.FC<ModalViewContentProps> = ({
               Cancelar
             </AlertDialogCancel>
             <ButtonLoading
-              className="min-w-32"
               disabled={isLoadingConfirm}
               isWorking={isLoadingConfirm}
               onClick={async () => {
@@ -218,7 +217,11 @@ const ModalViewContent: React.FC<ModalViewContentProps> = ({
             </DialogDescription>
           </DialogHeader>
           <DialogBody className="scroller">
-            {isLoading ? <PendingContent /> : modalConfig?.content || ''}
+            {isLoading ? (
+              <PendingContent withOutText sizeIcon="sm" />
+            ) : (
+              modalConfig?.content || ''
+            )}
           </DialogBody>
         </DialogContent>
       </Dialog>
