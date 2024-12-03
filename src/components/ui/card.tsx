@@ -54,9 +54,21 @@ const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
+  <div
+    ref={ref}
+    className={cn('overflow-x-hidden p-4 md:p-6', className)}
+    {...props}
+  />
 ));
 CardContent.displayName = 'CardContent';
+
+const CardBody = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn('px-6 pb-6 pt-0', className)} {...props} />
+));
+CardBody.displayName = 'CardBody';
 
 const CardFooter = React.forwardRef<
   HTMLDivElement,
@@ -76,5 +88,6 @@ export {
   CardFooter,
   CardTitle,
   CardDescription,
-  CardContent
+  CardContent,
+  CardBody
 };

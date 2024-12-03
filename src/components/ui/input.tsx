@@ -17,6 +17,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className
         )}
         ref={ref}
+        data-lpignore="true"
+        data-form-type="other"
+        autoComplete="off"
         {...props}
       />
     );
