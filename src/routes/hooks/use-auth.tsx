@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { queryClient } from '@/providers';
 import { authClient } from '@/services/auth';
 import { tokenClient } from '@/services/token';
-import { useAuth } from '@/providers/auth-provider';
+// import { useAuth } from '@/providers/auth-provider';
 
 export function useCurrentUser() {
   return useQuery({
@@ -31,12 +31,10 @@ export function useCurrentUser() {
 }
 
 export function useLogin() {
-  const { loginAction } = useAuth();
+  // const { loginAction } = useAuth();
   return useMutation({
     mutationFn: authClient.login,
-    onSuccess: async (data) => {
-      loginAction(data.user, data?.token ?? undefined);
-    },
+    onSuccess: async () => {},
     onError: (error) => {
       console.log('Login failed', error);
       // toast('Login failed', { variant: 'error' });
