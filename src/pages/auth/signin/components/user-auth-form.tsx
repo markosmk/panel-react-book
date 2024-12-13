@@ -1,4 +1,5 @@
 import { ButtonLoading } from '@/components/button-loading';
+import { Alert } from '@/components/ui/alert';
 import {
   Form,
   FormControl,
@@ -21,7 +22,12 @@ const formSchema = z.object({
   })
 });
 
-type UserFormValue = z.infer<typeof formSchema>;
+type UserFormData = z.infer<typeof formSchema>;
+type UserFormValue = UserFormData & {
+  emailOrPassword?: {
+    message: string;
+  };
+};
 
 export default function UserAuthForm() {
   const { loginAction } = useAuth();
@@ -39,14 +45,15 @@ export default function UserAuthForm() {
     try {
       await mutateAsync(data, {
         onSuccess: (data) => {
-          console.log('login', data);
           if (data) {
             loginAction(data.user, data?.token ?? undefined);
           }
         }
       });
     } catch (error) {
-      console.error('Error during login:', error);
+      form.setError('emailOrPassword', {
+        message: 'El correo o la contraseña son incorrectas.'
+      });
     }
   };
 
@@ -69,6 +76,10 @@ export default function UserAuthForm() {
                     placeholder="Ej: usuario@gmail.com"
                     disabled={isPending}
                     {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      form.clearErrors('emailOrPassword');
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -87,12 +98,25 @@ export default function UserAuthForm() {
                     placeholder="******"
                     disabled={isPending}
                     {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      form.clearErrors('emailOrPassword');
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
+          {form.formState.errors?.emailOrPassword && (
+            <Alert
+              variant="destructive"
+              className="my-2 text-[0.8rem] font-medium"
+            >
+              <>{form.formState.errors.emailOrPassword?.message}</>
+            </Alert>
+          )}
 
           <ButtonLoading
             isWorking={isPending}
