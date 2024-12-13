@@ -1,10 +1,11 @@
-import { API_URL } from '@/constants/data';
+/* eslint-disable no-useless-catch */
+import { CONFIG } from '@/constants/config';
 import { sleep } from '@/lib/utils';
 
 export const authClient = {
   login: async (credentials: { email: string; password: string }) => {
     try {
-      const response = await fetch(API_URL + '/login', {
+      const response = await fetch(CONFIG.apiUrl + '/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
@@ -16,21 +17,25 @@ export const authClient = {
       const data = await response.json();
       return data;
     } catch (error: unknown) {
-      console.error('Error fetch in login:', error);
       throw error;
     }
   },
   logout: async () => {
-    await sleep(2000);
-    await fetch(API_URL + '/logout', {
-      method: 'POST',
-      credentials: 'include'
-    });
+    try {
+      await sleep(2000);
+      await fetch(CONFIG.apiUrl + '/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (error: unknown) {
+      console.error('Error fetch in logout:', error);
+      // throw error;
+    }
   },
   getUser: async () => {
     try {
       await sleep(2000);
-      const response = await fetch(API_URL + '/me', {
+      const response = await fetch(CONFIG.apiUrl + '/me', {
         method: 'GET',
         // mode: 'no-cors',
         headers: {
@@ -45,7 +50,7 @@ export const authClient = {
       const data = await response.json();
       return data?.user;
     } catch (error: unknown) {
-      console.error('Error fetching user in auth:', error);
+      // console.error('Error fetching user in auth:', error);
       throw error;
     }
   }
