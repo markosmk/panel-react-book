@@ -15,6 +15,8 @@ export function BookingPage() {
   const { data, isLoading, isError } = useBookings(page, perPage);
 
   if (isLoading) return <PendingContent />;
+
+  // TODO: show better errors
   if (isError) return <div>Error</div>;
 
   return (

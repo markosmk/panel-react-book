@@ -346,6 +346,7 @@ export function ToursDataTable({ data }: { data: Tour[] }) {
         <Input
           placeholder="Buscar por nombre o descripcion del tour..."
           value={globalFilter}
+          disabled={table.getFilteredSelectedRowModel().rows.length === 0}
           onChange={(e) => setGlobalFilter(e.target.value)}
           className="w-full sm:max-w-sm"
         />
@@ -424,7 +425,7 @@ export function ToursDataTable({ data }: { data: Tour[] }) {
                 );
               })
             ) : (
-              <TableRow>
+              <TableRow className="hover:bg-transparent">
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center"

@@ -277,6 +277,7 @@ export function CustomerDataTable({ data }: { data: CustomerTable[] }) {
         <Input
           placeholder="Buscar por nombre, email o teléfono..."
           value={globalFilter}
+          disabled={table.getFilteredSelectedRowModel().rows.length === 0}
           onChange={(e) => setGlobalFilter(e.target.value)}
           className="w-full sm:max-w-sm"
         />
@@ -355,7 +356,7 @@ export function CustomerDataTable({ data }: { data: CustomerTable[] }) {
                 );
               })
             ) : (
-              <TableRow>
+              <TableRow className="hover:bg-transparent">
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center"

@@ -272,6 +272,7 @@ export function BookingsDataTable({ data }: { data: BookingTable[] }) {
         <Input
           placeholder="Buscar por nombre, email, telefono, tour..."
           value={globalFilter}
+          disabled={table.getFilteredSelectedRowModel().rows.length === 0}
           onChange={(e) => setGlobalFilter(e.target.value)}
           className="w-full sm:max-w-sm"
         />
@@ -350,7 +351,7 @@ export function BookingsDataTable({ data }: { data: BookingTable[] }) {
                 );
               })
             ) : (
-              <TableRow>
+              <TableRow className="hover:bg-transparent">
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center"

@@ -30,11 +30,7 @@ export default function ToursPage() {
         title="Lista de Tours"
         description="Administra tus tours desde esta seccion, puedes agregar, editar y eliminar tours."
       >
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={() => navigate('/tours/create')}
-        >
+        <Button type="button" onClick={() => navigate('/tours/create')}>
           Crear tour
         </Button>
       </HeadingMain>
