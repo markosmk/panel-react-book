@@ -100,7 +100,6 @@ const TimePickerInput = React.forwardRef<
         setDate(setDateByType(tempDate, newValue, picker, period));
       }
     };
-
     return (
       <Input
         ref={ref}
@@ -132,9 +131,16 @@ TimePickerInput.displayName = 'TimePickerInput';
 interface TimePickerDemoProps {
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
+  name: string;
+  disabled?: boolean;
 }
 
-const TimePicker = ({ date, setDate }: TimePickerDemoProps) => {
+const TimePicker = ({
+  date,
+  setDate,
+  disabled = false,
+  name
+}: TimePickerDemoProps) => {
   const minuteRef = React.useRef<HTMLInputElement>(null);
   const hourRef = React.useRef<HTMLInputElement>(null);
   // const secondRef = React.useRef<HTMLInputElement>(null);
@@ -142,26 +148,30 @@ const TimePicker = ({ date, setDate }: TimePickerDemoProps) => {
   return (
     <div className="flex items-end gap-2">
       <div className="grid gap-1 text-center">
-        <Label htmlFor="hours" className="text-xs">
+        <Label htmlFor={name + 'hours'} className="text-xs">
           Horas
         </Label>
         <TimePickerInput
+          id={name + 'hours'}
           picker="hours"
           date={date}
           setDate={setDate}
           ref={hourRef}
+          disabled={disabled}
           onRightFocus={() => minuteRef.current?.focus()}
         />
       </div>
       <div className="grid gap-1 text-center">
-        <Label htmlFor="minutes" className="text-xs">
+        <Label htmlFor={name + 'minutes'} className="text-xs">
           Minutos
         </Label>
         <TimePickerInput
+          id={name + 'minutes'}
           picker="minutes"
           date={date}
           setDate={setDate}
           ref={minuteRef}
+          disabled={disabled}
           onLeftFocus={() => hourRef.current?.focus()}
         />
       </div>
