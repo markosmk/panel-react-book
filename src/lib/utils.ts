@@ -22,7 +22,16 @@ export function formatDateOnly(
   date: string | Date,
   formatStr = "EEEE dd 'de' MMMM, yyyy HH:mm"
 ) {
-  return format(date, formatStr, { locale: es });
+  // if date is a string, add Z to make it as UTC
+  const dateToFormat = typeof date === 'string' ? new Date(`${date}Z`) : date;
+  return format(dateToFormat, formatStr, { locale: es });
+}
+
+export function formatDateFriendly(dateString: string) {
+  // const date = parseISO(dateString);
+  // timestamp from mysql always in UTC, so add Z to make it local
+  const utcDate = new Date(`${dateString}Z`);
+  return formatDistanceToNow(utcDate, { addSuffix: true, locale: es });
 }
 
 /** used to format time to send backend */
@@ -48,11 +57,6 @@ export const formatDuration = (
   const time = `${hours}:${mins.toString().padStart(2, '0')}hs`;
   return withDetails ? `${hoursInWords} y ${minutesInWords}` : time;
 };
-
-export function formatDateFriendly(dateString: string) {
-  const date = parseISO(dateString);
-  return formatDistanceToNow(date, { addSuffix: true, locale: es });
-}
 
 export function formatPrice(price: number) {
   return new Intl.NumberFormat('es-AR', {
