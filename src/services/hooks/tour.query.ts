@@ -6,8 +6,8 @@ export function useTours(page: number, perPage: number) {
   return useQuery({
     queryKey: ['tours', page, perPage],
     queryFn: async () => {
-      const response = await getTours(); //(page, perPage);
-      if (response.statusText !== 'OK') {
+      const response = await getTours(); //getTours(page, perPage);
+      if (response.status !== 200) {
         throw new Error('Invalid booking data');
       }
       return response.data;
