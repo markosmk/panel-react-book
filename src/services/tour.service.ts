@@ -6,7 +6,10 @@ import {
   TourRequestCreate
 } from '@/types/tour.types';
 
-export const getTours = async () => await axios.get<Tour[]>('/tours');
+export const getTours = async (page?: number, perPage?: number) =>
+  await axios.get<Tour[]>('/tours', {
+    params: { page, perPage }
+  });
 
 export const getTourById = async (id: string | number) =>
   await axios.get<TourDetail>('/tours/' + id);

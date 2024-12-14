@@ -7,10 +7,10 @@ import {
   Status
 } from '@/types/booking.types';
 
-export const getBookings = async (page: number = 1, perPage: number = 10) =>
-  await axios.get<BookingList>(
-    '/bookings?page=' + page + '&perPage=' + perPage
-  );
+export const getBookings = async (page?: number, perPage?: number) =>
+  await axios.get<BookingList>('/bookings', {
+    params: { page, perPage }
+  });
 
 export const getBookingById = async (
   id: string | number,
