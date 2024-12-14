@@ -24,8 +24,8 @@ export function FastEditingPopover({ data }: { data: Tour }) {
   const initialValues = React.useMemo(
     () => ({
       price: parseFloat(data.price) || 0,
-      duration: data.duration || 0,
-      capacity: data.capacity || 0,
+      duration: data.duration ? Number(data.duration) : 0,
+      capacity: data.capacity ? Number(data.capacity) : 0,
       active: data.active === '1' ? true : false
     }),
     [data]
@@ -109,7 +109,7 @@ export function FastEditingPopover({ data }: { data: Tour }) {
       </TooltipHelper>
 
       <PopoverContent
-        className="w-72"
+        className="w-80 max-w-sm"
         align="end"
         onCloseAutoFocus={(event) => {
           event.preventDefault();
@@ -212,7 +212,7 @@ export function FastEditingPopover({ data }: { data: Tour }) {
             <div className="grid grid-cols-3 items-center gap-4">
               <Label htmlFor="active">Activo</Label>
 
-              <div className="col-span-2">
+              <div className="col-span-2 flex">
                 <Switch
                   id="active"
                   checked={formValues.active}
