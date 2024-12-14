@@ -7,7 +7,7 @@ export function useStats() {
     queryFn: async () => {
       //   try {
       const response = await dashboardStats();
-      if (response.statusText !== 'OK') {
+      if (response.status !== 200) {
         throw new Error('Invalid data');
       }
       return response.data;
@@ -22,7 +22,7 @@ export function useRecentBookings() {
     queryKey: ['stats_recent_bookings'],
     queryFn: async () => {
       const response = await dashboardRecentBookings();
-      if (response.statusText !== 'OK') {
+      if (response.status !== 200) {
         throw new Error('Invalid data');
       }
       return response.data;

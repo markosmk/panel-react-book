@@ -23,7 +23,7 @@ export function useTourDetail(id: string | number) {
     queryFn: async () => {
       await sleep(1000);
       const response = await getTourById(id);
-      if (response.statusText !== 'OK') {
+      if (response.status !== 200) {
         throw new Error('Invalid data');
       }
       return response.data;
