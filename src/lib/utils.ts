@@ -9,6 +9,7 @@ import {
   parseISO
 } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { ScheduleWithAvailable } from '@/types/tour.types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -74,4 +75,56 @@ export function isTodayOrRecent(
   const recentDate = addDays(today, -numDaysAgo);
   // return isBefore(date, today) && isAfter(date, recentDate);
   return isToday(date) || isAfter(date, recentDate);
+}
+
+/** change "00:00:00" to minutes, ex: "00:30:00" => 30min */
+export function convertToMinutes(timeString: string): number {
+  const [hours, minutes] = timeString.split(':').map(Number);
+  return hours * 60 + minutes;
+}
+
+/** convert "00:00:00" to Date */
+export function timeToDate(timeString: string): Date {
+  const [hours, minutes, seconds] = timeString.split(':');
+  const date = new Date();
+  date.setHours(parseInt(hours, 10));
+  date.setMinutes(parseInt(minutes, 10));
+  date.setSeconds(parseInt(seconds, 10));
+  return date;
+}
+
+export function doesOverlap(
+  schedules: ScheduleWithAvailable[],
+  startInMinutes: number,
+  endInMinutes: number,
+  excludeId?: string
+): boolean {
+  const listSchedules = excludeId
+    ? schedules.filter((schedule) => schedule.id !== excludeId)
+    : schedules;
+
+  return listSchedules?.some((schedule) => {
+    if (!schedule.active) return false;
+
+    const existingStartInMinutes = convertToMinutes(schedule.startTime);
+    const existingEndInMinutes = convertToMinutes(schedule.endTime);
+
+    const existingRange = {
+      start: existingStartInMinutes,
+      end:
+        existingEndInMinutes >= existingStartInMinutes
+          ? existingEndInMinutes
+          : existingEndInMinutes + 1440 // this is for when the end time is before the start time
+    };
+
+    const newRange = {
+      start: startInMinutes,
+      end: endInMinutes >= startInMinutes ? endInMinutes : endInMinutes + 1440
+    };
+
+    // verify if the new range overlaps with the existing range
+    return (
+      newRange.start < existingRange.end && newRange.end > existingRange.start
+    );
+  });
 }
