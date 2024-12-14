@@ -18,37 +18,51 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { SettingsApp } from '@/types/app.types';
 
-const formSchema = z.object({
-  phoneWhatsapp: z
-    .string()
-    .trim()
-    .min(1, 'El campo no puede estar vacio')
-    .min(8, 'El campo debe tener al menos 8 caracteres')
-    .max(20, 'El campo no puede tener más de 20 caracteres'),
-  email: z
-    .string()
-    .email()
-    .min(1, 'El campo no puede estar vacio')
-    .max(150, 'El campo no puede tener más de 150 caracteres'),
-  aditionalNote: z
-    .string()
-    .trim()
-    .min(1, 'El campo no puede estar vacio')
-    .min(10, 'El campo debe tener al menos 10 caracteres')
-    .max(200, 'El campo no puede tener más de 200 caracteres'),
-  termsAndConditions: z
-    .string()
-    .trim()
-    .min(1, 'El campo no puede estar vacio')
-    .optional(),
-  active: z.boolean(),
-  messageDisabled: z
-    .string()
-    .trim()
-    .min(10, 'El campo debe tener al menos 10 caracteres')
-    .max(200, 'El campo no puede tener más de 200 caracteres')
-    .optional()
-});
+const formSchema = z
+  .object({
+    phoneWhatsapp: z
+      .string()
+      .trim()
+      .min(1, 'El campo no puede estar vacio')
+      .min(8, 'El campo debe tener al menos 8 caracteres')
+      .max(20, 'El campo no puede tener más de 20 caracteres'),
+    email: z
+      .string()
+      .email()
+      .min(1, 'El campo no puede estar vacio')
+      .max(150, 'El campo no puede tener más de 150 caracteres'),
+    aditionalNote: z
+      .string()
+      .trim()
+      .min(1, 'El campo no puede estar vacio')
+      .min(50, 'El campo debe tener al menos 50 caracteres')
+      .max(500, 'El campo no puede tener más de 500 caracteres'),
+    termsAndConditions: z
+      .string()
+      .trim()
+      .min(1, 'El campo no puede estar vacio')
+      .optional(),
+    active: z.boolean(),
+    messageDisabled: z
+      .string()
+      .trim()
+      .min(50, 'El campo debe tener al menos 50 caracteres')
+      .max(500, 'El campo no puede tener más de 500 caracteres')
+      .optional()
+      .or(z.literal(''))
+  })
+  .refine(
+    (data) => {
+      if (data.active) {
+        return data.messageDisabled && data.messageDisabled.length > 0;
+      }
+      return true;
+    },
+    {
+      message: 'El campo es necesario',
+      path: ['messageDisabled']
+    }
+  );
 
 export type FormValues = z.infer<typeof formSchema>;
 

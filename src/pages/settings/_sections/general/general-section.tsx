@@ -12,7 +12,7 @@ const useSettings = () => {
     queryKey: ['settings'],
     queryFn: async () => {
       const response = await getSettings();
-      if (response.statusText !== 'OK') {
+      if (response.status !== 200) {
         throw new Error('Invalid data');
       }
       return response.data;
@@ -49,7 +49,7 @@ const useUpdateSettings = () => {
 };
 
 export function GeneralSection() {
-  const { data, isLoading } = useSettings();
+  const { data, isLoading, isError } = useSettings();
   const { mutateAsync, isPending } = useUpdateSettings();
 
   const handleSubmit = async (data: FormValues) => {
@@ -77,6 +77,10 @@ export function GeneralSection() {
 
   if (isLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error</div>;
   }
 
   return (
