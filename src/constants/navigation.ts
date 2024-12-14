@@ -31,14 +31,14 @@ export const adminNavigation: NavigationItem[] = [
     icon: Icons.bookings
   },
   {
-    name: 'Clientes',
-    href: '/customers',
-    icon: Icons.customers
-  },
-  {
     name: 'Tours',
     href: '/tours',
     icon: Icons.tours
+  },
+  {
+    name: 'Clientes',
+    href: '/customers',
+    icon: Icons.customers
   },
   {
     name: 'Configuración',
