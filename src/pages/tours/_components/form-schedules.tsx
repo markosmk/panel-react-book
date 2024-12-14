@@ -16,7 +16,7 @@ import { EditSchedule } from './edit-schedule';
 export function FormSchedules({ tour }: { tour: Tour }) {
   const { openModal, closeModal } = useModal();
   const [day, setDay] = React.useState(new Date());
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
   const [toggleUpdate, setToggleUpdate] = React.useState(false);
   const [schedulesDay, setSchedules] = React.useState<ScheduleWithAvailable[]>(
     []
