@@ -79,6 +79,7 @@ export function isTodayOrRecent(
 
 /** change "00:00:00" to minutes, ex: "00:30:00" => 30min */
 export function convertToMinutes(timeString: string): number {
+  if (!timeString) return 0;
   const [hours, minutes] = timeString.split(':').map(Number);
   return hours * 60 + minutes;
 }
@@ -107,24 +108,29 @@ export function doesOverlap(
     if (!schedule.active) return false;
 
     const existingStartInMinutes = convertToMinutes(schedule.startTime);
-    const existingEndInMinutes = convertToMinutes(schedule.endTime);
+    const existingEndInMinutes = schedule.endTime
+      ? convertToMinutes(schedule.endTime)
+      : null; // null if no endTime is defined
 
-    const existingRange = {
-      start: existingStartInMinutes,
-      end:
-        existingEndInMinutes >= existingStartInMinutes
-          ? existingEndInMinutes
-          : existingEndInMinutes + 1440 // this is for when the end time is before the start time
-    };
+    if (existingEndInMinutes !== null) {
+      const existingRange = {
+        start: existingStartInMinutes,
+        end:
+          existingEndInMinutes >= existingStartInMinutes
+            ? existingEndInMinutes
+            : existingEndInMinutes + 1440
+      };
 
-    const newRange = {
-      start: startInMinutes,
-      end: endInMinutes >= startInMinutes ? endInMinutes : endInMinutes + 1440
-    };
+      const newRange = {
+        start: startInMinutes,
+        end: endInMinutes >= startInMinutes ? endInMinutes : endInMinutes + 1440
+      };
 
-    // verify if the new range overlaps with the existing range
-    return (
-      newRange.start < existingRange.end && newRange.end > existingRange.start
-    );
+      return (
+        newRange.start < existingRange.end && newRange.end > existingRange.start
+      );
+    }
+
+    return startInMinutes >= existingStartInMinutes;
   });
 }
