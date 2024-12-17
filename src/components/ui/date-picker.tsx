@@ -19,7 +19,7 @@ export function DatePickerWithRange({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: React.HTMLAttributes<HTMLDivElement> & { field: any }) {
   return (
-    <div className={cn('flex gap-2', className)}>
+    <div className={cn('inline-flex w-full gap-2', className)}>
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -27,7 +27,7 @@ export function DatePickerWithRange({
             type="button"
             variant={'outline'}
             className={cn(
-              'w-full justify-between text-left font-normal',
+              'flex w-full flex-1 justify-between text-left font-normal',
               !field.value && 'text-muted-foreground'
             )}
           >
@@ -37,11 +37,11 @@ export function DatePickerWithRange({
               field.value.to ? (
                 <>
                   <span className="hidden md:flex">
-                    {format(field.value.from, "EEEE dd 'de' MMMM, yyyy", {
+                    {format(field.value.from, "dd 'de' MMMM, yyyy", {
                       locale: es
                     })}{' '}
                     -{' '}
-                    {format(field.value.to, "EEEE dd 'de' MMMM, yyyy", {
+                    {format(field.value.to, "dd 'de' MMMM, yyyy", {
                       locale: es
                     })}
                   </span>
