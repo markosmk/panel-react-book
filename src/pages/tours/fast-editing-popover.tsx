@@ -18,13 +18,14 @@ import { useEditingTour } from '@/services/hooks/tour.mutation';
 import { Tour } from '@/types/tour.types';
 import { Switch } from '@/components/ui/switch';
 import { InputNumber } from '@/components/ui/input-number';
+import { Input } from '@/components/ui/input';
 
 export function FastEditingPopover({ data }: { data: Tour }) {
   const [isOpen, setIsOpen] = React.useState(false);
   const initialValues = React.useMemo(
     () => ({
       price: parseFloat(data.price) || 0,
-      duration: data.duration ? Number(data.duration) : 0,
+      duration: data.duration ? data.duration : '0',
       capacity: data.capacity ? Number(data.capacity) : 0,
       active: data.active === '1' ? true : false
     }),
@@ -187,18 +188,16 @@ export function FastEditingPopover({ data }: { data: Tour }) {
             <div className="grid grid-cols-3 items-center gap-4">
               <Label htmlFor="duration">Duration</Label>
               <div className="col-span-2">
-                <InputNumber
+                <Input
                   id="duration"
-                  value={Number(formValues.duration)}
+                  type="text"
+                  value={formValues.duration}
                   onChange={(e) => {
-                    const value = parseInt(e.target.value);
                     setFormValues((prev) => ({
                       ...prev,
-                      duration: isNaN(value) ? 0 : value
+                      duration: e.target.value
                     }));
                   }}
-                  min={1}
-                  height="sm"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();

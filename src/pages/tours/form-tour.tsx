@@ -44,9 +44,9 @@ const formSchema = z
       .or(z.literal('')),
     price: z.coerce.number().min(1, 'El precio no es valido.'),
     capacity: z.coerce.number().min(1, 'La capacidad no es valida.'),
-    duration: z.coerce
-      .number()
-      .min(10, 'La duración debe ser al menos 10 minutos.'),
+    duration: z
+      .string()
+      .min(1, 'La duracion debe tener al menos 10 caracteres.'),
     content: z
       .string()
       .min(100, 'El contenido debe tener al menos 100 caracteres.')
@@ -184,7 +184,7 @@ export function FormTour({
       media: data.media,
       price: parseFloat(data.price) || 0,
       capacity: parseFloat(data.capacity) || 0,
-      duration: parseFloat(data.duration.toString()) || 0,
+      duration: data.duration.toString() || '0',
       content: data.content,
       active: data.active === '1' ? true : false,
       weekends: false,
@@ -366,10 +366,12 @@ export function FormTour({
                 name="duration"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Duracion</FormLabel>
+                    <FormLabel htmlFor="duration">Duracion</FormLabel>
                     <FormControl>
-                      <InputNumber
-                        placeholder="Ej: 90"
+                      <Input
+                        id="duration"
+                        type="text"
+                        placeholder="Ej: 30 a 40"
                         value={field.value}
                         onChange={field.onChange}
                       />
@@ -476,6 +478,7 @@ export function FormTour({
                                 <TimePicker
                                   setDate={field.onChange}
                                   date={field.value}
+                                  name="startTime"
                                 />
                               </FormControl>
                             </div>
@@ -497,6 +500,7 @@ export function FormTour({
                                 <TimePicker
                                   setDate={field.onChange}
                                   date={field.value}
+                                  name="endTime"
                                 />
                               </FormControl>
                             </div>
