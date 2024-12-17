@@ -1,7 +1,6 @@
 import { CONFIG } from '@/constants/config';
 import { queryClient } from '@/providers';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 
 const axiosApp = axios.create({
   baseURL: CONFIG.apiUrl,
@@ -28,12 +27,9 @@ axiosApp.interceptors.response.use(
     // const token = Cookies.get('app_token');
     // console.log('tokenuser', tokenUser);
     // console.log('token', token);
-
-    console.log('interceptardo responsta ook');
     return response;
   },
   (error) => {
-    console.log('la respuesta da error');
     console.log(error);
 
     // const tokenUser = Cookies.get(CONFIG.cookieName);
@@ -42,7 +38,6 @@ axiosApp.interceptors.response.use(
     // console.log('token', token);
 
     if (error.response?.status === 401) {
-      console.log('la respuesta da error 401, osea no autorizado');
       localStorage.removeItem('accessToken');
       queryClient.invalidateQueries({ queryKey: ['currentUser'] });
 
