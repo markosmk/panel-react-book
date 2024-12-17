@@ -3,6 +3,7 @@
 import { CONFIG } from '@/constants/config';
 import setGlobalColorTheme from '@/lib/theme-colors';
 import { Theme } from '@/types/app.types';
+import { ThemeColors } from '@/types/theme-types';
 import * as React from 'react';
 import { createContext } from 'react';
 

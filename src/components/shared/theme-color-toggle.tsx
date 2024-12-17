@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import {
   Select,
   SelectContent,
@@ -9,6 +7,7 @@ import {
 } from '@/components/ui/select';
 import { useTheme } from '@/providers/theme-provider';
 import { cn } from '@/lib/utils';
+import { ThemeColors } from '@/types/theme-types';
 
 const availablesThemeColors = [
   { name: 'Zinc', light: 'bg-zinc-900', dark: 'bg-zinc-700' },
