@@ -36,18 +36,20 @@ const formSchema = z
       .trim()
       .min(1, 'El campo no puede estar vacio')
       .min(50, 'El campo debe tener al menos 50 caracteres')
-      .max(500, 'El campo no puede tener más de 500 caracteres'),
+      .max(240, 'El campo no puede tener más de 240 caracteres'),
     termsAndConditions: z
       .string()
       .trim()
-      .min(1, 'El campo no puede estar vacio')
-      .optional(),
+      .min(50, 'El campo debe tener al menos 50 caracteres')
+      .max(5000, 'El campo no puede tener más de 5000 caracteres')
+      .optional()
+      .or(z.literal('')),
     active: z.boolean(),
     messageDisabled: z
       .string()
       .trim()
       .min(50, 'El campo debe tener al menos 50 caracteres')
-      .max(500, 'El campo no puede tener más de 500 caracteres')
+      .max(240, 'El campo no puede tener más de 240 caracteres')
       .optional()
       .or(z.literal(''))
   })
@@ -83,7 +85,8 @@ export function GeneralForm({
       email: data?.email || '',
       aditionalNote: data?.aditionalNote || '',
       active: data?.active == '1' ? true : false,
-      messageDisabled: data?.messageDisabled || ''
+      messageDisabled: data?.messageDisabled || '',
+      termsAndConditions: data?.termsAndConditions || ''
     },
     mode: 'onChange'
   });
@@ -153,7 +156,35 @@ export function GeneralForm({
                 <FormControl>
                   <Textarea
                     placeholder="Ej: Para confirmar tu reserva..."
-                    rows={4}
+                    rows={3}
+                    className="resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="termsAndConditions"
+            render={({ field }) => (
+              <FormItem>
+                <div className="space-y-0.5 pr-2">
+                  <FormLabel className="text-base">
+                    Términos y Condiciones de Reserva
+                  </FormLabel>
+                  <FormDescription>
+                    Los terminos y condiciones de la reserva, esta informacion
+                    se mostrará en la pagina de reservas.
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Textarea
+                    placeholder="Ej: Para confirmar tu reserva..."
+                    rows={6}
+                    className="resize-none"
                     {...field}
                   />
                 </FormControl>
@@ -200,7 +231,7 @@ export function GeneralForm({
                     </FormDescription>
                   </div>
                   <FormControl>
-                    <Textarea rows={3} {...field} />
+                    <Textarea rows={3} className="resize-none" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
