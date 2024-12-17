@@ -4,7 +4,7 @@ import { tokenClient } from '@/services/token';
 import { User } from '@/types/app.types';
 import { queryClient } from '.';
 import { authClient } from '@/services/auth';
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 
 interface AuthContextType {
   user: User | null;
@@ -46,13 +46,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     const checkLogin = async () => {
-      const token = tokenClient.getToken();
-      if (!token) {
-        setIsAuthenticated(false);
-        setUser(null);
-        setIsLoading(false);
-        return;
-      }
+      // const token = tokenClient.getToken();
+      // console.log('checkLogin', token);
+      // if (!token) {
+      //   setIsAuthenticated(false);
+      //   setUser(null);
+      //   setIsLoading(false);
+      //   return;
+      // }
 
       try {
         const response = await authClient.getUser();
@@ -86,7 +87,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // action available to logout
   const logoutAction = React.useCallback(async () => {
     setIsClosing(true);
-    await authClient.logout();
+    // await authClient.logout();
     tokenClient.removeToken();
     setUser(null);
     setIsAuthenticated(false);

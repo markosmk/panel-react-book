@@ -35,8 +35,8 @@ export function useLogin() {
   return useMutation({
     mutationFn: authClient.login,
     onSuccess: async () => {},
-    onError: (error) => {
-      console.log('Login failed', error);
+    onError: () => {
+      // console.log('Login failed', error);
       // toast('Login failed', { variant: 'error' });
     }
   });
