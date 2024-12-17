@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useSearchParams } from 'react-router-dom';
 import { useGetStudents } from '../queries/queries';
 import { useState } from 'react';

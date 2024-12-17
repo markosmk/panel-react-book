@@ -6,7 +6,6 @@ import { DropdownUser } from './dropdown-user';
 import { MobileSide } from './mobile-side';
 import { Sidenav } from './sidenav';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { ThemeColorToggle } from '../shared/theme-color-toggle';
 
 export default function PanelLayout({
   children

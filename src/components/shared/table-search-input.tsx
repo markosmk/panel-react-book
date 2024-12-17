@@ -29,6 +29,7 @@ export default function TableSearchInput({
       page: '1', // Spread the existing search params
       search: newSearchValue // Update the search value
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {

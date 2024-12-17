@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useRouter } from '@/routes/hooks';
-import { ChevronLeftIcon, ShareIcon } from 'lucide-react';
+import { ChevronLeftIcon } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import InterestChannel from './components/interest-channel';
 import StudentFeedTable from './components/student-feed-table';

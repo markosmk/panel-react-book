@@ -22,6 +22,7 @@ export type Config = {
   /** only 'cookie' or 'localStorage' for save auth, if use authInjectCookie, this is not necesary */
   authStorageMethod: 'cookie' | 'localStorage';
   // TODO: add properties
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   app: any;
 };
 

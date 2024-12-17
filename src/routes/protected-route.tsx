@@ -28,7 +28,6 @@ export function ProtectedRoute({ children }: React.PropsWithChildren) {
   //   const action = async () => await logoutAction();
   //   action();
   // }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [location]);
 
   if (isLoading || isClosing)

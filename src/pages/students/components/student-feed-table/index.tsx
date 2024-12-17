@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import DataTable from '@/components/shared/data-table';
 import { columns } from './columns';
 import StudentTableActions from './student-table-action';

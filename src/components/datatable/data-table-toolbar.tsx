@@ -1,8 +1,6 @@
 import { Table } from '@tanstack/react-table';
 
 import { Input } from '@/components/ui/input';
-import { Button } from '../ui/button';
-import { useModal } from '@/hooks/use-modal';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;

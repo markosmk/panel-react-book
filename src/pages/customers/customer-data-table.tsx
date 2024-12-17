@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import * as React from 'react';
 import {
   ColumnDef,
@@ -35,11 +34,6 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger
-} from '@/components/ui/tooltip';
 import {
   cn,
   formatDateFriendly,
