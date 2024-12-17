@@ -59,7 +59,7 @@ export function CardSchedule({
             hasta
           </p>
           <p className="font-mono text-xl font-bold">
-            {schedule.endTime.slice(0, 5)}
+            {schedule.endTime ? schedule.endTime?.slice(0, 5) : '--:--'}
           </p>
         </div>
       </div>

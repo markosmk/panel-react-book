@@ -3,14 +3,7 @@ import { toast } from 'sonner';
 
 import axiosApp from '@/lib/axios';
 import { ScheduleWithAvailable } from '@/types/tour.types';
-import {
-  convertToMinutes,
-  doesOverlap,
-  formatDuration,
-  formatTime,
-  sleep,
-  timeToDate
-} from '@/lib/utils';
+import { convertToMinutes, formatTime, sleep, timeToDate } from '@/lib/utils';
 
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -18,9 +11,10 @@ import { Button } from '@/components/ui/button';
 import { ButtonLoading } from '@/components/button-loading';
 import { TimePicker } from '@/components/ui/time-picker-input';
 import { Alert } from '@/components/ui/alert';
+import { Input } from '@/components/ui/input';
 
 export function EditSchedule({
-  schedules,
+  // schedules,
   schedule,
   closeModal,
   duration,
@@ -29,7 +23,7 @@ export function EditSchedule({
 }: {
   schedules: ScheduleWithAvailable[];
   schedule: ScheduleWithAvailable;
-  duration: number;
+  duration: number | string;
   capacity: number;
   closeModal: () => void;
   setToggleUpdate: React.Dispatch<React.SetStateAction<boolean>>;
@@ -37,12 +31,17 @@ export function EditSchedule({
   const [isPending, setIsPending] = React.useState(false);
   const [errors, setErrors] = React.useState<string | null>(null);
   const [formValues, setFormValues] = React.useState<{
+    duration: number;
     startTime: string;
     endTime: string;
     active: boolean;
   }>({
+    duration: schedule?.endTime
+      ? convertToMinutes(schedule.endTime) -
+        convertToMinutes(schedule.startTime)
+      : 30,
     startTime: schedule.startTime,
-    endTime: schedule.endTime,
+    endTime: schedule?.endTime || '',
     active: schedule.active === '1' ? true : false
   });
 
@@ -52,17 +51,17 @@ export function EditSchedule({
       const { startTime, endTime } = formValues;
 
       const startInMinutes = convertToMinutes(startTime);
-      const endInMinutes = convertToMinutes(endTime);
+      const endInMinutes = endTime ? convertToMinutes(endTime) : 0;
 
       if (startInMinutes > endInMinutes) {
         setErrors('El rango de tiempo debe estar dentro del mismo día.');
         return;
       }
 
-      if (doesOverlap(schedules, startInMinutes, endInMinutes, schedule.id)) {
-        setErrors('El rango definido se superpone con un periodo existente.');
-        return;
-      }
+      // if (doesOverlap(schedules, startInMinutes, endInMinutes, schedule.id)) {
+      //   setErrors('El rango definido se superpone con un periodo existente.');
+      //   return;
+      // }
 
       setIsPending(true);
       await sleep(1000);
@@ -86,7 +85,7 @@ export function EditSchedule({
 
   React.useEffect(() => {
     const startInMinutes = convertToMinutes(formValues.startTime);
-    const endInMinutes = startInMinutes + Number(duration);
+    const endInMinutes = startInMinutes + formValues.duration;
 
     const endHour = Math.floor(endInMinutes / 60) % 24; // only 0-23
     const endMinute = endInMinutes % 60;
@@ -96,7 +95,7 @@ export function EditSchedule({
     ).padStart(2, '0')}:00`;
 
     setFormValues((prev) => ({ ...prev, endTime: calculatedEndTime }));
-  }, [formValues.startTime, duration]);
+  }, [formValues.startTime, formValues.duration]);
 
   return (
     <div>
@@ -110,15 +109,31 @@ export function EditSchedule({
 
         <Alert variant="info">
           <p className="flex w-full gap-x-2 text-base font-medium leading-none">
-            Duracion del Tour:{' '}
-            <b className="font-bold text-white">
-              {formatDuration(Number(duration))}
-            </b>
-            <em className="text-xs text-muted-foreground">
-              ({formatDuration(Number(duration), true)})
-            </em>
+            Duracion configurado en el Tour en minutos:{' '}
+            <b className="font-bold text-white">{duration}</b>
           </p>
         </Alert>
+
+        <div className="grid gap-4 rounded-lg border p-4 md:grid-cols-2">
+          <div className="col-span-1">
+            <Label htmlFor="duration">Duracion</Label>
+            <p className="text-sm text-muted-foreground">
+              La duracion del tour en minutos, si colocas 0, puedes editar el
+              campo Hasta
+            </p>
+          </div>
+          <Input
+            id="duration"
+            type="number"
+            value={formValues.duration}
+            onChange={(e) =>
+              setFormValues({
+                ...formValues,
+                duration: Number(e.target.value)
+              })
+            }
+          />
+        </div>
 
         <div className="grid gap-4 rounded-lg border p-4 md:grid-cols-2">
           <div className="col-span-1">
@@ -153,7 +168,7 @@ export function EditSchedule({
                     setFormValues({ ...formValues, endTime: formatTime(field) })
                   }
                   date={timeToDate(formValues.endTime) || new Date()}
-                  disabled={true}
+                  disabled={formValues.duration !== 0}
                 />
               </div>
             </div>
@@ -179,12 +194,6 @@ export function EditSchedule({
           />
         </div>
 
-        <p className="text-sm text-muted-foreground">
-          Validamos el horario, se comprueba que el tiempo sea el definido en el
-          tour (para mostrar al cliente horarios acorde a la duracion definida
-          en el tour), ademas comprobaremos que no se solapen con otros
-          horarios.
-        </p>
         <p className="text-sm text-muted-foreground">
           No es habitual hacer cambios en un horario especifico, pero si lo
           deseas puedes hacerlo. Esta seccion esta pensada para que puedas

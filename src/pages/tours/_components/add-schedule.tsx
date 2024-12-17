@@ -6,7 +6,6 @@ import { ScheduleWithAvailable } from '@/types/tour.types';
 import {
   convertToMinutes,
   doesOverlap,
-  formatDuration,
   formatTime,
   sleep,
   timeToDate
@@ -17,7 +16,7 @@ import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { ButtonLoading } from '@/components/button-loading';
 import { TimePicker } from '@/components/ui/time-picker-input';
-import { Alert } from '@/components/ui/alert';
+import { Input } from '@/components/ui/input';
 
 type AddScheduleProps = {
   tourId: string;
@@ -32,12 +31,13 @@ export function AddSchedule({
   tourId,
   schedules,
   closeModal,
-  duration,
+  // duration,
   date,
   setToggleUpdate
 }: AddScheduleProps) {
   const [isPending, setIsPending] = React.useState(false);
   const [errors, setErrors] = React.useState<string | null>(null);
+  const [duration, setDuration] = React.useState<number>(0);
   const [formValues, setFormValues] = React.useState<{
     startTime: string;
     endTime: string;
@@ -190,7 +190,7 @@ export function AddSchedule({
   return (
     <div>
       <div className="col-span-2 flex flex-col gap-y-2">
-        <Alert variant="info">
+        {/* <Alert variant="info">
           <p className="flex w-full gap-x-2 text-base font-medium leading-none">
             Duracion del Tour:{' '}
             <b className="font-bold text-white">
@@ -200,7 +200,18 @@ export function AddSchedule({
               ({formatDuration(Number(duration), true)})
             </em>
           </p>
-        </Alert>
+        </Alert> */}
+        <div className="flex max-w-[100px] flex-col space-y-2">
+          <Label>Duracion</Label>
+          <Input
+            type="number"
+            name="duration"
+            value={duration}
+            onChange={(e) => {
+              setDuration(Number(e.target.value));
+            }}
+          />
+        </div>
 
         <div className="grid gap-4 rounded-lg border p-4 md:grid-cols-2">
           <div className="col-span-1">

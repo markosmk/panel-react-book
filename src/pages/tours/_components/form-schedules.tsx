@@ -10,8 +10,9 @@ import { Calendar } from '@/components/ui/calendar';
 import { PendingContent } from '@/components/pending-content';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CardSchedule } from './card-schedule';
-import { AddSchedule } from './add-schedule';
+// import { AddSchedule } from './add-schedule';
 import { EditSchedule } from './edit-schedule';
+import { AddPeriodSchedule } from './add-period-schedule';
 
 export function FormSchedules({ tour }: { tour: Tour }) {
   const { openModal, closeModal } = useModal();
@@ -105,7 +106,15 @@ export function FormSchedules({ tour }: { tour: Tour }) {
                 openModal({
                   title: 'Agregar Horario/s',
                   component: (
-                    <AddSchedule
+                    // <AddSchedule
+                    //   tourId={tour.id}
+                    //   duration={Number(tour.duration)}
+                    //   schedules={schedulesDay}
+                    //   closeModal={closeModal}
+                    //   date={day.toISOString().split('T')[0]}
+                    //   setToggleUpdate={setToggleUpdate}
+                    // />
+                    <AddPeriodSchedule
                       tourId={tour.id}
                       duration={Number(tour.duration)}
                       schedules={schedulesDay}
@@ -117,7 +126,7 @@ export function FormSchedules({ tour }: { tour: Tour }) {
                 })
               }
             >
-              Agregar Horario/s
+              Agregar Horarios
             </Button>
           )}
         </div>
