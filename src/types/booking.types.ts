@@ -56,6 +56,7 @@ export interface BookingDetail {
   quantity: string;
   status: Status;
   tourData: TourSaved | null;
+  aditionalData: AditionalSaved[] | null;
   customer: {
     name: string;
     email: string;
@@ -68,6 +69,12 @@ export interface BookingDetail {
 
 export type TourSaved = Omit<Tour, 'id' | 'created_at' | 'updated_at'> & {
   last_updated: string;
+};
+
+export type AditionalSaved = {
+  id: number | string;
+  name: string;
+  price: number;
 };
 
 // to create booking

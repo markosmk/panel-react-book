@@ -41,7 +41,7 @@ export interface Schedule {
   tourId: string;
   date: string;
   startTime: string;
-  endTime: string;
+  endTime?: string | null;
   active: string;
   created_at: string;
   updated_at: string;
