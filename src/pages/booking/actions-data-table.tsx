@@ -118,6 +118,44 @@ function DetailBooking({ detail }: { detail: BookingDetail }) {
 
       <div className="mt-2">
         <h4 className="text-xs uppercase text-muted-foreground">
+          Información del Adicional Agregado
+        </h4>
+
+        <Card className="mt-3 overflow-hidden">
+          <ul className="flex flex-col">
+            {!detail.aditionalData ? (
+              <p className="px-4 py-3 text-sm text-muted-foreground">
+                No hay Adicionales agregados
+              </p>
+            ) : (
+              detail.aditionalData?.map((additional) => (
+                <li
+                  key={additional.id}
+                  className="inline-flex flex-wrap items-center gap-x-2 border-b px-4 py-3 text-sm first:mt-0 last:border-b-0"
+                >
+                  <div className="grid w-full grid-cols-3 gap-2">
+                    <div className="col-span-2 space-y-1">
+                      <p className="text-xs text-muted-foreground">Nombre:</p>
+                      <p className="font-semibold">{additional.name}</p>
+                    </div>
+                    <div className="col-span-1 space-y-1">
+                      <p className="text-xs text-muted-foreground">
+                        Precio Individual:
+                      </p>
+                      <p className="font-semibold">
+                        {formatPrice(Number(additional.price))}
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              ))
+            )}
+          </ul>
+        </Card>
+      </div>
+
+      <div className="mt-2">
+        <h4 className="text-xs uppercase text-muted-foreground">
           Información del Tour Reservado
         </h4>
 
@@ -130,7 +168,9 @@ function DetailBooking({ detail }: { detail: BookingDetail }) {
                   <p className="font-semibold">{detail.tourData?.name}</p>
                 </div>
                 <div className="col-span-1 space-y-1">
-                  <p className="text-xs text-muted-foreground">Precio:</p>
+                  <p className="text-xs text-muted-foreground">
+                    Precio Individual:
+                  </p>
                   <p className="font-semibold">
                     {formatPrice(Number(detail.tourData?.price))}
                   </p>
