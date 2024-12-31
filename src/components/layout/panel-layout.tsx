@@ -29,7 +29,7 @@ export default function PanelLayout({
             <div className="relative w-full px-4">
               <Link
                 to="/"
-                className="flex items-center justify-start text-xl dark:text-white"
+                className="flex items-center justify-start rounded-md text-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-8 focus-visible:ring-offset-gray-main dark:text-white"
               >
                 <img
                   src="/assets/logo-app.png"
