@@ -29,12 +29,16 @@ export type BookingTable = {
   quantity: string;
   status: Status;
   totalPrice: string;
+  notes: string;
   created_at: string;
+  // para Booking
   customer_name: string;
   customer_email: string;
   customer_phone: string;
   tour_name: string | null;
   tour_price: string | null;
+  schedule_date: string | null;
+  schedule_startTime: string | null;
 };
 
 export interface BookingList {
