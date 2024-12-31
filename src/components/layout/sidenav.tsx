@@ -8,13 +8,8 @@ export function Sidenav() {
       <div className="block">
         <ul>
           {adminNavigation.map(({ icon: Icon, ...item }) => (
-            <li>
-              <NavLink
-                key={item.name}
-                to={item.href}
-                icon={Icon}
-                disabled={item.disabled}
-              >
+            <li key={item.name}>
+              <NavLink to={item.href} icon={Icon} disabled={item.disabled}>
                 {item.name}
               </NavLink>
             </li>
