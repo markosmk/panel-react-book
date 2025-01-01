@@ -46,17 +46,31 @@ export function DropdownUser() {
           >
             <Icons.settings className="mr-3 h-5 w-5" /> Configuración
           </DropdownMenuItem>
-          {supportOptions.map(({ icon: Icon, name, href }, idx) => (
-            <DropdownMenuItem
-              key={name + idx}
-              className="cursor-pointer"
-              disabled
-              onClick={() => navigate(href)}
-            >
-              {Icon && <Icon className="mr-3 h-5 w-5" />}
-              <div className="text-sm">{name}</div>
-            </DropdownMenuItem>
-          ))}
+          {supportOptions.map(
+            ({ icon: Icon, name, href, disabled = false }, idx) => (
+              <DropdownMenuItem
+                key={name + idx}
+                className="flex w-full cursor-pointer gap-x-3"
+                disabled={disabled}
+                onClick={() => {
+                  if (
+                    href.startsWith('mailto:') ||
+                    href.startsWith('tel:') ||
+                    href.startsWith('http')
+                  ) {
+                    window.open(href, '_blank');
+                  } else {
+                    navigate(href);
+                  }
+                }}
+                aria-label={`Ir a ${name}`}
+                title={`Ir a ${name}`}
+              >
+                {Icon && <Icon className="h-5 w-5" />}
+                <div className="flex-1 truncate text-sm">{name}</div>
+              </DropdownMenuItem>
+            )
+          )}
 
           <DropdownMenuSeparator />
           <DropdownMenuItem

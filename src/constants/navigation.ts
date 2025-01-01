@@ -16,7 +16,12 @@ export const supportOptions: NavigationItem[] = [
     href: 'mailto:' + CONFIG.app.supportEmail,
     icon: Icons.mail
   },
-  { name: 'Leer Documentacion', href: '#', icon: Icons.book }
+  {
+    name: 'Soporte por Whatsapp',
+    href: 'https://wa.me/' + CONFIG.app.supportPhone,
+    icon: Icons.whatsapp
+  },
+  { name: 'Leer Documentacion', href: '#', icon: Icons.book, disabled: true }
 ];
 
 export const adminNavigation: NavigationItem[] = [

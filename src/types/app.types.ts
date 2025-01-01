@@ -21,9 +21,11 @@ export type Config = {
   tokenKey: string;
   /** only 'cookie' or 'localStorage' for save auth, if use authInjectCookie, this is not necesary */
   authStorageMethod: 'cookie' | 'localStorage';
-  // TODO: add properties
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  app: any;
+  app: {
+    platformVersion: string;
+    supportEmail: string;
+    supportPhone: string;
+  };
 };
 
 export interface User {
