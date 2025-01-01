@@ -31,11 +31,12 @@ type ThemeProviderProps = {
 };
 const getSavedThemeColor = () => {
   try {
-    return (localStorage.getItem('themeColor') as ThemeColors) || 'Zinc';
+    return (localStorage.getItem('themeColor') as ThemeColors) || 'Green';
   } catch (error) {
-    'Zinc' as ThemeColors;
+    'Green' as ThemeColors;
   }
 };
+
 // Use Provider
 export function ThemeProvider({
   children,
