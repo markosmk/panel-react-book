@@ -19,6 +19,11 @@ export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export function formatDateString(dateString: string) {
+  const dateParts = dateString.split('-');
+  return `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+}
+
 export function formatDateOnly(
   date: string | Date,
   formatStr = "EEEE dd 'de' MMMM, yyyy HH:mm"
@@ -42,6 +47,15 @@ export function formatTime(date: Date | undefined): string {
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');
   return `${hours}:${minutes}:${seconds}`;
+}
+
+export function formatTimeTo24Hour(time: string): string {
+  const timeRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+  if (!timeRegex.test(time)) {
+    return '--:--';
+  }
+  const [hours, minutes] = time.split(':').map(Number);
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}hs`;
 }
 
 export const formatDuration = (
