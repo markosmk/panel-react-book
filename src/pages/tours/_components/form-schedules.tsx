@@ -47,7 +47,7 @@ export function FormSchedules({ tour }: { tour: Tour }) {
           schedules={schedulesDay}
           schedule={schedule}
           closeModal={closeModal}
-          duration={Number(tour.duration)}
+          duration={tour.duration}
           capacity={Number(tour.capacity)}
           setToggleUpdate={setToggleUpdate}
         />
@@ -108,7 +108,7 @@ export function FormSchedules({ tour }: { tour: Tour }) {
                   component: (
                     // <AddSchedule
                     //   tourId={tour.id}
-                    //   duration={Number(tour.duration)}
+                    //   duration={tour.duration}
                     //   schedules={schedulesDay}
                     //   closeModal={closeModal}
                     //   date={day.toISOString().split('T')[0]}
@@ -116,7 +116,6 @@ export function FormSchedules({ tour }: { tour: Tour }) {
                     // />
                     <AddPeriodSchedule
                       tourId={tour.id}
-                      duration={Number(tour.duration)}
                       schedules={schedulesDay}
                       closeModal={closeModal}
                       date={day.toISOString().split('T')[0]}

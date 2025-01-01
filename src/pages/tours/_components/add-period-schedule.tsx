@@ -90,7 +90,6 @@ type AddScheduleProps = {
   tourId: string;
   schedules: ScheduleWithAvailable[];
   closeModal: () => void;
-  duration: number;
   date: string | undefined;
   setToggleUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -211,7 +210,7 @@ export function AddPeriodSchedule({
                             size="icon"
                             onClick={() => remove(index)}
                           >
-                            <Icons.trash className="h-4 w-4" />
+                            <Icons.remove className="h-4 w-4" />
                           </Button>
                         </div>
                       </FormControl>
