@@ -101,7 +101,11 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({
         if (!newController.signal.aborted) {
           setModalConfig((prev) => ({
             ...prev,
-            content: <p>Error al cargar los datos.</p>
+            content: (
+              <p className="text-center text-muted-foreground/70">
+                Error al cargar los datos.
+              </p>
+            )
           }));
         }
       } finally {
