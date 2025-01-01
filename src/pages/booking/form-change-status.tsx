@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 
 type FormChangeStatusProps = {
   booking: BookingTable;
@@ -31,12 +32,13 @@ export function FormChangeStatus({
 }: FormChangeStatusProps) {
   const initialValues = React.useMemo(
     () => ({
-      status: booking.status || 'PENDING',
+      status: booking.status || Status.PENDING,
       totalPrice: parseFloat(booking.totalPrice) || 0
     }),
     [booking]
   );
   const [formValues, setFormValues] = React.useState(initialValues);
+  const [sendMail, setSendMail] = React.useState(true);
   const { mutateAsync, isPending } = useStatusBooking();
 
   React.useEffect(() => {
@@ -44,6 +46,7 @@ export function FormChangeStatus({
       status: initialValues.status,
       totalPrice: initialValues.totalPrice
     });
+    setSendMail(true);
   }, [initialValues]);
 
   // const hasUnsavedChanges = React.useMemo(() => {
@@ -75,7 +78,8 @@ export function FormChangeStatus({
       {
         id: booking.id,
         status: formValues.status,
-        totalPrice: totalPriceUpdated
+        totalPrice: totalPriceUpdated,
+        sendMail: formValues.status === Status.CONFIRMED ? sendMail : false
       },
       {
         onSuccess: () => {
@@ -89,6 +93,7 @@ export function FormChangeStatus({
   };
 
   const handleCancel = () => {
+    toast.dismiss();
     resetForm();
     setIsOpen(false);
   };
@@ -180,12 +185,26 @@ export function FormChangeStatus({
             </p>
           </div>
         </div>
-        {/* <p className="text-xs text-muted-foreground">
-        Nota: Cualquier cambio aqui no afectará al precio del tour
-        original que el cliente efectuo al momento de realizar la reserva
-        , {formatPrice(Number(booking?.tour_price) || 0)}.
-      </p> */}
+
+        {formValues.status === Status.CONFIRMED && (
+          <div className="grid grid-cols-3 items-start gap-4">
+            <Label htmlFor="sendMail" className="">
+              Enviar email al cliente?
+            </Label>
+            <div className="col-span-2 flex flex-col gap-y-2">
+              <Switch
+                id="sendMail"
+                checked={sendMail}
+                onCheckedChange={setSendMail}
+              />
+              <p className="block text-xs text-muted-foreground">
+                Le notificaremos al cliente sobre el cambio.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
+
       <div className="mt-4 flex items-center justify-end space-x-2">
         <Button
           type="button"

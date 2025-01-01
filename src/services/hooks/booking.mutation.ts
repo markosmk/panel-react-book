@@ -9,14 +9,15 @@ type StatusProps = {
   id: string | number;
   status: Status;
   totalPrice?: string | number;
+  sendMail?: boolean;
 };
 
 export function useStatusBooking() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, status, totalPrice }: StatusProps) => {
+    mutationFn: async ({ id, status, totalPrice, sendMail }: StatusProps) => {
       await sleep(500);
-      return updateStatusBooking(id, { status, totalPrice });
+      return updateStatusBooking(id, { status, totalPrice, sendMail });
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });

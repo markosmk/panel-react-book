@@ -19,8 +19,16 @@ export const getBookingById = async (
 
 export const updateStatusBooking = async (
   id: string | number,
-  { status, totalPrice }: { status: Status; totalPrice?: string | number }
-) => await axios.put('/bookings/' + id + '/status', { status, totalPrice });
+  {
+    status,
+    totalPrice,
+    sendMail = false
+  }: { status: Status; totalPrice?: string | number; sendMail?: boolean }
+) =>
+  await axios.put(
+    '/bookings/' + id + '/status' + (sendMail ? '?sendMail=true' : ''),
+    { status, totalPrice }
+  );
 
 export const createBooking = async (data: BookingCreateRequest) =>
   await axios.post('/bookings', { ...data });
