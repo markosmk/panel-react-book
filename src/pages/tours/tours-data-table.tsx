@@ -11,16 +11,15 @@ import {
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table';
-import { ArrowUpDownIcon, ChevronDown, MoreHorizontalIcon } from 'lucide-react';
+import { ArrowUpDownIcon, ChevronDown } from 'lucide-react';
 
 import { Icons } from '@/components/icons';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
@@ -40,9 +39,7 @@ import {
   isTodayOrRecent
 } from '@/lib/utils';
 import { Tour } from '@/types/tour.types';
-import { Link } from 'react-router-dom';
-import { FastEditingPopover } from './fast-editing-popover';
-import { TooltipHelper } from '@/components/tooltip-helper';
+import { ActionsDataTable } from './actions-data-table';
 
 const columns: ColumnDef<Tour>[] = [
   {
@@ -199,82 +196,7 @@ const columns: ColumnDef<Tour>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const tour = row.original;
-      return (
-        <>
-          <div className="hidden justify-end gap-x-1 sm:flex">
-            <TooltipHelper content="Editar Tour">
-              <Link
-                to={`/tours/${tour.id}`}
-                title="Ver Tour"
-                className={buttonVariants({
-                  variant: 'outline',
-                  size: 'icon'
-                })}
-              >
-                <Icons.edit className="size-5" />
-              </Link>
-            </TooltipHelper>
-
-            <FastEditingPopover data={tour} />
-
-            <TooltipHelper content="Gestionar Horarios">
-              <Link
-                to={`/tours/${tour.id}/schedules`}
-                title="ver Horarios"
-                className={buttonVariants({
-                  variant: 'outline',
-                  size: 'icon'
-                })}
-              >
-                <Icons.calendar className="size-5" />
-              </Link>
-            </TooltipHelper>
-
-            <TooltipHelper content="Eliminar Tour">
-              <Button
-                variant="outline"
-                size="icon"
-                disabled
-                title="Eliminar"
-                onClick={() => {}}
-              >
-                <Icons.remove className="size-5" />
-              </Button>
-            </TooltipHelper>
-          </div>
-          <div className="inline-flex sm:hidden">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontalIcon />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-
-                <DropdownMenuItem asChild>
-                  <Link to={`/tours/${tour.id}`}>
-                    <Icons.edit className="mr-2 h-4 w-4" />
-                    Editar Tour
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to={`/tours/${tour.id}/schedules`}>
-                    <Icons.calendar className="mr-2 h-4 w-4" />
-                    Gestionar Horarios
-                  </Link>
-                </DropdownMenuItem>
-                {/* TODO: add delete with confirm modal */}
-                <DropdownMenuItem onClick={() => {}}>
-                  <Icons.remove className="mr-2 h-4 w-4" />
-                  Eliminar
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </>
-      );
+      return <ActionsDataTable data={tour} />;
     }
   }
 ];
@@ -345,7 +267,7 @@ export function ToursDataTable({ data }: { data: Tour[] }) {
         <Input
           placeholder="Buscar por nombre o descripcion del tour..."
           value={globalFilter}
-          disabled={table.getFilteredSelectedRowModel().rows.length === 0}
+          disabled={table.getFilteredSelectedRowModel().rows.length > 0}
           onChange={(e) => setGlobalFilter(e.target.value)}
           className="w-full sm:max-w-sm"
         />

@@ -7,6 +7,7 @@ import { sleep } from '@/lib/utils';
 
 import {
   createTour,
+  deleteTour,
   updateFastTour,
   updateTour
 } from '@/services/tour.service';
@@ -31,7 +32,7 @@ export function useEditingTour() {
       duration,
       active
     }: StatusProps) => {
-      await sleep(1000);
+      await sleep(500);
       return updateFastTour(id, { price, capacity, duration, active });
     },
     onSuccess: async (data, variables) => {
@@ -73,7 +74,7 @@ export function useCreateEditTour() {
       id: string | number | null;
       data: TourRequest | TourRequestCreate;
     }) => {
-      await sleep(1000);
+      await sleep(500);
       if (id !== null) {
         return updateTour(id, data);
       }
@@ -128,6 +129,35 @@ export function useCreateEditTour() {
           );
         }
       }
+    }
+  });
+}
+
+export function useDeleteTour() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      id,
+      force
+    }: {
+      id: string | number;
+      force?: boolean;
+    }) => {
+      await sleep(500);
+      return await deleteTour(id, force);
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ['tours'] });
+    },
+    onError: (error: AxiosError<{ messages: { error?: string } }>) => {
+      let message = 'Error al eliminar el tour';
+      if (error instanceof AxiosError) {
+        const data = error.response?.data;
+        if (data?.messages?.error) {
+          message = data?.messages?.error;
+        }
+      }
+      toast.error(message);
     }
   });
 }

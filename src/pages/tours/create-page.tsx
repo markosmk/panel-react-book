@@ -7,7 +7,7 @@ export default function TourCreatePage() {
     <div className="mx-auto w-full max-w-2xl space-y-8 px-6">
       <HeadingMain
         title="Nuevo Tour"
-        description="Desde aqui puedes crear un nuevo tour, puedes ademas indicar los horarios para crearlos."
+        description="Desde aqui puedes crear un nuevo tour, una ves creado puedes definir los horarios desde la lista de tours."
       ></HeadingMain>
 
       <Card>
