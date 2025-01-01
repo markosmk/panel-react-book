@@ -41,7 +41,7 @@ const formSchema = z
       .string()
       .trim()
       .min(50, 'El campo debe tener al menos 50 caracteres')
-      .max(5000, 'El campo no puede tener más de 5000 caracteres')
+      .max(10000, 'El campo no puede tener más de 10000 caracteres')
       .optional()
       .or(z.literal('')),
     active: z.boolean(),

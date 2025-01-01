@@ -71,7 +71,6 @@ export function SecuritySection() {
 
   const handleSubmit = async (data: FormValues) => {
     if (!data || !user) return;
-    console.log({ userId: user.id, data });
     await mutateAsync({ userId: user.id, data });
   };
 
@@ -90,7 +89,6 @@ export function SecuritySection() {
     );
   }
 
-  console.log({ user });
   return (
     <div className="flex flex-col gap-y-4">
       <Card>

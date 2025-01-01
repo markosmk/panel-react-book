@@ -37,7 +37,6 @@ const useUpdateSettings = () => {
       // queryClient.invalidateQueries({ queryKey: ['settings'] });
       // this method not call api again, best performance
       queryClient.setQueryData(['settings'], (oldData: SettingsApp) => {
-        console.log({ oldData });
         if (!oldData) return null;
         return {
           ...oldData,
