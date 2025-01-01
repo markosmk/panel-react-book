@@ -1,8 +1,21 @@
+import * as React from 'react';
+import { MoreHorizontalIcon } from 'lucide-react';
+
+import { useModal } from '@/hooks/use-modal';
+import { useDeleteBooking } from '@/services/hooks/booking.mutation';
+import {
+  formatDateOnly,
+  formatDateString,
+  formatDuration,
+  formatPrice,
+  formatTimeTo24Hour
+} from '@/lib/utils';
+import { BookingDetail, BookingTable } from '@/types/booking.types';
+import { getBookingById } from '@/services/booking.service';
+
 import { Icons } from '@/components/icons';
 import { TooltipHelper } from '@/components/tooltip-helper';
-import { Button, buttonVariants } from '@/components/ui/button';
-import { useModal } from '@/hooks/use-modal';
-import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import { FastEditingPopover } from './fast-editing-popover';
 import {
   DropdownMenu,
@@ -12,14 +25,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { cn, formatDateOnly, formatDuration, formatPrice } from '@/lib/utils';
-import { MoreHorizontalIcon } from 'lucide-react';
-import { BookingDetail, BookingTable } from '@/types/booking.types';
-import { getBookingById } from '@/services/booking.service';
 import { BadgeStatus } from '@/components/badge-status';
 import { Alert } from '@/components/ui/alert';
 import { Card } from '@/components/ui/card';
-import * as React from 'react';
+import { createNotification } from '@/components/notifications';
+import { DialogConfirm } from '@/components/dialog-confirm';
+import { FormChangeStatus } from './form-change-status';
 
 function DetailBooking({ detail }: { detail: BookingDetail }) {
   const [isExpanded, setIsExpanded] = React.useState(false);
@@ -238,7 +249,10 @@ function DetailBooking({ detail }: { detail: BookingDetail }) {
 }
 
 export function ActionsDataTable({ data: booking }: { data: BookingTable }) {
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
+  const { mutateAsync, isPending } = useDeleteBooking();
+
+  const [openDialog, setOpenDialog] = React.useState(false);
 
   const handleOpenDetails = () => {
     openModal({
@@ -251,42 +265,67 @@ export function ActionsDataTable({ data: booking }: { data: BookingTable }) {
     });
   };
 
+  const handleOpenEdit = () => {
+    const dateFormated = booking.schedule_date
+      ? formatDateString(booking.schedule_date)
+      : '';
+    const timeFormated = booking.schedule_startTime
+      ? formatTimeTo24Hour(booking.schedule_startTime)
+      : '';
+    openModal({
+      title: 'Editar Estado de Reserva',
+      description:
+        'Tour: ' +
+        booking.tour_name +
+        ' - Cliente: ' +
+        booking.customer_name +
+        ' - Fecha/Horario: ' +
+        dateFormated +
+        ' / ' +
+        timeFormated,
+      component: (
+        <FormChangeStatus
+          booking={booking}
+          setIsOpen={closeModal}
+          setHasUnsavedChanges={() => {}}
+        />
+      )
+    });
+  };
+
+  const handleDelete = async () => {
+    await mutateAsync(booking.id, {
+      onSuccess: (data) => {
+        const message = data?.data?.message;
+        createNotification({
+          type: 'success',
+          text: message || 'Reserva eliminada correctamente.'
+        });
+        setTimeout(() => {
+          setOpenDialog(false);
+        }, 100);
+      }
+    });
+  };
+
   return (
     <>
       <div className="hidden justify-end gap-x-1 sm:flex">
         <TooltipHelper content="Vista Rápida">
-          {/* <Link
-            to={`/bookings/${booking.id}`}
-            className={buttonVariants({
-              variant: 'outline',
-              size: 'icon'
-            })}
-          > */}
           <Button variant="outline" size="icon" onClick={handleOpenDetails}>
             <Icons.look className="size-5" />
           </Button>
-          {/* </Link> */}
-        </TooltipHelper>
-        <TooltipHelper content="Editar Reserva">
-          <Link
-            to={`/bookings/${booking.id}`}
-            title="Editar Reserva"
-            className={cn(
-              buttonVariants({
-                variant: 'outline',
-                size: 'icon'
-              }),
-              'pointer-events-none opacity-50'
-            )}
-          >
-            <Icons.edit className="size-5" />
-          </Link>
         </TooltipHelper>
 
         <FastEditingPopover booking={booking} />
 
         <TooltipHelper content="Eliminar">
-          <Button variant="outline" size="icon" disabled>
+          <Button
+            variant="outline"
+            size="icon"
+            title="Eliminar"
+            onClick={() => setOpenDialog(true)}
+          >
             <Icons.remove className="size-5" />
           </Button>
         </TooltipHelper>
@@ -302,29 +341,30 @@ export function ActionsDataTable({ data: booking }: { data: BookingTable }) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link to={`/bookings/${booking.id}`}>
-                <Icons.look className="mr-2 size-4" />
-                Vista Rápida
-              </Link>
+            <DropdownMenuItem onClick={handleOpenDetails}>
+              <Icons.look className="mr-2 size-4" />
+              Vista Rápida
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to={`/bookings/${booking.id}`}>
-                <Icons.edit className="mr-2 size-4" />
-                Editar Reserva
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => {}}>
+            <DropdownMenuItem onClick={handleOpenEdit}>
               <Icons.transform className="mr-2 size-4" />
               Cambiar Estado
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => {}}>
+            <DropdownMenuItem onClick={() => setOpenDialog(true)}>
               <Icons.remove className="mr-2 size-4" />
               Eliminar
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <DialogConfirm
+        title={`¿Seguro que quieres Eliminar la Reserva de: ${booking.customer_name}?`}
+        description='Esta acción no se puede deshacer. Se eliminara la reserva y los datos del cliente. Ten en cuenta que esto puede implicar cambios en las estadisticas. Haz click en "Si, Continuar" para eliminar la reserva.'
+        onConfirm={handleDelete}
+        isOpen={openDialog}
+        onOpenChange={setOpenDialog}
+        isProcessing={isPending}
+      />
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateStatusBooking } from '../booking.service';
+import { deleteBooking, updateStatusBooking } from '../booking.service';
 import { Status } from '@/types/booking.types';
 import { sleep } from '@/lib/utils';
 import { AxiosError } from 'axios';
@@ -15,7 +15,7 @@ export function useStatusBooking() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, status, totalPrice }: StatusProps) => {
-      await sleep(1000);
+      await sleep(500);
       return updateStatusBooking(id, { status, totalPrice });
     },
     onSuccess: async () => {
@@ -30,6 +30,29 @@ export function useStatusBooking() {
           );
         }
       }
+    }
+  });
+}
+
+export function useDeleteBooking() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string | number) => {
+      await sleep(500);
+      return await deleteBooking(id);
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+    },
+    onError: (error: AxiosError<{ messages: { error?: string } }>) => {
+      let message = 'Error al eliminar la reserva';
+      if (error instanceof AxiosError) {
+        const data = error.response?.data;
+        if (data?.messages?.error) {
+          message = data?.messages?.error;
+        }
+      }
+      toast.error(message);
     }
   });
 }

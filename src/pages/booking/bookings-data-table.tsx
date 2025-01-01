@@ -35,6 +35,7 @@ import {
   cn,
   formatDateFriendly,
   formatDateOnly,
+  formatDateString,
   formatPrice,
   isTodayOrRecent
 } from '@/lib/utils';
@@ -98,7 +99,10 @@ const columns: ColumnDef<BookingTable>[] = [
         <div className="hidden min-w-44 flex-col gap-x-2 md:flex">
           {row.getValue('tour_name')}
           <span className="text-xs text-muted-foreground">
-            Precio ind.: {row.original.tour_price ?? 'N/A'}
+            Precio Total:{' '}
+            {formatPrice(Number(row.original.totalPrice)) ?? 'N/A'} (
+            {row.original.quantity ?? '1'}{' '}
+            {`${Number(row.original.quantity) > 1 ? 'personas' : 'persona'}`})
           </span>
         </div>
       );
@@ -106,7 +110,7 @@ const columns: ColumnDef<BookingTable>[] = [
   },
 
   {
-    accessorKey: 'totalPrice',
+    accessorKey: 'schedule_date',
     header: ({ column }) => (
       <div className="hidden items-center gap-x-2 md:flex">
         <Button
@@ -116,7 +120,7 @@ const columns: ColumnDef<BookingTable>[] = [
           className="h-6 py-0 pl-0 hover:bg-transparent focus:bg-transparent active:bg-transparent"
         >
           <div className="truncate text-xs font-semibold uppercase">
-            Precio Total
+            Fecha Reserva
           </div>
           <ArrowUpDownIcon className="ml-2 h-3.5 w-3.5" />
         </Button>
@@ -127,11 +131,10 @@ const columns: ColumnDef<BookingTable>[] = [
       return (
         <div className="hidden flex-col gap-x-2 md:flex">
           <span className="font-medium italic">
-            {formatPrice(row.getValue('totalPrice'))}
+            {formatDateString(row.getValue('schedule_date'))}
           </span>
           <span className="text-xs text-muted-foreground">
-            {row.original.quantity ?? '1'}{' '}
-            {`${Number(row.original.quantity) > 1 ? 'personas' : 'persona'}`}
+            {row.original.schedule_startTime?.slice(0, 5)}hs
           </span>
         </div>
       );
@@ -204,7 +207,9 @@ const columnsToCheck: (keyof BookingTable)[] = [
   'customer_email',
   'customer_phone',
   'tour_name',
-  'totalPrice'
+  'totalPrice',
+  'schedule_date',
+  'schedule_startTime'
 ];
 
 export function BookingsDataTable({ data }: { data: BookingTable[] }) {
@@ -271,7 +276,7 @@ export function BookingsDataTable({ data }: { data: BookingTable[] }) {
         <Input
           placeholder="Buscar por nombre, email, telefono, tour..."
           value={globalFilter}
-          disabled={table.getFilteredSelectedRowModel().rows.length === 0}
+          disabled={table.getFilteredSelectedRowModel().rows.length > 0}
           onChange={(e) => setGlobalFilter(e.target.value)}
           className="w-full sm:max-w-sm"
         />
