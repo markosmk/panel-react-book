@@ -1,16 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-// import typography from '@tailwindcss/typography';
 import animate from 'tailwindcss-animate';
-// import plugin from 'tailwindcss/plugin';
-
 export default {
   darkMode: ['class'],
-  content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}'
-  ],
+  content: ['./src/**/*.{ts,tsx}'],
   prefix: '',
   theme: {
     container: {
@@ -45,6 +37,7 @@ export default {
         //   950: '#032b20',
         //   DEFAULT: '#14b57c'
         // },
+
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))'
