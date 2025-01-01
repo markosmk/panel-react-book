@@ -24,6 +24,7 @@ type Props = {
   onConfirm: () => void;
   isProcessing?: boolean;
   textConfirm?: string;
+  actions?: () => JSX.Element;
 };
 
 export function DialogConfirm({
@@ -34,7 +35,8 @@ export function DialogConfirm({
   isProcessing = false,
   isOpen,
   onOpenChange,
-  textConfirm = 'Si, Continuar'
+  textConfirm = 'Si, Continuar',
+  actions
 }: Props) {
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -48,6 +50,7 @@ export function DialogConfirm({
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
+          {actions && <div className="rounded-md border p-4">{actions()}</div>}
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel
