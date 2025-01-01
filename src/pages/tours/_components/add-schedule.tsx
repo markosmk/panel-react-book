@@ -147,7 +147,7 @@ export function AddSchedule({
       }
 
       setIsPending(true);
-      await sleep(1000);
+      await sleep(500);
 
       await axiosApp.post('/schedules/' + tourId, {
         date,

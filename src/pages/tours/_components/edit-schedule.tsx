@@ -64,7 +64,7 @@ export function EditSchedule({
       // }
 
       setIsPending(true);
-      await sleep(1000);
+      await sleep(500);
 
       await axiosApp.put(`/schedules/${schedule.id}`, {
         startTime: formValues.startTime,
