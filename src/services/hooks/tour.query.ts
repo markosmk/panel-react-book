@@ -21,7 +21,7 @@ export function useTourDetail(id: string | number) {
   return useQuery({
     queryKey: ['tourDetail', id],
     queryFn: async () => {
-      await sleep(1000);
+      await sleep(500);
       const response = await getTourById(id);
       if (response.status !== 200) {
         throw new Error('Invalid data');

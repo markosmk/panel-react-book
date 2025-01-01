@@ -22,7 +22,7 @@ export const authClient = {
   },
   logout: async () => {
     try {
-      await sleep(2000);
+      await sleep(500);
       await fetch(CONFIG.apiUrl + '/logout', {
         method: 'POST',
         credentials: 'include'
@@ -34,10 +34,9 @@ export const authClient = {
   },
   getUser: async () => {
     try {
-      await sleep(2000);
+      await sleep(500);
       const response = await fetch(CONFIG.apiUrl + '/me', {
         method: 'GET',
-        // mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json'
           // Authorization: `Bearer ${token}`

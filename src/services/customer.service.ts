@@ -6,8 +6,10 @@ export const getCustomers = async (page?: number, perPage?: number) =>
     params: { page, perPage }
   });
 
-export const getCustomerById = async (id: string | number) =>
-  await axios.get<CustomerDetail>('/customers/' + id);
+export const getCustomerById = async (
+  id: string | number,
+  signal?: AbortSignal
+) => await axios.get<CustomerDetail>('/customers/' + id, { signal });
 
 export const deleteCustomer = async (id: string | number) =>
   await axios.delete('/customers/' + id);
