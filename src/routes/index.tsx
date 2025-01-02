@@ -4,6 +4,7 @@ import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 import { ProtectedRoute } from './protected-route';
 import { PublicRoute } from './public-route';
 import { BookingPage } from '@/pages/booking';
+import { SAdminRoute } from './sadmin-route';
 
 const SignInPage = lazy(() => import('@/pages/auth/signin'));
 const PanelLayout = lazy(() => import('@/components/layout/panel-layout'));
@@ -14,6 +15,7 @@ const SettingsPage = lazy(() => import('@/pages/settings'));
 const TourDetailPage = lazy(() => import('@/pages/tours/detail-page'));
 const TourCreatePage = lazy(() => import('@/pages/tours/create-page'));
 const TourSchedulesPage = lazy(() => import('@/pages/tours/schedules-page'));
+const UsersPage = lazy(() => import('@/pages/users'));
 
 export default function AppRouter() {
   const panelRoutes = [
@@ -60,6 +62,14 @@ export default function AppRouter() {
         {
           path: 'settings',
           element: <SettingsPage />
+        },
+        {
+          path: 'users',
+          element: (
+            <SAdminRoute>
+              <UsersPage />
+            </SAdminRoute>
+          )
         }
       ]
     }
