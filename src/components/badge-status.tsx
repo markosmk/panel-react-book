@@ -18,6 +18,7 @@ type StatusVariant = Record<
     icon: IconSVG;
     text: string;
     className?: string;
+    bgColor?: string;
   }
 >;
 
@@ -26,25 +27,29 @@ export const statusVariant: StatusVariant = {
     variant: 'success',
     icon: Icons.success,
     text: 'Confirmado',
-    className: 'text-green-600'
+    className: 'text-green-600',
+    bgColor: 'bg-gradient-to-b from-emerald-800 to-green-500'
   },
   PENDING: {
     variant: 'warning',
     icon: Icons.pending,
     text: 'Pendiente',
-    className: 'text-yellow-600'
+    className: 'text-yellow-600',
+    bgColor: 'bg-gradient-to-b from-amber-700 to-yellow-500'
   },
   CANCELED: {
     variant: 'wrong',
     icon: Icons.warning,
     text: 'Cancelado',
-    className: 'text-red-600'
+    className: 'text-red-600',
+    bgColor: 'bg-gradient-to-b from-rose-800 to-red-500'
   },
   Default: {
     variant: 'default',
     icon: Icons.help,
     text: 'N/A',
-    className: 'text-gray-600'
+    className: 'text-gray-600',
+    bgColor: 'bg-gradient-to-b from-gray-800 to-gray-500'
   }
 };
 
