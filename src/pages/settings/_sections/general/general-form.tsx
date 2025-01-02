@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { SettingsApp } from '@/types/app.types';
+import { CardForm, CardFormFooter } from '@/components/card-footer-action';
 
 const formSchema = z
   .object({
@@ -95,8 +96,8 @@ export function GeneralForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
+        <CardForm isPending={isPending}>
           <FormField
             control={form.control}
             name="phoneWhatsapp"
@@ -238,10 +239,12 @@ export function GeneralForm({
               )}
             />
           )}
-        </div>
-        <ButtonLoading type="submit" isWorking={isPending}>
-          Guardar Cambios
-        </ButtonLoading>
+        </CardForm>
+        <CardFormFooter>
+          <ButtonLoading type="submit" isWorking={isPending}>
+            Guardar Cambios
+          </ButtonLoading>
+        </CardFormFooter>
       </form>
     </Form>
   );

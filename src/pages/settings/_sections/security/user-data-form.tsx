@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { InputPassword } from '@/components/ui/input-password';
+import { CardForm, CardFormFooter } from '@/components/card-footer-action';
 
 const formSchema = z
   .object({
@@ -114,7 +115,7 @@ export function UserDataForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmitHandler)} className="space-y-8">
-        <div className="space-y-4">
+        <CardForm isPending={isPending}>
           <FormField
             control={form.control}
             name="name"
@@ -246,11 +247,13 @@ export function UserDataForm({
               </FormItem>
             )}
           />
-        </div>
+        </CardForm>
 
-        <ButtonLoading type="submit" isWorking={isPending}>
-          Guardar Cambios
-        </ButtonLoading>
+        <CardFormFooter>
+          <ButtonLoading type="submit" isWorking={isPending}>
+            Guardar Cambios
+          </ButtonLoading>
+        </CardFormFooter>
       </form>
     </Form>
   );

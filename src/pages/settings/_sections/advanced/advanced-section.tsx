@@ -78,15 +78,14 @@ export function AdvancedSection() {
       <CardContent>
         <div className="space-y-6">
           <div>
-            <p className="text-xl font-semibold">Tamaño Cache de Datos</p>
+            <p className="text-xl font-semibold">Cache de Datos</p>
             <p className="mb-2 mt-1 text-muted-foreground">
-              El Cache es usado para almacenar datos que demandan recursos para
-              su uso, el uso del cache en la app, es principalmente para la
-              pagina de inicio (estadisticas) y para limitar las solicitudes a
-              la api (se establecio un margen de 60 solicitudes/minuto)
+              Almacenar datos en caché mejora la velocidad de la aplicación. Si
+              experimentas errores o datos desactualizados, considera limpiar la
+              caché para una mejor experiencia.
             </p>
             <p className="mb-2 mt-1 text-base font-bold">
-              Informacion cache actual:
+              Información cache actual:
             </p>
             <ul className="rounded-md border border-primary/50 p-4">
               <li className="text-muted-foreground">
@@ -108,10 +107,9 @@ export function AdvancedSection() {
           <div>
             <p className="text-xl font-semibold">Limpiar Cache</p>
             <p className="mb-2 mt-1 text-muted-foreground">
-              A veces se requiere limpiar el cache de la app, para esto solo
-              presionas el boton de limpiar cache. Puedes realizar esto cuando
-              veas que los datos de la cache sean demasiados. Esta accion no
-              modifica los datos almacenados en la base de datos.
+              El proceso de limpieza de caché es rápido y no afectará tus datos.
+              Simplemente presiona el botón para asegurarte de que estás
+              trabajando con la información más actual.
             </p>
             <ButtonLoading
               type="button"
