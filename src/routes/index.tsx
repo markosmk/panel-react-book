@@ -12,7 +12,7 @@ const DashboardPage = lazy(() => import('@/pages/dashboard'));
 const ToursPage = lazy(() => import('@/pages/tours'));
 const CustomersPage = lazy(() => import('@/pages/customers'));
 const SettingsPage = lazy(() => import('@/pages/settings'));
-const TourDetailPage = lazy(() => import('@/pages/tours/detail-page'));
+const TourEditPage = lazy(() => import('@/pages/tours/edit-page'));
 const TourCreatePage = lazy(() => import('@/pages/tours/create-page'));
 const TourSchedulesPage = lazy(() => import('@/pages/tours/schedules-page'));
 const UsersPage = lazy(() => import('@/pages/users'));
@@ -49,7 +49,7 @@ export default function AppRouter() {
         },
         {
           path: 'tours/:tourId',
-          element: <TourDetailPage />
+          element: <TourEditPage />
         },
         {
           path: 'tours/:tourId/schedules',

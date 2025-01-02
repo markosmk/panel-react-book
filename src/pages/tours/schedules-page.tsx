@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 
 import { useTourDetail } from '@/services/hooks/tour.query';
-import { cn, formatDateOnly, formatDuration } from '@/lib/utils';
+import { cn, formatDateOnly } from '@/lib/utils';
 
 import { HeadingMain } from '@/components/heading-main';
 import { PendingContent } from '@/components/pending-content';
@@ -24,10 +24,10 @@ export default function TourSchedulesPage() {
   if (!tourDetail) return <>No hay tour</>;
 
   return (
-    <div className="mx-auto w-full max-w-2xl space-y-8 px-6">
+    <div className="mx-auto w-full max-w-2xl space-y-8 px-4 pb-4 md:px-6 md:pb-6">
       <HeadingMain
         title="Gestion de Horarios"
-        description={`Duracion: ${formatDuration(tourDetail.tour.duration)} | Capacidad: para ${tourDetail.tour.capacity} personas`}
+        description={`Duracion: ${tourDetail.tour.duration} | Capacidad: para ${tourDetail.tour.capacity} personas`}
       />
 
       <Card className={cn(isFetching && 'cursor-wait')}>
