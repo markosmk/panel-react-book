@@ -49,7 +49,9 @@ export function DialogConfirm({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+          <AlertDialogDescription className="whitespace-pre-line">
+            {description}
+          </AlertDialogDescription>
           {actions && <div className="rounded-md border p-4">{actions()}</div>}
         </AlertDialogHeader>
         <AlertDialogFooter>
