@@ -11,7 +11,7 @@ import {
   PopoverTrigger
 } from '@/components/ui/popover';
 import { es } from 'date-fns/locale';
-import { Icons } from '../icons';
+import { Icons } from '@/components/icons';
 
 export function DatePickerWithRange({
   className,
@@ -20,14 +20,14 @@ export function DatePickerWithRange({
 }: React.HTMLAttributes<HTMLDivElement> & { field: any }) {
   return (
     <div className={cn('inline-flex w-full gap-2', className)}>
-      <Popover>
+      <Popover modal>
         <PopoverTrigger asChild>
           <Button
             id="date"
             type="button"
             variant={'outline'}
             className={cn(
-              'flex w-full flex-1 justify-between text-left font-normal',
+              'flex w-full flex-1 justify-start text-left font-normal data-[state=open]:bg-muted',
               !field.value && 'text-muted-foreground'
             )}
           >
@@ -91,7 +91,8 @@ export function DatePickerWithRange({
 
       <Button
         type="button"
-        variant={'outline'}
+        variant="outline"
+        disabled={!field.value}
         onClick={() => field.onChange(undefined)}
       >
         <Icons.remove className="size-4" />

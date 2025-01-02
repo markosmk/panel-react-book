@@ -53,7 +53,7 @@ const SelectTagInput = React.forwardRef<HTMLInputElement, SelectTagInputProps>(
           )}
         >
           {value.map((val) => (
-            <Badge key={val} variant="default">
+            <Badge key={val} variant="tags">
               {getLabelByValue(val)}
               <Button
                 type="button"

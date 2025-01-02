@@ -60,7 +60,7 @@ const DialogHeader = ({
   <div
     className={cn(
       'flex flex-col space-y-1.5 text-center sm:text-left',
-      'border-b p-6 pb-4',
+      'border-b p-4 pb-4 md:p-6',
       className
     )}
     {...props}
@@ -88,7 +88,7 @@ const DialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn('text-lg font-semibold leading-none', className)}
+    className={cn('pr-5 text-lg font-semibold leading-none', className)}
     {...props}
   />
 ));
@@ -111,7 +111,13 @@ const DialogBody = ({
   children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn('flex-1 overflow-y-auto px-6 py-6', className)} {...props}>
+  <div
+    className={cn(
+      'flex-1 overflow-y-auto px-4 py-4 md:px-6 md:py-6',
+      className
+    )}
+    {...props}
+  >
     {children}
   </div>
 );
