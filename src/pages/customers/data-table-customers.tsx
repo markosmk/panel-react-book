@@ -11,23 +11,11 @@ import {
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table';
-import { ArrowUpDownIcon, ChevronDown } from 'lucide-react';
-
-import { saveAs } from 'file-saver';
-import { utils, write } from 'xlsx';
+import { ArrowUpDownIcon } from 'lucide-react';
 
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  // DropdownMenuLabel,
-  // DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -42,10 +30,10 @@ import {
   formatDateOnly,
   isTodayOrRecent
 } from '@/lib/utils';
+
 import { CustomerTable } from '@/types/customer.types';
-// import { Link } from 'react-router-dom';
-// import { TooltipHelper } from '@/components/tooltip-helper';
-import { ActionsDataTable } from './actions-data-table';
+import { DataTableActions } from './data-table-actions';
+import { DataTableToolbar } from './data-table-toolbar';
 
 const columns: ColumnDef<CustomerTable>[] = [
   {
@@ -123,13 +111,13 @@ const columns: ColumnDef<CustomerTable>[] = [
   {
     id: 'actions',
     enableHiding: false,
-    cell: ({ row }) => <ActionsDataTable data={row.original} />
+    cell: ({ row }) => <DataTableActions data={row.original} />
   }
 ];
 
 const columnsToCheck: (keyof CustomerTable)[] = ['name', 'email', 'phone'];
 
-export function CustomerDataTable({ data }: { data: CustomerTable[] }) {
+export function DataTableCustomers({ data }: { data: CustomerTable[] }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -187,84 +175,14 @@ export function CustomerDataTable({ data }: { data: CustomerTable[] }) {
     }
   });
 
-  const formatedData = (data: CustomerTable[]) => {
-    return [...data].map((item) => ({
-      Creado: item.created_at,
-      Nombre: item.name,
-      'Nro Telefono': item.phone,
-      Email: item.email,
-      'Desea Noticias?': item.wantNewsletter === '1' ? 'Si' : 'No'
-    }));
-  };
-
-  const exportToExcel = () => {
-    const selectedRows = table.getSelectedRowModel()?.flatRows;
-    const selectedData = selectedRows.map(
-      (row) => row.original
-    ) as CustomerTable[];
-
-    const dataFormated = formatedData(selectedData);
-
-    // TODO: try Add Dynamically import
-    // Ex:
-    // import('xlsx').then(({ utils, write }) => {
-    //   // const fetchData = debounce(() => {
-    //   //   // Fetch or process data
-    //   // }, 300);
-    //   // fetchData();
-
-    const worksheet = utils.json_to_sheet(dataFormated);
-    const workbook = utils.book_new();
-    utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-    const excelBuffer = write(workbook, {
-      bookType: 'xlsx',
-      type: 'array'
-    });
-    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-    saveAs(blob, `clientes-zw-${Date.now()}.xlsx`);
-  };
-
   return (
     <div className="w-full">
-      <div className="flex items-center gap-x-2 py-4">
-        <Input
-          placeholder="Buscar por nombre, email o teléfono..."
-          value={globalFilter}
-          disabled={table.getFilteredSelectedRowModel().rows.length > 0}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="w-full sm:max-w-lg"
-        />
-        <div
-          className={cn(
-            'ml-auto hidden',
-            table.getFilteredSelectedRowModel().rows.length > 0 && 'flex'
-          )}
-        >
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto truncate">
-                <div className="flex truncate">
-                  <span className="mr-2 hidden sm:flex">Seleccionados</span>
-                  {table.getFilteredSelectedRowModel().rows.length > 0 &&
-                    '(' + table.getFilteredSelectedRowModel().rows.length + ')'}
-                </div>
-                <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-40">
-              <DropdownMenuItem onClick={exportToExcel}>
-                <Icons.archive className="mr-2 h-4 w-4" />
-                {/* <FileDownIcon className="h-4 w-4" /> */}
-                Exportar a Excel
-              </DropdownMenuItem>
-              {/* <DropdownMenuItem onClick={() => {}} disabled>
-                <Icons.remove className="mr-2 h-4 w-4" />
-                Eliminar
-              </DropdownMenuItem> */}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
+      <DataTableToolbar
+        table={table}
+        setGlobalFilter={setGlobalFilter}
+        globalFilter={globalFilter}
+      />
+
       <div className="overflow-hidden rounded-lg bg-card text-card-foreground">
         <Table>
           <TableHeader>

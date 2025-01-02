@@ -1,7 +1,15 @@
-import { Icons } from '@/components/icons';
-import { TooltipHelper } from '@/components/tooltip-helper';
-import { Button } from '@/components/ui/button';
+import { MoreHorizontalIcon } from 'lucide-react';
+import { toast } from 'sonner';
+
+import { formatDateOnly, formatPrice } from '@/lib/utils';
+import { CustomerDetail, CustomerTable } from '@/types/customer.types';
 import { useModal } from '@/hooks/use-modal';
+import { useMediaQuery } from '@/hooks/use-media-query';
+import { getCustomerById } from '@/services/customer.service';
+
+import { TooltipHelper } from '@/components/tooltip-helper';
+import { Icons } from '@/components/icons';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,13 +18,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { formatDateOnly, formatPrice } from '@/lib/utils';
-import { MoreHorizontalIcon } from 'lucide-react';
-import { BadgeStatus } from '@/components/badge-status';
 import { Card } from '@/components/ui/card';
-import { CustomerDetail, CustomerTable } from '@/types/customer.types';
-import { toast } from 'sonner';
-import { getCustomerById } from '@/services/customer.service';
+import { BadgeStatus } from '@/components/badge-status';
 
 function ItemInfo({ label, value }: { label: string; value: string }) {
   return (
@@ -161,14 +164,6 @@ function DetailModal({ detail }: { detail: CustomerDetail }) {
                     />
                     <ItemInfo label="Notes" value={booking.notes} />
                   </div>
-
-                  {/*
-              {/* {row.observation && (
-                        <div className="mt-4 flex w-full flex-row">
-                          <Icons.info className="mr-1 h-4 w-4 text-muted-foreground/70" />
-                          <div className="flex-1 text-xs text-muted-foreground/70">{row.observation}</div>
-                        </div>
-                      )} */}
                 </li>
               </ul>
             </Card>
@@ -179,7 +174,8 @@ function DetailModal({ detail }: { detail: CustomerDetail }) {
   );
 }
 
-export function ActionsDataTable({ data }: { data: CustomerTable }) {
+export function DataTableActions({ data }: { data: CustomerTable }) {
+  const isMobile = useMediaQuery('(max-width: 640px)');
   const { openModal } = useModal();
 
   const handleOpenDetails = () => {
@@ -197,17 +193,6 @@ export function ActionsDataTable({ data }: { data: CustomerTable }) {
     <>
       <div className="hidden justify-end gap-x-1 sm:flex">
         <TooltipHelper content="Ver Cliente">
-          {/* <Link
-                to={`/customers/${customer.id}`}
-                title="Ver Cliente"
-                className={buttonVariants({
-                  variant: 'outline',
-                  size: 'icon'
-                })}
-              >
-                <Icons.look className="h-4 w-4" />
-              </Link> */}
-
           <Button variant="outline" size="icon" onClick={handleOpenDetails}>
             <Icons.look className="size-5" />
           </Button>
@@ -226,36 +211,42 @@ export function ActionsDataTable({ data }: { data: CustomerTable }) {
           </Button>
         </TooltipHelper>
       </div>
-      <div className="inline-flex sm:hidden">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontalIcon />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => {
-                toast.success('Numero copiado al portapapeles');
-                navigator.clipboard.writeText(data.phone.toString());
-              }}
-            >
-              <Icons.copy className="mr-2 h-4 w-4" /> Copiar Nro. Teléfono
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem disabled>
-              <DropdownMenuContent>
-                {/* <Link to={`/customers/${customer.id}`}> */}
-                <Icons.look className="mr-2 h-4 w-4" />
+
+      {isMobile && (
+        <div className="inline-flex sm:hidden">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0 data-[state=open]:bg-background"
+              >
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontalIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleOpenDetails}>
+                <Icons.look className="mr-2 size-4" />
                 Ver Cliente
-                {/* </Link> */}
-              </DropdownMenuContent>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  toast.success('Numero copiado al portapapeles');
+                  navigator.clipboard.writeText(data.phone.toString());
+                }}
+              >
+                <Icons.copy className="mr-2 h-4 w-4" /> Copiar Nro. Teléfono
+              </DropdownMenuItem>
+              {/* <DropdownMenuItem onClick={() => setOpenDialog(true)}>
+                      <Icons.remove className="mr-2 size-4" />
+                      Eliminar
+                    </DropdownMenuItem> */}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
     </>
   );
 }

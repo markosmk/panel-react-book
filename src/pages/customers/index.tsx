@@ -1,8 +1,10 @@
 import { useSearchParams } from 'react-router-dom';
-import { CustomerDataTable } from './customer-data-table';
+
 import { useCustomers } from '@/services/hooks/customer.query';
-import { PendingContent } from '@/components/pending-content';
+
 import { HeadingMain } from '@/components/heading-main';
+import { PendingContent } from '@/components/pending-content';
+import { DataTableCustomers } from './data-table-customers';
 
 export default function CustomersPage() {
   const [searchParams] = useSearchParams();
@@ -21,7 +23,7 @@ export default function CustomersPage() {
         title="Lista de Clientes"
         description="Administra tus clientes desde esta seccion, puedes agregar, editar y eliminar clientes."
       />
-      <CustomerDataTable data={data?.results || []} />
+      <DataTableCustomers data={data?.results || []} />
     </div>
   );
 }
