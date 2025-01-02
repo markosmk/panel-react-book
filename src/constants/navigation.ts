@@ -8,6 +8,7 @@ export type NavigationItem = {
   href: string;
   icon: IconSVG;
   disabled?: boolean;
+  role?: string[];
 };
 
 export const supportOptions: NavigationItem[] = [
@@ -44,6 +45,12 @@ export const adminNavigation: NavigationItem[] = [
     name: 'Clientes',
     href: '/customers',
     icon: Icons.customers
+  },
+  {
+    name: 'Usuarios',
+    href: '/users',
+    icon: Icons.users,
+    role: ['SUPERADMIN']
   },
   {
     name: 'Configuración',
