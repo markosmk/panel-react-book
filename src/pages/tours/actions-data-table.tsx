@@ -127,7 +127,7 @@ export function ActionsDataTable({ data: tour }: { data: Tour }) {
 
       <DialogConfirm
         title={`¿Seguro que quieres Eliminar el Tour: ${tour.name}?`}
-        description='Esta acción no se puede deshacer. Se eliminara el tour de forma permanente. Si el tour tiene horarios asociados, estos se perderan. Ten en cuenta que esto puede implicar cambios en las estadisticas. Haz click en "Si, Continuar" para eliminar el tour.'
+        description={`Esta acción no se puede deshacer. Se eliminara el tour de forma permanente. Si el tour tiene horarios asociados, estos se perderan.\nTen en cuenta que esto puede implicar cambios en las estadisticas.\nHaz click en "Si, Continuar" para eliminar el tour.`}
         onConfirm={handleDelete}
         isOpen={openDialog}
         onOpenChange={setOpenDialog}

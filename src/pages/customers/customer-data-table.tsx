@@ -232,7 +232,7 @@ export function CustomerDataTable({ data }: { data: CustomerTable[] }) {
           value={globalFilter}
           disabled={table.getFilteredSelectedRowModel().rows.length > 0}
           onChange={(e) => setGlobalFilter(e.target.value)}
-          className="w-full sm:max-w-sm"
+          className="w-full sm:max-w-lg"
         />
         <div
           className={cn(

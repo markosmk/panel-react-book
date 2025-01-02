@@ -102,7 +102,7 @@ const columns: ColumnDef<Tour>[] = [
   {
     accessorKey: 'price',
     header: ({ column }) => (
-      <div className="hidden items-center gap-x-2 sm:flex">
+      <div className="hidden items-center gap-x-2 md:flex">
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
@@ -269,7 +269,7 @@ export function ToursDataTable({ data }: { data: Tour[] }) {
           value={globalFilter}
           disabled={table.getFilteredSelectedRowModel().rows.length > 0}
           onChange={(e) => setGlobalFilter(e.target.value)}
-          className="w-full sm:max-w-sm"
+          className="w-full sm:max-w-lg"
         />
         <div
           className={cn(
