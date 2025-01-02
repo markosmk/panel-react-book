@@ -28,6 +28,7 @@ export function formatDateOnly(
   date: string | Date,
   formatStr = "EEEE dd 'de' MMMM, yyyy HH:mm"
 ) {
+  if (!date || formatStr === '') return '--';
   // if date is a string, add Z to make it as UTC
   const dateToFormat = typeof date === 'string' ? new Date(`${date}Z`) : date;
   return format(dateToFormat, formatStr, { locale: es });
