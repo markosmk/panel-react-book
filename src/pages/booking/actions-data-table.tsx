@@ -4,6 +4,7 @@ import { MoreHorizontalIcon } from 'lucide-react';
 import { useModal } from '@/hooks/use-modal';
 import { useDeleteBooking } from '@/services/hooks/booking.mutation';
 import {
+  cn,
   formatDateOnly,
   formatDateString,
   formatDuration,
@@ -31,19 +32,15 @@ import { Card } from '@/components/ui/card';
 import { createNotification } from '@/components/notifications';
 import { DialogConfirm } from '@/components/dialog-confirm';
 import { FormChangeStatus } from './form-change-status';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 function DetailBooking({ detail }: { detail: BookingDetail }) {
   const [isExpanded, setIsExpanded] = React.useState(false);
-
-  const toggleExpand = () => {
-    setIsExpanded((prev) => !prev);
-  };
-
-  // Limitar la altura del contenido
-  const contentStyle = isExpanded
-    ? 'max-h-full' // Si está expandido, mostrar todo
-    : 'max-h-32 overflow-hidden'; // Si no, limitar a 32px
-
+  const isLargeContent = React.useMemo(
+    () =>
+      detail.tourData?.content.length && detail.tourData?.content.length > 500,
+    [detail.tourData]
+  );
   return (
     <div className="relative flex flex-col gap-2">
       <div className="absolute left-0 right-0 top-2 z-10 flex items-center justify-center gap-2">
@@ -203,24 +200,30 @@ function DetailBooking({ detail }: { detail: BookingDetail }) {
                   <p className="text-xs text-muted-foreground">
                     Descripción Tour:
                   </p>
-                  <div className={`relative ${contentStyle} w-full`}>
+                  <div
+                    className={cn(
+                      `relative w-full`,
+                      isExpanded ? 'max-h-full' : 'max-h-32 overflow-hidden'
+                    )}
+                  >
                     <p className="whitespace-pre-line font-normal">
                       {detail.tourData?.content}
                     </p>
-                    {!isExpanded && (
+                    {isLargeContent && !isExpanded && (
                       <div className="absolute bottom-0 left-0 right-0 h-52 w-full bg-gradient-to-t from-background" />
                     )}
                   </div>
-                  <div className="w-full text-center">
-                    <Button
-                      size={'sm'}
-                      variant={'outline'}
-                      onClick={toggleExpand}
-                      className=""
-                    >
-                      {isExpanded ? 'Ver menos' : 'Ver más'}
-                    </Button>
-                  </div>
+                  {isLargeContent && (
+                    <div className="w-full text-center">
+                      <Button
+                        size={'sm'}
+                        variant={'outline'}
+                        onClick={() => setIsExpanded((prev) => !prev)}
+                      >
+                        {isExpanded ? 'Ver menos' : 'Ver más'}
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="col-span-2 space-y-1">
@@ -249,6 +252,7 @@ function DetailBooking({ detail }: { detail: BookingDetail }) {
 }
 
 export function ActionsDataTable({ data: booking }: { data: BookingTable }) {
+  const isMobile = useMediaQuery('(max-width: 640px)');
   const { openModal, closeModal } = useModal();
   const { mutateAsync, isPending } = useDeleteBooking();
 
@@ -330,36 +334,39 @@ export function ActionsDataTable({ data: booking }: { data: BookingTable }) {
           </Button>
         </TooltipHelper>
       </div>
-      <div className="inline-flex sm:hidden">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontalIcon />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleOpenDetails}>
-              <Icons.look className="mr-2 size-4" />
-              Vista Rápida
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleOpenEdit}>
-              <Icons.transform className="mr-2 size-4" />
-              Cambiar Estado
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setOpenDialog(true)}>
-              <Icons.remove className="mr-2 size-4" />
-              Eliminar
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+
+      {isMobile && (
+        <div className="inline-flex sm:hidden">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontalIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleOpenDetails}>
+                <Icons.look className="mr-2 size-4" />
+                Vista Rápida
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleOpenEdit}>
+                <Icons.transform className="mr-2 size-4" />
+                Cambiar Estado
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setOpenDialog(true)}>
+                <Icons.remove className="mr-2 size-4" />
+                Eliminar
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
 
       <DialogConfirm
         title={`¿Seguro que quieres Eliminar la Reserva de: ${booking.customer_name}?`}
-        description='Esta acción no se puede deshacer. Se eliminara la reserva y los datos del cliente. Ten en cuenta que esto puede implicar cambios en las estadisticas. Haz click en "Si, Continuar" para eliminar la reserva.'
+        description={`Esta acción no se puede deshacer. Se eliminara la reserva y los datos del cliente.\nTen en cuenta que esto puede implicar cambios en las estadisticas.\nHaz click en "Si, Continuar" para eliminar la reserva.`}
         onConfirm={handleDelete}
         isOpen={openDialog}
         onOpenChange={setOpenDialog}
