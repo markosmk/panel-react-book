@@ -3,6 +3,7 @@ import { HeadingMain } from '@/components/heading-main';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { GeneralSection } from './_sections/general/general-section';
 import { SecuritySection } from './_sections/security/security-section';
+import { AdvancedSection } from './_sections/advanced/advanced-section';
 
 export default function SettingsPage() {
   return (
@@ -12,6 +13,7 @@ export default function SettingsPage() {
         <TabsList>
           <TabsTrigger value="gral">General</TabsTrigger>
           <TabsTrigger value="security">Seguridad</TabsTrigger>
+          <TabsTrigger value="advanced">Avanzado</TabsTrigger>
         </TabsList>
 
         <TabsContent value="gral" className="py-4">
@@ -23,6 +25,12 @@ export default function SettingsPage() {
         <TabsContent value="security" className="py-4">
           <AnimatedContent>
             <SecuritySection />
+          </AnimatedContent>
+        </TabsContent>
+
+        <TabsContent value="advanced" className="py-4">
+          <AnimatedContent>
+            <AdvancedSection />
           </AnimatedContent>
         </TabsContent>
       </Tabs>
