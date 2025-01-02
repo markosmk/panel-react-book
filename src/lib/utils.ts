@@ -59,21 +59,6 @@ export function formatTimeTo24Hour(time: string): string {
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}hs`;
 }
 
-export const formatDuration = (
-  minutes: number | string | null,
-  withDetails = false
-) => {
-  if (!minutes) return 'N/A';
-  if (typeof minutes === 'string') minutes = parseInt(minutes, 10);
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  const hoursInWords = `${hours} ${hours === 1 ? 'hora' : 'horas'}`;
-  const minutesInWords = `${mins} ${mins === 1 ? 'minuto' : 'minutos'}`;
-
-  const time = `${hours}:${mins.toString().padStart(2, '0')}hs`;
-  return withDetails ? `${hoursInWords} y ${minutesInWords}` : time;
-};
-
 export function formatPrice(price: number) {
   return new Intl.NumberFormat('es-AR', {
     style: 'currency',
