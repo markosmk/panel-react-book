@@ -9,6 +9,7 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { InputPassword } from '@/components/ui/input-password';
 import { useAuth } from '@/providers/auth-provider';
 import { useLogin } from '@/routes/hooks/use-auth';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -29,13 +30,14 @@ type UserFormValue = UserFormData & {
   };
 };
 
+const defaultValues = {
+  email: '',
+  password: ''
+};
+
 export default function UserAuthForm() {
   const { loginAction } = useAuth();
   const { mutateAsync, isPending } = useLogin();
-  const defaultValues = {
-    email: '',
-    password: ''
-  };
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
     defaultValues
@@ -93,7 +95,7 @@ export default function UserAuthForm() {
               <FormItem>
                 <FormLabel>Contraseña</FormLabel>
                 <FormControl>
-                  <Input
+                  <InputPassword
                     type="password"
                     placeholder="******"
                     disabled={isPending}
@@ -114,7 +116,7 @@ export default function UserAuthForm() {
               variant="destructive"
               className="my-2 text-[0.8rem] font-medium"
             >
-              <>{form.formState.errors.emailOrPassword?.message}</>
+              {form.formState.errors.emailOrPassword?.message?.toString() ?? ''}
             </Alert>
           )}
 
