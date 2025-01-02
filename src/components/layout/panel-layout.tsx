@@ -22,8 +22,8 @@ export default function PanelLayout({
 
   return (
     <div className="bg-black-main fixed inset-0 flex min-h-full md:block">
-      <div className="flex-basis flex min-h-full w-full grow justify-center md:h-full md:p-4">
-        <aside className="z-3 fixed bottom-0 left-0 hidden h-[calc(100%-74px)] w-full shrink-0 flex-col overflow-hidden bg-gray-main md:relative md:bottom-auto md:left-auto md:flex md:h-[calc(100vh-32px)] md:w-60 md:rounded-sm">
+      <div className="flex-basis flex min-h-full w-full grow justify-center md:h-full">
+        <aside className="z-3 fixed bottom-0 left-4 top-4 hidden h-[calc(100%-74px)] w-full shrink-0 overflow-hidden bg-gray-main md:relative md:bottom-auto md:left-auto md:flex md:h-[calc(100vh-32px)] md:w-60 md:flex-col md:rounded-sm">
           {/* Header side */}
           <div className="relative mb-2 mt-6 flex items-center justify-between px-4">
             <div className="relative w-full px-4">
@@ -40,6 +40,8 @@ export default function PanelLayout({
               </Link>
             </div>
           </div>
+
+          {/* Sidenav */}
           <Sidenav />
 
           {/* <div className="p-4">
@@ -51,17 +53,21 @@ export default function PanelLayout({
           </div>
         </aside>
         {/* main content */}
-        {/* TODO: ajust sm:-mr-4, in top level */}
-        <div className="relative h-auto w-full grow md:-mr-4 md:ml-4 md:max-w-[calc(100%-240px)]">
+        <div className="relative h-auto w-full grow md:ml-4 md:max-w-[calc(100%-240px)]">
           <main className="scroller flex h-full grow translate-x-0 flex-col overflow-y-auto overflow-x-hidden">
             {/* Burger sidebar */}
-            <button
-              className="p-4 text-gray-500 focus-visible:outline-none md:hidden"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <span className="sr-only">Open sidebar</span>
-              <MenuIcon className="h-6 w-6" aria-hidden="true" />
-            </button>
+            <div className="relative bg-black p-4 md:hidden">
+              <button
+                className="inline-flex rounded-md bg-card p-2.5 text-foreground/70 focus-visible:outline-none md:hidden"
+                onClick={() => setSidebarOpen(true)}
+              >
+                <span className="sr-only">Open sidebar</span>
+                <MenuIcon className="h-6 w-6" aria-hidden="true" />
+              </button>
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-semibold">
+                Zorzal App
+              </div>
+            </div>
 
             {children}
           </main>
