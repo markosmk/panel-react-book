@@ -98,7 +98,10 @@ export function ActionsDataTable({ data: tour }: { data: Tour }) {
       <div className="inline-flex sm:hidden">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button
+              variant="ghost"
+              className="h-8 w-8 p-0 data-[state=open]:bg-background"
+            >
               <span className="sr-only">Open menu</span>
               <MoreHorizontalIcon />
             </Button>

@@ -163,13 +163,13 @@ export function AddPeriodSchedule({
             isPending ? 'pointer-events-none select-none opacity-50' : ''
           )}
         >
-          <div className="flex">
+          <div className="block">
             <FormField
               control={form.control}
               name="dateRange"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Periodo de Disponibilidad</FormLabel>
+                <FormItem>
+                  <FormLabel required>Periodo de Disponibilidad</FormLabel>
                   <FormControl>
                     <DatePickerWithRange field={field} />
                   </FormControl>
@@ -183,34 +183,37 @@ export function AddPeriodSchedule({
           </div>
 
           <div className="mt-4">
-            <FormLabel>Horarios por Dia</FormLabel>
+            <FormLabel required>Horarios por Dia</FormLabel>
             <FormDescription>
               Agrega los horarios de inicio de cada reserva
             </FormDescription>
-            <div className={cn('mb-4 mt-2 grid grid-cols-3 gap-2')}>
+            <div
+              className={cn('mb-4 mt-2 grid grid-cols-2 gap-2 md:grid-cols-3')}
+            >
               {fields.map((field, index) => (
                 <FormField
                   control={form.control}
                   key={field.id}
                   name={`list.${index}.value`}
                   render={({ field }) => (
-                    <FormItem className="col-span-1 space-y-0">
+                    <FormItem className="space-y-0">
                       <FormLabel className={'sr-only'}>
                         Periodos por Dia
                       </FormLabel>
                       <FormDescription className={'sr-only'}>
-                        Agrega lel horario de inicio de cada reserva
+                        Agrega el horario de inicio de cada reserva
                       </FormDescription>
                       <FormControl>
-                        <div className="flex gap-x-2">
+                        <div className="flex flex-row gap-x-2">
                           <Input placeholder="ej: 10" {...field} />
                           <Button
                             variant="destructive"
                             type="button"
                             size="icon"
+                            className="h-12 w-12 min-w-12"
                             onClick={() => remove(index)}
                           >
-                            <Icons.remove className="h-4 w-4" />
+                            <Icons.remove className="h-5 w-5" />
                           </Button>
                         </div>
                       </FormControl>
@@ -236,10 +239,14 @@ export function AddPeriodSchedule({
               control={form.control}
               name="noDays"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
+                <FormItem className="flex w-full flex-col">
                   <FormLabel>Dias a Excluir</FormLabel>
                   <FormControl>
-                    <SelectTagInput options={dayOfWeek} {...field} />
+                    <SelectTagInput
+                      options={dayOfWeek}
+                      placeholder='Ej: "Lunes'
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
                     Para los dias que se seleccionen no se crearan horarios.
