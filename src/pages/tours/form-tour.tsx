@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { toast } from 'sonner';
 
+import { toast } from '@/components/notifications';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -16,137 +16,45 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { TimePicker } from '@/components/ui/time-picker-input';
-import { DatePickerWithRange } from '@/components/ui/date-picker';
 import { InputNumber } from '@/components/ui/input-number';
-
-import { useCreateEditTour } from '@/services/hooks/tour.mutation';
-import { Tour, TourRequest, TourRequestCreate } from '@/types/tour.types';
 import { ButtonLoading } from '@/components/button-loading';
-import { useRouter } from '@/routes/hooks';
-import { cn, formatTime } from '@/lib/utils';
+import { CardForm, CardFormFooter } from '@/components/card-footer-action';
 import { Icons } from '@/components/icons';
 
-const formSchema = z
-  .object({
-    name: z
-      .string()
-      .min(3, 'El nombre debe tener al menos 3 caracteres.')
-      .max(200, 'El nombre no puede tener más de 200 caracteres.'),
-    description: z
-      .string()
-      .min(10, 'La descripción debe tener al menos 10 caracteres.')
-      .max(200, 'La descripción no puede tener más de 200 caracteres.'),
-    media: z
-      .string()
-      .url('La URL proporcionada no es válida.')
-      .optional()
-      .or(z.literal('')),
-    price: z.coerce.number().min(1, 'El precio no es valido.'),
-    capacity: z.coerce.number().min(1, 'La capacidad no es valida.'),
-    duration: z
-      .string()
-      .min(1, 'La duracion debe tener al menos 10 caracteres.'),
-    content: z
-      .string()
-      .min(100, 'El contenido debe tener al menos 100 caracteres.')
-      .max(1000, 'El contenido no puede tener más de 1500 caracteres.'),
-    active: z.boolean(),
-    weekends: z.boolean().optional(),
-    startTime: z
-      .date({
-        required_error: 'La hora es requerida.',
-        invalid_type_error: 'La hora debe ser válida.'
-      })
-      .optional(),
-    endTime: z
-      .date({
-        required_error: 'La hora es requerida.',
-        invalid_type_error: 'La hora debe ser válida.'
-      })
-      .optional(),
-    dateRange: z
-      .object({
-        from: z
-          .date({
-            required_error: 'La fecha de inicio es requerida.',
-            invalid_type_error: 'La fecha de inicio debe ser una fecha válida.'
-          })
-          .optional(),
-        to: z
-          .date({
-            required_error: 'La fecha de finalización es requerida.',
-            invalid_type_error:
-              'La fecha de finalización debe ser una fecha válida.'
-          })
-          .optional()
-      })
-      .optional()
-  })
-  .refine(
-    (data) => {
-      if (data.dateRange) {
-        return (
-          data.dateRange.from !== undefined && data.dateRange.to !== undefined
-        );
-      }
-      return true;
-    },
-    {
-      message:
-        'Si define un rango, ambos valores (de y hasta) deben estar presentes.',
-      path: ['dateRange']
-    }
-  )
-  // TODO: validate startTime and endTime not be minor than duration in minutes
-  // TODO: when user change startTime or endTime, maybe we can show how many schedules will be created
-  .refine(
-    (data) => {
-      if (data.dateRange && data.dateRange.from && data.dateRange.to) {
-        if (data.startTime == undefined && data.endTime == undefined) {
-          return false;
-        }
+import { useRouter } from '@/routes/hooks';
+import { useCreateEditTour } from '@/services/hooks/tour.mutation';
+import { Tour, TourRequest, TourRequestCreate } from '@/types/tour.types';
 
-        if (data.startTime) {
-          if (
-            data.startTime.getHours() === 0 &&
-            data.startTime.getMinutes() === 0
-          ) {
-            return false;
-          }
-        }
-        if (data.endTime) {
-          if (
-            data.endTime.getHours() === 0 &&
-            data.endTime.getMinutes() === 0
-          ) {
-            return false;
-          }
-        }
-      }
-      return true;
-    },
-    {
-      message:
-        'Si define un rango de fechas, también debe definir la hora de inicio y la hora de finalización. y no puede ser a las 00:00.',
-      path: ['rangeTime']
-    }
-  )
-  .refine(
-    (data) => {
-      if (data.dateRange && data.startTime && data.endTime) {
-        return data.startTime < data.endTime;
-      }
-      return true;
-    },
-    {
-      message:
-        'La hora de inicio no puede ser mayor que la hora de finalización.',
-      path: ['rangeTime']
-    }
-  );
+const formSchema = z.object({
+  name: z
+    .string()
+    .min(3, 'El nombre debe tener al menos 3 caracteres.')
+    .max(200, 'El nombre no puede tener más de 200 caracteres.'),
+  description: z
+    .string()
+    .min(10, 'La descripción debe tener al menos 10 caracteres.')
+    .max(200, 'La descripción no puede tener más de 200 caracteres.'),
+  media: z
+    .string()
+    .url('La URL proporcionada no es válida.')
+    .regex(
+      /(\.jpg|\.jpeg|\.png|\.gif|\.webp)$/i,
+      'La URL debe terminar con alguna de estas extensiones: .jpg, .jpeg, .png, .gif, .webp.'
+    )
+    .optional()
+    .or(z.literal('')),
+  price: z.coerce.number().min(1, 'El precio no es valido.'),
+  capacity: z.coerce.number().min(1, 'La capacidad no es valida.'),
+  duration: z.string().min(1, 'La duracion debe tener al menos 10 caracteres.'),
+  content: z
+    .string()
+    .min(100, 'El contenido debe tener al menos 100 caracteres.')
+    .max(1000, 'El contenido no puede tener más de 1500 caracteres.'),
+  active: z.boolean()
+});
 
 type FormData = z.infer<typeof formSchema>;
+
 type ExtendedFormData = FormData & {
   rangeTime?: {
     message: string;
@@ -186,17 +94,15 @@ export function FormTour({
       capacity: parseFloat(data.capacity) || 0,
       duration: data.duration.toString() || '0',
       content: data.content,
-      active: data.active === '1' ? true : false,
-      weekends: false,
-      startTime: undefined,
-      endTime: undefined,
-      dateRange: undefined
+      active: data.active === '1' ? true : false
     },
     resolver: zodResolver(formSchema)
   });
   const { mutateAsync, isPending } = useCreateEditTour();
 
   function onSubmit(values: FormData) {
+    toast.dismiss();
+
     const dataValues: TourRequestCreate | TourRequest = {
       name: values.name,
       description: values.description,
@@ -207,25 +113,11 @@ export function FormTour({
       content: values.content,
       active: values.active ? '1' : '0'
     };
-    let dataShcedule = {};
-    if (values.dateRange) {
-      dataShcedule = {
-        dateFrom: values.dateRange.from?.toISOString().split('T')[0],
-        dateTo: values.dateRange.to?.toISOString().split('T')[0],
-        startTime: formatTime(values.startTime),
-        endTime: formatTime(values.endTime),
-        weekends: values.weekends ? '1' : '0'
-      };
-    }
-
-    const dataToSend = isNew
-      ? { ...dataValues, ...dataShcedule }
-      : { ...dataValues };
 
     mutateAsync(
       {
         id: !isNew ? data.id : null,
-        data: dataToSend
+        data: { ...dataValues }
       },
       {
         onSuccess: () => {
@@ -241,14 +133,9 @@ export function FormTour({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
-        <div
-          className={cn(
-            'mx-auto max-w-xl space-y-4 pt-4 transition-opacity duration-500 ease-in-out',
-            (isPending || isFetching) && 'pointer-events-none opacity-50'
-          )}
-        >
+        <CardForm isPending={isPending || isFetching}>
           <div className="flex flex-col space-y-1">
-            <h4 className="text-lg font-semibold">1. Información General</h4>
+            <h4 className="text-lg font-semibold">Información General</h4>
             <p className="text-sm text-muted-foreground">
               Información que se mostrará en la página, al seleccionar y ver el
               detalle de un tour.
@@ -260,7 +147,7 @@ export function FormTour({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nombre</FormLabel>
+                <FormLabel required>Nombre</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Tour Visita a la Bodega"
@@ -281,7 +168,7 @@ export function FormTour({
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Descripción</FormLabel>
+                <FormLabel required>Descripción</FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="Detalles breves del tour"
@@ -323,7 +210,7 @@ export function FormTour({
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Precio</FormLabel>
+                    <FormLabel required>Precio</FormLabel>
                     <FormControl>
                       <InputNumber
                         placeholder="Ej: 4500"
@@ -345,7 +232,7 @@ export function FormTour({
                 name="capacity"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Capacidad</FormLabel>
+                    <FormLabel required>Capacidad</FormLabel>
                     <FormControl>
                       <InputNumber
                         placeholder="Ej: 12"
@@ -366,17 +253,19 @@ export function FormTour({
                 name="duration"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="duration">Duracion</FormLabel>
+                    <FormLabel htmlFor="duration" required>
+                      Duracion
+                    </FormLabel>
                     <FormControl>
                       <Input
                         id="duration"
                         type="text"
-                        placeholder="Ej: 30 a 40"
+                        placeholder="Ej: 30 a 40 min"
                         value={field.value}
                         onChange={field.onChange}
                       />
                     </FormControl>
-                    <FormDescription>En minutos</FormDescription>
+                    <FormDescription>Ej: 30 a 40 min</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -389,17 +278,17 @@ export function FormTour({
             name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contenido</FormLabel>
+                <FormLabel required>Contenido</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Que encontraremos en el tour..."
+                    placeholder="Itinerario del tour..."
                     className="resize-none"
                     rows={8}
                     {...field}
                   />
                 </FormControl>
                 <FormDescription>
-                  El Itinerario o detalles del tour
+                  El Itinerario o detalles de lo que contiene el tour
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -426,133 +315,9 @@ export function FormTour({
               </FormItem>
             )}
           />
+        </CardForm>
 
-          {isNew && (
-            <>
-              <div className="flex flex-col pb-2 pt-6">
-                <h4 className="mb-0.5 text-lg font-semibold">
-                  2. Crear Horarios (Opcional)
-                </h4>
-                <p className="text-sm text-muted-foreground">
-                  Esta seccion es para definir un rango de fechas en el que se
-                  crearán los horarios, luego puedes añadir más (esta sección es
-                  simplemente para optimizar el tiempo de creación de los
-                  horarios al crear el tour).
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2">
-                  <FormField
-                    control={form.control}
-                    name="dateRange"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Periodo de Disponibilidad</FormLabel>
-                        <FormControl>
-                          <DatePickerWithRange field={field} />
-                        </FormControl>
-                        <FormDescription>
-                          Rango de fechas en el que se crearán los horarios.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="col-span-2 flex flex-col space-y-2 rounded-lg border p-4">
-                  <p className="text-sm font-medium leading-none">
-                    Periodo por dia
-                  </p>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="col-span-1">
-                      <FormField
-                        control={form.control}
-                        name="startTime"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-col gap-y-2">
-                            <div className="flex flex-row items-center gap-x-4">
-                              <FormLabel>Desde</FormLabel>
-                              <FormControl>
-                                <TimePicker
-                                  setDate={field.onChange}
-                                  date={field.value}
-                                  name="startTime"
-                                />
-                              </FormControl>
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    <div className="col-span-1">
-                      <FormField
-                        control={form.control}
-                        name="endTime"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-col gap-y-2">
-                            <div className="flex flex-row items-center gap-x-4">
-                              <FormLabel>Hasta</FormLabel>
-                              <FormControl>
-                                <TimePicker
-                                  setDate={field.onChange}
-                                  date={field.value}
-                                  name="endTime"
-                                />
-                              </FormControl>
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-                  {form.formState.errors?.rangeTime && (
-                    <FormMessage>
-                      <>{form.formState.errors.rangeTime?.message}</>
-                    </FormMessage>
-                  )}
-                  <p className="text-xs text-muted-foreground">
-                    Ej: si defines una duracion de <b>90 minutos</b>, y eliges{' '}
-                    <em>inicio de 10:00 y final 14:00</em>, se crearán{' '}
-                    <b>2 horarios: 10:00 y 11:30</b> (y el horario de las 13:00?
-                    este no se creará porque el horario final es 14:00 y no se
-                    puede ocupar mas de <b>90 minutos</b>, duración de este
-                    ejemplo)
-                  </p>
-                </div>
-              </div>
-
-              <FormField
-                control={form.control}
-                name="weekends"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel htmlFor="weekends">Fines de Semana</FormLabel>
-                      <FormDescription>
-                        Si activas, tambien se crearan horarias los dias sabados
-                        y domingos, en el periodo seleccionado
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        id="weekends"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </>
-          )}
-        </div>
-        <div className="sticky bottom-0 -mx-4 -mb-4 flex justify-end bg-card/50 px-4 py-4 backdrop-blur">
-          {}
+        <CardFormFooter>
           <div className="flex flex-1 items-center">
             {isFetching && (
               <>
@@ -579,7 +344,7 @@ export function FormTour({
           >
             Guardar Cambios
           </ButtonLoading>
-        </div>
+        </CardFormFooter>
       </form>
     </Form>
   );
