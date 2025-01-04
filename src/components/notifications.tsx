@@ -1,73 +1,99 @@
 /* eslint-disable react-refresh/only-export-components */
-import { ReactNode } from 'react';
-import { ExternalToast, toast, Toaster } from 'sonner';
+import React, { ReactNode } from 'react';
+import { ExternalToast, toast as baseToast, Toaster } from 'sonner';
 
 import { Icons } from './icons';
+import { cn } from '@/lib/utils';
+
+type ToastType = 'success' | 'error' | 'info' | 'warning';
 
 export type TNotification = {
+  description: ReactNode;
   title?: string;
-  text: ReactNode;
 };
 
-export const NotificationContent = ({ title, text }: TNotification) => {
+const iconMapping = {
+  success: <Icons.check className="h-6 w-6 text-[#53f0a0]" />,
+  error: <Icons.error className="h-6 w-6 text-[#f05353]" />,
+  info: <Icons.info className="h-6 w-6 text-[#4c88e8]" />,
+  warning: <Icons.warning className="h-6 w-6 text-[#f0c053]" />
+};
+
+export const NotificationContent = ({
+  title,
+  description,
+  type,
+  idToast
+}: TNotification & {
+  type: ToastType;
+  idToast: number | string;
+}) => {
   return (
-    <div className="select-none p-0">
-      {title && <div className="text-md mb-1 font-medium">{title}</div>}
-      <div className={title ? 'text-sm' : 'text-md'}>{text}</div>
+    <div
+      className={cn(
+        'cursor-pointer select-none p-0 transition-all active:scale-95',
+        'flex items-center gap-2 rounded-md p-4',
+        'toast group select-none border border-border bg-card text-base text-muted-foreground md:border-2',
+        type === 'success' &&
+          'border-[#06351c] bg-[#031c12] text-[#53f0a0] hover:border-[#197b48]',
+        type === 'info' &&
+          'border-[#001234] bg-[#010f1c] text-[#4c88e8] hover:border-[#1d4e9c]',
+        type === 'warning' &&
+          'border-[#342600] bg-[#1c1401] text-[#f0c053] hover:border-[#ab8120]',
+        type === 'error' &&
+          'border-[#340000] bg-[#1c0101] text-[#f05353] hover:border-[#a92424]'
+      )}
+      onClick={() => baseToast.dismiss(idToast)}
+    >
+      {iconMapping[type] && <div className="mr-2.5">{iconMapping[type]}</div>}
+      <div className="flex flex-col">
+        {title && <div className="text-md mb-1 font-medium">{title}</div>}
+        <div className={title ? 'text-sm' : 'text-md'}>{description}</div>
+      </div>
     </div>
   );
 };
 
 export const createNotification = (
-  myProps: TNotification & { type: 'error' | 'success' | 'info' },
-  toastProps: ExternalToast = {}
-): string | number => {
-  const options: ExternalToast = {
-    position: 'top-center',
-    ...toastProps
-  };
+  descriptionOrOptions: string | (TNotification & { type?: ToastType }),
+  toastOptions: ExternalToast = {}
+) => {
+  const isString = typeof descriptionOrOptions === 'string';
+  const props: TNotification & { type: ToastType } = isString
+    ? { description: descriptionOrOptions, type: 'info' }
+    : { ...descriptionOrOptions, type: descriptionOrOptions.type || 'info' };
 
-  if (myProps.type === 'error') {
-    return toast.error(myProps.text, options);
-  } else if (myProps.type === 'success') {
-    return toast.success(myProps.text, options);
-  } else if (myProps.type === 'info') {
-    return toast.info(myProps.text, options);
-  } else {
-    return toast(<NotificationContent {...myProps} />, options);
-  }
+  return baseToast.custom(
+    (t) => <NotificationContent {...props} idToast={t} type={props.type} />,
+    {
+      ...toastOptions
+    }
+  );
+};
+
+export const toast = {
+  ...baseToast,
+  success: (description: string | ReactNode, options?: ExternalToast) =>
+    createNotification({ description, type: 'success' }, options),
+  error: (description: string | ReactNode, options?: ExternalToast) =>
+    createNotification({ description, type: 'error' }, options),
+  info: (description: string | ReactNode, options?: ExternalToast) =>
+    createNotification({ description, type: 'info' }, options),
+  warning: (description: string | ReactNode, options?: ExternalToast) =>
+    createNotification({ description, type: 'warning' }, options),
+  dismiss: (id: number | string | undefined = undefined) =>
+    baseToast.dismiss(id)
 };
 
 type ToasterProps = React.ComponentProps<typeof Toaster>;
+
 export const NotificationContainer = ({ ...props }: ToasterProps) => (
   <Toaster
     visibleToasts={1}
     expand={true}
-    // className="toaster group"
     position="top-right"
     toastOptions={{
-      duration: 2500,
-      classNames: {
-        toast:
-          'group toast border select-none font-medium text-base bg-card text-muted-foreground border-border',
-        //   description: "group-[.toast]:text-muted-foreground group-[.toast]:select-none",
-        //   actionButton: "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
-        //   cancelButton: "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
-        //   closeButton:
-        //     "group-[.toast]:bg-gray-500 border-4 h-7 w-7 border-gray-700 group-[.toast]:text-muted-foreground left-auto -right-4 group-[.toast]:hover:bg-gray-800 group-[.toast]:hover:border-gray-700 [&_svg]:[stroke-width:3]",
-        icon: 'mr-2.5',
-        success: '!bg-[#031c12] !text-[#53f0a0] !border-[#06351c]',
-        info: '!bg-[#010f1c] !text-[#4c88e8] !border-[#001234]',
-        warning: '!bg-[#1c1401] !text-[#f0c053] !border-[#342600]',
-        error: '!bg-[#1c0101] !text-[#f05353] !border-[#340000]'
-      }
-    }}
-    icons={{
-      success: <Icons.check className="h-6 w-6 text-green-500" />,
-      error: <Icons.error className="h-6 w-6 text-red-400" />,
-      info: <Icons.info className="h-6 w-6 text-[#4c88e8]" />,
-      warning: <Icons.warning className="h-6 w-6 text-orange-600" />,
-      loading: <Icons.spinner className="h-5 w-5 text-gray-600" />
+      duration: 2500
     }}
     {...props}
   />
