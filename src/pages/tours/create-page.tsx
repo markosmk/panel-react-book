@@ -8,6 +8,7 @@ export default function TourCreatePage() {
       <HeadingMain
         title="Nuevo Tour"
         description="Desde aqui puedes crear un nuevo tour, una ves creado puedes definir los horarios desde la lista de tours."
+        hasBackNavigation
       />
 
       <Card>

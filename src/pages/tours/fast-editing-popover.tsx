@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { toast } from 'sonner';
 
 import { ButtonLoading } from '@/components/button-loading';
 import { TooltipHelper } from '@/components/tooltip-helper';
@@ -19,6 +18,7 @@ import { Tour } from '@/types/tour.types';
 import { Switch } from '@/components/ui/switch';
 import { InputNumber } from '@/components/ui/input-number';
 import { Input } from '@/components/ui/input';
+import { toast } from '@/components/notifications';
 
 export function FastEditingPopover({ data }: { data: Tour }) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -89,10 +89,7 @@ export function FastEditingPopover({ data }: { data: Tour }) {
       onOpenChange={(isOpen) => {
         if (!isOpen && hasUnsavedChanges) {
           toast.warning(
-            'Tienes cambios sin guardar. Usa "Cancelar" o "Guardar Cambios".',
-            {
-              position: 'top-right'
-            }
+            'Tienes cambios sin guardar. Usa "Cancelar" o "Guardar Cambios".'
           );
           return;
         }
@@ -191,6 +188,7 @@ export function FastEditingPopover({ data }: { data: Tour }) {
                 <Input
                   id="duration"
                   type="text"
+                  className="h-10"
                   value={formValues.duration}
                   onChange={(e) => {
                     setFormValues((prev) => ({
@@ -235,7 +233,6 @@ export function FastEditingPopover({ data }: { data: Tour }) {
               Cancelar
             </Button>
             <ButtonLoading
-              variant="secondary"
               type="button"
               isWorking={isPending}
               onClick={handleFastEdition}

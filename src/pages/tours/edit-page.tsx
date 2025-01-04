@@ -30,6 +30,7 @@ export default function EditPage() {
       <HeadingMain
         title={tourDetail.tour.name}
         description={`Ultima actualizacion: ${formatDateOnly(tourDetail.tour.updated_at)}`}
+        hasBackNavigation
       >
         <Link
           to={`/tours/${tourId}/schedules`}
