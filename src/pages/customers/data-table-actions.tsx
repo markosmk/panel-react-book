@@ -1,5 +1,4 @@
 import { MoreHorizontalIcon } from 'lucide-react';
-import { toast } from 'sonner';
 
 import { formatDateOnly, formatPrice } from '@/lib/utils';
 import { CustomerDetail, CustomerTable } from '@/types/customer.types';
@@ -20,6 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Card } from '@/components/ui/card';
 import { BadgeStatus } from '@/components/badge-status';
+import { toast } from '@/components/notifications';
 
 function ItemInfo({ label, value }: { label: string; value: string }) {
   return (

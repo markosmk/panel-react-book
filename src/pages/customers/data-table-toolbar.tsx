@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Table } from '@tanstack/react-table';
 import { ChevronDown } from 'lucide-react';
 import { saveAs } from 'file-saver';
@@ -14,8 +15,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import * as React from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/components/notifications';
 
 const formatedData = (data: CustomerTable[]) => {
   return [...data].map((item) => ({
@@ -47,6 +47,7 @@ export function DataTableToolbar<TData>({
   }: {
     directDownload?: boolean;
   }) => {
+    toast.dismiss();
     try {
       setIsPending(true);
 
@@ -94,7 +95,6 @@ export function DataTableToolbar<TData>({
         toast.success('Archivo generado correctamente.');
       }
     } catch (error) {
-      console.error('Error al exportar el archivo:', error);
       toast.error('Ocurrió un error al exportar el archivo.');
     } finally {
       setIsPending(false);
