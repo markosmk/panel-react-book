@@ -7,7 +7,7 @@ import {
 } from '@/types/tour.types';
 
 export const getTours = async (page?: number, perPage?: number) =>
-  await axios.get<Tour[]>('/tours', {
+  await axios.get<Tour[]>('/tours/all', {
     params: { page, perPage }
   });
 
