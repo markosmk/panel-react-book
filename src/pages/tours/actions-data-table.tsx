@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { DialogConfirm } from '@/components/dialog-confirm';
-import { createNotification } from '@/components/notifications';
+import { toast } from '@/components/notifications';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 
@@ -38,13 +38,7 @@ export function ActionsDataTable({ data: tour }: { data: Tour }) {
       {
         onSuccess: (data) => {
           const message = data?.data?.message;
-          createNotification(
-            {
-              type: 'success',
-              text: message || 'Tour eliminado correctamente.'
-            },
-            { duration: 4000 }
-          );
+          toast.success(message || 'Tour eliminado correctamente.');
           setTimeout(() => {
             setOpenDialog(false);
           }, 100);

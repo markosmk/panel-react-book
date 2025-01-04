@@ -80,24 +80,6 @@ const columns: ColumnDef<Tour>[] = [
       );
     }
   },
-  // {
-  //   accessorKey: 'duration',
-  //   header: () => (
-  //     <div className="hidden text-xs font-semibold uppercase md:flex">
-  //       Duración
-  //     </div>
-  //   ),
-  //   cell: ({ row }) => {
-  //     return (
-  //       <div className="hidden flex-col gap-x-2 md:flex">
-  //         {row.getValue('duration')}
-  //         {/* <span className="text-xs text-muted-foreground">
-  //           Precio ind.: {row.original.tour_price ?? 'N/A'}
-  //         </span> */}
-  //       </div>
-  //     );
-  //   }
-  // },
 
   {
     accessorKey: 'price',
@@ -115,38 +97,13 @@ const columns: ColumnDef<Tour>[] = [
       </div>
     ),
     cell: ({ row }) => {
-      // TODO: en un tooltip agregar el desglose de precios
       return (
         <div className="hidden flex-col gap-x-2 italic md:flex">
           {formatPrice(row.getValue('price'))}
-          {/* <span className="text-xs text-muted-foreground">
-            {row.original.price ?? '1'} personas
-          </span> */}
         </div>
       );
     }
   },
-
-  // TODO: hidden this columns and allow user to check what columns needs see
-  // {
-  //   accessorKey: 'capacity',
-  //   header: () => (
-  //     <div className="hidden text-xs font-semibold uppercase md:flex">
-  //       Capacidad
-  //     </div>
-  //   ),
-  //   cell: ({ row }) => {
-  //     // TODO: en un tooltip agregar el desglose de precios
-  //     return (
-  //       <div className="hidden flex-col gap-x-2 md:flex">
-  //         {row.getValue('capacity')}
-  //         {/* <span className="text-xs text-muted-foreground">
-  //           {row.original.price ?? '1'} personas
-  //         </span> */}
-  //       </div>
-  //     );
-  //   }
-  // },
   {
     accessorKey: 'active',
     header: () => (
