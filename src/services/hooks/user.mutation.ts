@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { createUser, deleteUser, updateUser } from '../user.service';
 import { sleep } from '@/lib/utils';
-import { toast } from 'sonner';
 import { Role } from '@/types/user.types';
+import { toast } from '@/components/notifications';
 
 type StatusProps = {
   id: string | number | null;
@@ -34,7 +34,7 @@ export function useEditOrCreateUser() {
       queryClient.invalidateQueries({ queryKey: ['users'] });
     },
     onError: (error: AxiosError<{ messages: { [key: string]: string } }>) => {
-      let title = 'Upps Error';
+      // let title = 'Upps Error';
       let message = 'Error al procesar la informacion del usuario';
       if (error instanceof AxiosError) {
         const data = error.response?.data;
@@ -49,7 +49,7 @@ export function useEditOrCreateUser() {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             ([_field, errorMessage]) => `- ${errorMessage}`
           );
-          title = 'Corrige los errores';
+          // title = 'Corrige los errores';
           message = `${errorMessages.join('\n')}`;
         }
       }
@@ -58,8 +58,7 @@ export function useEditOrCreateUser() {
         12000
       );
 
-      toast.error(title, {
-        description: message,
+      toast.error(message, {
         classNames: {
           title: 'text-base font-semibold',
           description: 'text-sm whitespace-pre-line'

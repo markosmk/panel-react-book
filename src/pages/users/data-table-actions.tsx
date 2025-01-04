@@ -1,7 +1,15 @@
+import * as React from 'react';
+import { MoreHorizontalIcon } from 'lucide-react';
+
+import { useModal } from '@/hooks/use-modal';
+import { formatDateOnly } from '@/lib/utils';
+import { useDeleteUser } from '@/services/hooks/user.mutation';
+import { UserTable } from '@/types/user.types';
+import { useMediaQuery } from '@/hooks/use-media-query';
+
 import { Icons } from '@/components/icons';
 import { TooltipHelper } from '@/components/tooltip-helper';
 import { Button } from '@/components/ui/button';
-import { useModal } from '@/hooks/use-modal';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,16 +18,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { formatDateOnly } from '@/lib/utils';
-import { MoreHorizontalIcon } from 'lucide-react';
-import { Card } from '@/components/ui/card';
-import { toast } from 'sonner';
-import { UserTable } from '@/types/user.types';
-import { FormUser } from './form-edit-user';
 import { DialogConfirm } from '@/components/dialog-confirm';
-import * as React from 'react';
-import { createNotification } from '@/components/notifications';
-import { useDeleteUser } from '@/services/hooks/user.mutation';
+import { Card } from '@/components/ui/card';
+import { FormUser } from './form-edit-user';
+import { toast } from '@/components/notifications';
 
 function ItemInfo({ label, value }: { label: string; value: string }) {
   return (
@@ -59,6 +61,7 @@ function DetailModal({ detail }: { detail: UserTable }) {
 }
 
 export function ActionsDataTable({ data }: { data: UserTable }) {
+  const isMobile = useMediaQuery('(max-width: 640px)');
   const [openDialog, setOpenDialog] = React.useState(false);
   const { mutateAsync, isPending } = useDeleteUser();
   const { openModal, closeModal } = useModal();
@@ -83,10 +86,7 @@ export function ActionsDataTable({ data }: { data: UserTable }) {
     await mutateAsync(data.id, {
       onSuccess: (data) => {
         const message = data?.data?.message;
-        createNotification({
-          type: 'success',
-          text: message || 'Usuario eliminado correctamente.'
-        });
+        toast.success(message || 'Usuario eliminado correctamente.');
         setTimeout(() => {
           setOpenDialog(false);
         }, 100);
@@ -123,39 +123,37 @@ export function ActionsDataTable({ data }: { data: UserTable }) {
           </Button>
         </TooltipHelper>
       </div>
-      <div className="inline-flex sm:hidden">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="h-8 w-8 p-0 data-[state=open]:bg-background"
-            >
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontalIcon />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => {
-                toast.success('Numero copiado al portapapeles');
-                // navigator.clipboard.writeText(data.phone.toString());
-              }}
-            >
-              <Icons.copy className="mr-2 h-4 w-4" /> Copiar Nro. Teléfono
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem disabled>
-              <DropdownMenuContent>
-                {/* <Link to={`/customers/${customer.id}`}> */}
-                <Icons.look className="mr-2 h-4 w-4" />
-                Ver Cliente
-                {/* </Link> */}
-              </DropdownMenuContent>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+
+      {isMobile && (
+        <div className="inline-flex sm:hidden">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0 data-[state=open]:bg-background"
+              >
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontalIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleOpenDetails}>
+                <Icons.look className="mr-2 size-4" />
+                Ver Usuario
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleOpenEdit}>
+                <Icons.copy className="mr-2 h-4 w-4" /> Editar Usuario
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setOpenDialog(true)}>
+                <Icons.remove className="mr-2 size-4" />
+                Eliminar
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
 
       <DialogConfirm
         title={`¿Seguro que quieres Eliminar a: ${data.name}?`}

@@ -1,4 +1,4 @@
-import { toast } from 'sonner';
+import * as React from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -25,7 +25,7 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
-import React from 'react';
+import { toast } from '@/components/notifications';
 
 const baseUserSchema = z.object({
   name: z.string().min(1, 'El nombre es obligatorio'),
@@ -235,11 +235,7 @@ export function FormUser({ data, closeModal }: FormChangeStatusProps) {
             >
               Cancelar
             </Button>
-            <ButtonLoading
-              type="submit"
-              variant="secondary"
-              isWorking={isPending}
-            >
+            <ButtonLoading type="submit" isWorking={isPending}>
               Guardar Cambios
             </ButtonLoading>
           </div>
