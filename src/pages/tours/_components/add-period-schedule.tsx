@@ -1,9 +1,12 @@
+import * as React from 'react';
+import { z } from 'zod';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { AxiosError } from 'axios';
 
 import { ButtonLoading } from '@/components/button-loading';
 import { Icons } from '@/components/icons';
-import { createNotification } from '@/components/notifications';
+import { toast } from '@/components/notifications';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -15,13 +18,12 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { cn, sleep } from '@/lib/utils';
-import { z } from 'zod';
+import { cn, formatDateOnly, sleep } from '@/lib/utils';
 import { ScheduleWithAvailable } from '@/types/tour.types';
-import * as React from 'react';
 import { DatePickerWithRange } from '@/components/ui/date-picker';
 import { SelectTagInput } from '@/components/ui/select-tag-input';
-import axiosApp from '@/lib/axios';
+import { createPeriodSchedule } from '@/services/schedule.service';
+import { Switch } from '@/components/ui/switch';
 
 const dayOfWeek = [
   { value: 'Monday', label: 'Lunes' },
@@ -33,64 +35,76 @@ const dayOfWeek = [
   { value: 'Sunday', label: 'Domingo' }
 ];
 
-const formSchema = z.object({
-  list: z
-    .array(
-      z.object({
-        value: z
-          .string()
-          .trim()
-          .min(1, 'El mensaje no puede estar vacio')
-          .regex(
-            /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/,
-            'El formato de la hora no es valido, debe ser HH:MM, ej: 10:00'
-          )
-      })
-    )
-    .superRefine((list, ctx) => {
-      const values = list.map((item) => item.value);
-      const duplicates = values.filter(
-        (item, index) => values.indexOf(item) !== index
-      );
+const formSchema = z
+  .object({
+    usePeriod: z.boolean().default(false),
+    list: z
+      .array(
+        z.object({
+          value: z
+            .string()
+            .trim()
+            .min(1, 'El mensaje no puede estar vacio')
+            .regex(
+              /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/,
+              'El formato de la hora no es valido, debe ser HH:MM, ej: 10:00'
+            )
+        })
+      )
+      .min(1, 'Debes ingresar al menos un horario.')
+      .superRefine((list, ctx) => {
+        const values = list.map((item) => item.value);
+        const duplicates = values.filter(
+          (item, index) => values.indexOf(item) !== index
+        );
 
-      duplicates.forEach((duplicate) => {
-        list.forEach((schedule, index) => {
-          if (schedule.value.toLowerCase() === duplicate) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: 'Valor identico',
-              path: [index, 'value']
-            });
-          }
+        duplicates.forEach((duplicate) => {
+          list.forEach((schedule, index) => {
+            if (schedule.value.toLowerCase() === duplicate) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Valor identico',
+                path: [index, 'value']
+              });
+            }
+          });
         });
-      });
-    })
-    .optional(),
-  dateRange: z.object({
-    from: z
-      .date({
-        required_error: 'La fecha de inicio es requerida.',
-        invalid_type_error: 'La fecha de inicio debe ser una fecha válida.'
+      }),
+    dateRange: z
+      .object({
+        from: z.date({
+          required_error: 'La fecha de inicio es requerida.',
+          invalid_type_error: 'La fecha de inicio debe ser una fecha válida.'
+        }),
+        to: z.date({
+          required_error: 'La fecha de finalización es requerida.',
+          invalid_type_error:
+            'La fecha de finalización debe ser una fecha válida.'
+        })
       })
       .optional(),
-    to: z
-      .date({
-        required_error: 'La fecha de finalización es requerida.',
-        invalid_type_error:
-          'La fecha de finalización debe ser una fecha válida.'
-      })
-      .optional()
-  }),
-  noDays: z.array(z.string())
-});
+    noDays: z.array(z.string())
+  })
+  .refine(
+    (data) => {
+      if (data.usePeriod) {
+        return data.dateRange?.from && data.dateRange?.to;
+      }
+      return true;
+    },
+    {
+      message: 'Debes completar el rango de fechas si usas periodos.',
+      path: ['dateRange']
+    }
+  );
 
 type FormValues = z.infer<typeof formSchema>;
 
 type AddScheduleProps = {
   tourId: string;
+  date: string | undefined;
   schedules: ScheduleWithAvailable[];
   closeModal: () => void;
-  date: string | undefined;
   setToggleUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -98,6 +112,7 @@ const defaultValue = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00'];
 
 export function AddPeriodSchedule({
   tourId,
+  date,
   closeModal,
   setToggleUpdate
 }: AddScheduleProps) {
@@ -105,6 +120,7 @@ export function AddPeriodSchedule({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      usePeriod: false,
       list: defaultValue.map((d) => ({ value: d })),
       dateRange: undefined,
       noDays: ['Sunday', 'Monday']
@@ -118,37 +134,55 @@ export function AddPeriodSchedule({
   });
 
   const onSubmitForm = async (values: FormValues) => {
+    toast.dismiss();
     try {
       setIsPending(true);
-      await sleep(500);
 
-      let dataSchedule = {};
-      if (values.dateRange) {
-        dataSchedule = {
-          dateFrom: values.dateRange.from?.toISOString().split('T')[0],
-          dateTo: values.dateRange.to?.toISOString().split('T')[0],
-          noDays: values.noDays,
-          schedule:
-            values.list && values.list?.length > 0
-              ? values.list?.map((item) => item.value + ':00')
-              : []
-        };
+      if (values.usePeriod == false && date) {
+        const selectedDayIndex = formatDateOnly(date, 'c');
+        const adjustedDayIndex =
+          selectedDayIndex === '7' ? 0 : parseInt(selectedDayIndex, 10) - 1;
+        const selectedDayValue = dayOfWeek[adjustedDayIndex].value;
+        if (values.noDays?.includes(selectedDayValue)) {
+          toast.error(
+            'El día seleccionado está excluido y no se pueden crear horarios.'
+          );
+          return;
+        }
       }
 
-      await axiosApp.post('/schedules/' + tourId + '/period', dataSchedule);
+      await sleep(500);
 
-      createNotification({
-        type: 'success',
-        text: 'Horarios creados correctamente.'
-      });
+      const currentDate = date ? date : new Date().toISOString().split('T')[0];
+      const dataSchedule = {
+        dateFrom:
+          values.usePeriod && values.dateRange?.from
+            ? values.dateRange.from.toISOString().split('T')[0]
+            : currentDate,
+        dateTo:
+          values.usePeriod && values.dateRange?.to
+            ? values.dateRange.to.toISOString().split('T')[0]
+            : currentDate,
+        noDays: values.noDays,
+        schedule:
+          values.list && values.list?.length > 0
+            ? values.list?.map((item) => item.value + ':00')
+            : []
+      };
+      const response = await createPeriodSchedule(tourId, dataSchedule);
+      let message = 'Horarios creados correctamente.';
+      if (response?.data?.message) {
+        message = response.data.message;
+      }
+      toast.success(message);
       closeModal();
       setToggleUpdate((prev) => !prev);
-    } catch (e) {
-      createNotification({
-        type: 'error',
-        text: 'Error al Crear los Horarios'
-      });
-      console.error(e);
+    } catch (error) {
+      let message = 'Error al Crear los Horarios. Contacta al administrador.';
+      if (error instanceof AxiosError) {
+        message = error.response?.data.messages?.error;
+      }
+      toast.error(message);
     } finally {
       setIsPending(false);
     }
@@ -159,37 +193,69 @@ export function AddPeriodSchedule({
       <form onSubmit={form.handleSubmit(onSubmitForm)}>
         <div
           className={cn(
-            'transition-opacity',
+            'space-y-2 transition-opacity',
             isPending ? 'pointer-events-none select-none opacity-50' : ''
           )}
         >
-          <div className="block">
-            <FormField
-              control={form.control}
-              name="dateRange"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel required>Periodo de Disponibilidad</FormLabel>
-                  <FormControl>
-                    <DatePickerWithRange field={field} />
-                  </FormControl>
+          <FormField
+            control={form.control}
+            name="usePeriod"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-1">
+                  <FormLabel>Usar Periodo:</FormLabel>
                   <FormDescription>
-                    Rango de fechas en el que se crearán los horarios.
+                    Crear horarios en un periodo seleccionado o el dia
+                    seleccionado
+                    {date && (
+                      <span className="ml-2 font-bold text-green-500">
+                        {formatDateOnly(date, 'dd/MM/yyyy')}
+                      </span>
+                    )}
                   </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
 
-          <div className="mt-4">
-            <FormLabel required>Horarios por Dia</FormLabel>
-            <FormDescription>
-              Agrega los horarios de inicio de cada reserva
-            </FormDescription>
-            <div
-              className={cn('mb-4 mt-2 grid grid-cols-2 gap-2 md:grid-cols-3')}
-            >
+          {form.watch('usePeriod') === true && (
+            <div className="block">
+              <FormField
+                control={form.control}
+                name="dateRange"
+                render={({ field }) => (
+                  <FormItem className="rounded-lg border p-4">
+                    <div className="space-y-1">
+                      <FormLabel required>Periodo de Disponibilidad</FormLabel>
+                      <FormDescription>
+                        Selecciona el rango de fechas en el que se crearán los
+                        horarios.
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <DatePickerWithRange field={field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+
+          <div className="rounded-lg border p-4">
+            <div className="mb-2 space-y-1">
+              <FormLabel required>Horarios por Dia</FormLabel>
+              <FormDescription>
+                Agrega los horarios de inicio de cada reserva
+              </FormDescription>
+            </div>
+            <div className={cn('grid grid-cols-2 gap-2 md:grid-cols-3')}>
               {fields.map((field, index) => (
                 <FormField
                   control={form.control}
@@ -205,7 +271,7 @@ export function AddPeriodSchedule({
                       </FormDescription>
                       <FormControl>
                         <div className="flex flex-row gap-x-2">
-                          <Input placeholder="ej: 10" {...field} />
+                          <Input placeholder="10:00" {...field} />
                           <Button
                             variant="destructive"
                             type="button"
@@ -222,25 +288,57 @@ export function AddPeriodSchedule({
                   )}
                 />
               ))}
-              <Button
-                type="button"
-                variant="outline"
-                className="col-span-1"
-                disabled={isPending}
-                onClick={() => append({ value: '' })}
-              >
-                Añadir Horario
-              </Button>
+              <div className="col-span-full flex items-center justify-start gap-x-2">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="col-span-1"
+                  disabled={isPending}
+                  onClick={() => append({ value: '' })}
+                >
+                  Añadir Horario
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="col-span-1"
+                  disabled={isPending}
+                  onClick={() => fields.length > 0 && form.setValue('list', [])}
+                >
+                  Limpiar Lista
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="col-span-1"
+                  disabled={isPending}
+                  onClick={() => form.resetField('list')}
+                >
+                  Por Defecto
+                </Button>
+              </div>
+              {form.formState.errors.list?.root?.message && (
+                <div className="col-span-full">
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.list.root.message}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="flex">
+          <div className="flex rounded-lg border p-4">
             <FormField
               control={form.control}
               name="noDays"
               render={({ field }) => (
                 <FormItem className="flex w-full flex-col">
-                  <FormLabel>Dias a Excluir</FormLabel>
+                  <div className="space-y-1">
+                    <FormLabel>Dias a Excluir</FormLabel>
+                    <FormDescription>
+                      En estos dias no se crearan horarios.
+                    </FormDescription>
+                  </div>
                   <FormControl>
                     <SelectTagInput
                       options={dayOfWeek}
@@ -248,15 +346,24 @@ export function AddPeriodSchedule({
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Para los dias que se seleccionen no se crearan horarios.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
+
+          <div>
+            <p className="text-sm text-muted-foreground">
+              * Los horarios deben estar en formato de 24 horas
+            </p>
+            <p className="text-sm text-muted-foreground">
+              * No se crearan superposicion de horarios, es decir, si ya existe
+              un horario "10:00" para una fecha determinada (o alguna fecha en
+              el periodo), no se creara el horario para esa fecha.
+            </p>
+          </div>
         </div>
+
         <div className="mt-4 flex items-center justify-end space-x-2">
           <Button
             type="button"

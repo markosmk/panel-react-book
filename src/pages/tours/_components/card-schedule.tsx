@@ -1,6 +1,7 @@
-import { createNotification } from '@/components/notifications';
-import { cn, formatDateOnly } from '@/lib/utils';
+import { toast } from '@/components/notifications';
+import { formatDateOnly } from '@/lib/utils';
 import { ScheduleWithAvailable } from '@/types/tour.types';
+import { StatusSchedule } from './status-schedule';
 
 export function CardSchedule({
   schedule,
@@ -14,15 +15,14 @@ export function CardSchedule({
   return (
     <button
       type="button"
-      className="relative whitespace-nowrap rounded-md bg-secondary px-4 py-2 pt-9 text-sm font-medium text-secondary-foreground transition-colors hover:opacity-80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+      className="relative transform whitespace-nowrap rounded-md border-2 border-secondary bg-secondary px-4 py-2 pt-9 text-sm font-medium text-secondary-foreground transition-all hover:border-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring active:scale-[.98] disabled:pointer-events-none disabled:opacity-40"
       onClick={
         allowEdit
           ? () => onHandleEdit(schedule)
           : () => {
-              createNotification({
-                type: 'error',
-                title: 'No disponible',
-                text: 'El horario tiene reservas realizadas, no es posible editarlo.'
+              toast.error('No disponible', {
+                description:
+                  'El horario tiene todas las reservas ocupadas, no es posible editarlo.'
               });
             }
       }
@@ -64,22 +64,11 @@ export function CardSchedule({
         </div>
       </div>
 
-      <div className="absolute left-2 top-2 flex items-center gap-x-2 rounded-md bg-background px-2 py-0.5">
-        <div className="relative flex size-2">
-          <span
-            className={cn(
-              'absolute inline-flex h-full w-full animate-ping rounded-full opacity-75',
-              schedule.active == '1' ? 'bg-green-400' : 'bg-red-400'
-            )}
-          ></span>
-          <span
-            className={cn(
-              'relative inline-flex h-2 w-2 rounded-full',
-              schedule.active == '1' ? 'bg-green-500' : 'bg-red-500'
-            )}
-          ></span>
-        </div>
-        <p className="text-xs font-medium">{schedule.available ?? 0}</p>
+      <div className="absolute left-2 top-2">
+        <StatusSchedule
+          active={schedule.active}
+          available={schedule.available}
+        />
       </div>
     </button>
   );

@@ -1,18 +1,27 @@
 import * as React from 'react';
 import { es } from 'date-fns/locale';
-import axios from '@/lib/axios';
 
 import { ScheduleWithAvailable, Tour } from '@/types/tour.types';
 import { useModal } from '@/hooks/use-modal';
+import { formatDateOnly, sleep } from '@/lib/utils';
+import { getSchedules } from '@/services/schedule.service';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { PendingContent } from '@/components/pending-content';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '@/components/ui/accordion';
+import { Icons } from '@/components/icons';
+
 import { CardSchedule } from './card-schedule';
-// import { AddSchedule } from './add-schedule';
 import { EditSchedule } from './edit-schedule';
 import { AddPeriodSchedule } from './add-period-schedule';
+import { StatusSchedule } from './status-schedule';
 
 export function FormSchedules({ tour }: { tour: Tour }) {
   const { openModal, closeModal } = useModal();
@@ -26,9 +35,8 @@ export function FormSchedules({ tour }: { tour: Tour }) {
   React.useEffect(() => {
     const fetchSchedules = async () => {
       setIsLoading(true);
-      const response = await axios.get<{ schedules: ScheduleWithAvailable[] }>(
-        `/schedules/${tour.id}/date/${day.toISOString().split('T')[0]}`
-      );
+      await sleep(300);
+      const response = await getSchedules(tour.id, day);
       setSchedules(response.data.schedules);
       setIsLoading(false);
     };
@@ -57,9 +65,8 @@ export function FormSchedules({ tour }: { tour: Tour }) {
 
   return (
     <div className="space-y-4">
-      <p className="text-lg font-bold">Tour: {tour.name}</p>
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="flex flex-col space-y-2">
+        <div className="flex flex-col gap-y-2">
           <h3 className="text-lg font-bold">Calendario</h3>
           <Calendar
             locale={es}
@@ -67,6 +74,9 @@ export function FormSchedules({ tour }: { tour: Tour }) {
             onDayClick={setDay}
             fromDate={new Date()}
           />
+          <p className="mt-3 text-sm font-bold text-muted-foreground">
+            Seleccionado: {formatDateOnly(day, 'dd/MM/yyyy')}
+          </p>
         </div>
         <div className="flex flex-col space-y-2">
           <h3 className="text-lg font-bold">Horarios</h3>
@@ -104,16 +114,8 @@ export function FormSchedules({ tour }: { tour: Tour }) {
               className="min-w-[148px]"
               onClick={() =>
                 openModal({
-                  title: 'Agregar Horario/s',
+                  title: 'Agregar Horarios',
                   component: (
-                    // <AddSchedule
-                    //   tourId={tour.id}
-                    //   duration={tour.duration}
-                    //   schedules={schedulesDay}
-                    //   closeModal={closeModal}
-                    //   date={day.toISOString().split('T')[0]}
-                    //   setToggleUpdate={setToggleUpdate}
-                    // />
                     <AddPeriodSchedule
                       tourId={tour.id}
                       schedules={schedulesDay}
@@ -130,6 +132,59 @@ export function FormSchedules({ tour }: { tour: Tour }) {
           )}
         </div>
       </div>
+
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="item-1" className="border-none">
+          <AccordionTrigger>
+            <div className="flex items-center">
+              <Icons.help className="mr-2 h-4 w-4 text-muted-foreground" />
+              Ver Ayuda y/o Tips
+            </div>
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="relative mb-2 text-sm text-muted-foreground">
+              <p>
+                <b>Como leer los estados:</b>
+              </p>
+              <ul>
+                <li>
+                  <StatusSchedule
+                    active={'1'}
+                    available={5}
+                    className="inline-flex"
+                  />{' '}
+                  indica que hay 5 espacios disponibles para reservar y se
+                  encuentra activo para nuevas reservas.
+                </li>
+                <li>
+                  <StatusSchedule
+                    active={'1'}
+                    available={0}
+                    className="inline-flex"
+                  />{' '}
+                  indica que se han ocupado todos los espacios disponibles para
+                  reservar y aun se encuentra activo (es visible).
+                </li>
+                <li>
+                  <StatusSchedule
+                    active={'0'}
+                    available={7}
+                    className="inline-flex"
+                  />{' '}
+                  indica que el horario tiene aun 7 espacios disponibles, pero
+                  se encuentra pausado/inactivo, por lo que no pueden reservar y
+                  no sera visible.
+                </li>
+              </ul>
+            </div>
+
+            <p className="text-sm text-muted-foreground">
+              * Los horarios no se pueden eliminar, solo se pueden editar y/o
+              agregar nuevos.
+            </p>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 }

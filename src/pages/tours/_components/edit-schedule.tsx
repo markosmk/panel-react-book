@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { toast } from 'sonner';
+import { AxiosError } from 'axios';
 
-import axiosApp from '@/lib/axios';
 import { ScheduleWithAvailable } from '@/types/tour.types';
 import { convertToMinutes, formatTime, sleep, timeToDate } from '@/lib/utils';
+import { toast } from '@/components/notifications';
+import { updateSchedule } from '@/services/schedule.service';
 
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -12,9 +13,15 @@ import { ButtonLoading } from '@/components/button-loading';
 import { TimePicker } from '@/components/ui/time-picker-input';
 import { Alert } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '@/components/ui/accordion';
+import { Icons } from '@/components/icons';
 
 export function EditSchedule({
-  // schedules,
   schedule,
   closeModal,
   duration,
@@ -29,7 +36,6 @@ export function EditSchedule({
   setToggleUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [isPending, setIsPending] = React.useState(false);
-  const [errors, setErrors] = React.useState<string | null>(null);
   const [formValues, setFormValues] = React.useState<{
     duration: number;
     startTime: string;
@@ -46,27 +52,22 @@ export function EditSchedule({
   });
 
   const handleSubmit = async () => {
+    toast.dismiss();
     try {
-      setErrors(null);
       const { startTime, endTime } = formValues;
 
       const startInMinutes = convertToMinutes(startTime);
       const endInMinutes = endTime ? convertToMinutes(endTime) : 0;
 
       if (startInMinutes > endInMinutes) {
-        setErrors('El rango de tiempo debe estar dentro del mismo día.');
+        toast.error('El rango de tiempo debe estar dentro del mismo día.');
         return;
       }
-
-      // if (doesOverlap(schedules, startInMinutes, endInMinutes, schedule.id)) {
-      //   setErrors('El rango definido se superpone con un periodo existente.');
-      //   return;
-      // }
 
       setIsPending(true);
       await sleep(500);
 
-      await axiosApp.put(`/schedules/${schedule.id}`, {
+      await updateSchedule(schedule.id, {
         startTime: formValues.startTime,
         endTime: formValues.endTime,
         active: formValues.active ? '1' : '0'
@@ -76,8 +77,12 @@ export function EditSchedule({
       closeModal();
       setToggleUpdate((prev) => !prev);
     } catch (error) {
-      console.error(error);
-      setErrors('Error al actualizar el horario, contacta a un administrador.');
+      let message =
+        'Error al actualizar el horario, contacta a un administrador.';
+      if (error instanceof AxiosError) {
+        message = error.response?.data.messages?.error;
+      }
+      toast.error(message);
     } finally {
       setIsPending(false);
     }
@@ -102,24 +107,22 @@ export function EditSchedule({
       <div className="col-span-2 flex flex-col gap-y-2">
         {capacity !== schedule.available && (
           <Alert variant="warning">
-            Ten en cuenta que este horario {capacity - schedule.available} tiene
-            reservas realizadas.
+            Ten en cuenta que este horario tiene{' '}
+            <b>{capacity - schedule.available}</b> reservas realizadas.
           </Alert>
         )}
 
         <Alert variant="info">
-          <p className="flex w-full gap-x-2 text-base font-medium leading-none">
-            Duracion configurado en el Tour en minutos:{' '}
-            <b className="font-bold text-white">{duration}</b>
-          </p>
+          Duracion configurado en el Tour:{' '}
+          <b className="font-bold text-white">{duration}</b>
         </Alert>
 
-        <div className="grid gap-4 rounded-lg border p-4 md:grid-cols-2">
-          <div className="col-span-1">
-            <Label htmlFor="duration">Duracion</Label>
+        <div className="grid gap-4 rounded-lg border p-4 md:grid-cols-3">
+          <div className="col-span-2">
+            <Label htmlFor="duration">Duracion (opcional):</Label>
             <p className="text-sm text-muted-foreground">
-              La duracion del tour en minutos, si colocas 0, puedes editar el
-              campo Hasta
+              La duracion del tour en minutos, si colocas 0 (cero) puedes editar
+              el campo.
             </p>
           </div>
           <Input
@@ -133,6 +136,12 @@ export function EditSchedule({
               })
             }
           />
+
+          <p className="col-span-3 text-sm text-muted-foreground">
+            Esto No actualizara la duracion del tour original, es opcional
+            porque sirve simplemente para calcular automáticamente el horario
+            "Hasta".
+          </p>
         </div>
 
         <div className="grid gap-4 rounded-lg border p-4 md:grid-cols-2">
@@ -175,8 +184,6 @@ export function EditSchedule({
           </div>
         </div>
 
-        {errors && <p className="text-sm text-destructive">{errors}</p>}
-
         <div className="flex flex-row items-center justify-between rounded-lg border p-4">
           <div className="space-y-0.5">
             <Label htmlFor="active">Estado</Label>
@@ -194,11 +201,36 @@ export function EditSchedule({
           />
         </div>
 
-        <p className="text-sm text-muted-foreground">
-          No es habitual hacer cambios en un horario especifico, pero si lo
-          deseas puedes hacerlo. Esta seccion esta pensada para que puedas
-          deshabilitar/habilitar un horario especifico.
-        </p>
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="item-1" className="border-none">
+            <AccordionTrigger>
+              <div className="flex items-center">
+                <Icons.help className="mr-2 h-4 w-4 text-muted-foreground" />
+                Ver Ayuda y/o Tips
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div>
+                <p className="text-sm text-muted-foreground">
+                  * No es habitual hacer cambios en un horario especifico, pero
+                  si lo deseas puedes hacerlo.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  * Esta seccion esta pensada para que puedas
+                  deshabilitar/habilitar un horario.{' '}
+                  <em>
+                    <b>Por ejemplo</b> para pausar reservas en un horario
+                    especifico.
+                  </em>
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  * Si el estado esta inactivo, el horario no se vera en la web
+                  de reservas.
+                </p>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </div>
 
       <div className="mt-4 flex items-center justify-end space-x-2">
