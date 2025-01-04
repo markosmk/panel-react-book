@@ -2,12 +2,12 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import {
   addDays,
-  format,
   formatDistanceToNow,
   isAfter,
   isToday,
   parseISO
 } from 'date-fns';
+import { format as formatZonedTime, toZonedTime } from 'date-fns-tz';
 import { es } from 'date-fns/locale';
 import { ScheduleWithAvailable } from '@/types/tour.types';
 
@@ -29,9 +29,17 @@ export function formatDateOnly(
   formatStr = "EEEE dd 'de' MMMM, yyyy HH:mm"
 ) {
   if (!date || formatStr === '') return '--';
-  // if date is a string, add Z to make it as UTC
-  const dateToFormat = typeof date === 'string' ? new Date(`${date}Z`) : date;
-  return format(dateToFormat, formatStr, { locale: es });
+
+  let dateToFormat = date;
+  if (typeof date === 'string') {
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    dateToFormat = dateRegex.test(date)
+      ? new Date(`${date}T00:00:00Z`)
+      : new Date(`${date}Z`);
+  }
+
+  const zonedDate = toZonedTime(dateToFormat, 'UTC');
+  return formatZonedTime(zonedDate, formatStr, { locale: es });
 }
 
 export function formatDateFriendly(dateString: string) {
