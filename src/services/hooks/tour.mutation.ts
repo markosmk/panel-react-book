@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { toast } from 'sonner';
 
 import { sleep } from '@/lib/utils';
 
@@ -13,6 +12,7 @@ import {
 } from '@/services/tour.service';
 import { TourDetail, TourRequest, TourRequestCreate } from '@/types/tour.types';
 import { CustomAxiosError } from '@/types/app.types';
+import { toast } from '@/components/notifications';
 
 type StatusProps = {
   id: string | number;

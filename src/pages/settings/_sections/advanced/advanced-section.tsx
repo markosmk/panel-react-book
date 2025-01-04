@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
 
 import axiosApp from '@/lib/axios';
 import { Card, CardContent } from '@/components/ui/card';
 import { ButtonLoading } from '@/components/button-loading';
+import { toast } from '@/components/notifications';
 
 const useCache = () => {
   return useQuery({
@@ -53,8 +53,8 @@ export function AdvancedSection() {
       onSuccess: () => {
         toast.success('Cache limpiada correctamente.');
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onError: (error) => {
-        console.log(error);
         toast.error('Error al ejecutar la accion. intenta mas tarde');
       }
     });

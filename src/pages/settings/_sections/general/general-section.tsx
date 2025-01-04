@@ -5,7 +5,7 @@ import { FormValues, GeneralForm } from './general-form';
 import { Card, CardContent } from '@/components/ui/card';
 import { SettingsApp } from '@/types/app.types';
 import { getSettings, updateSettings } from '@/services/settings.service';
-import { toast } from 'sonner';
+import { toast } from '@/components/notifications';
 
 const useSettings = () => {
   return useQuery({
@@ -66,8 +66,8 @@ export function GeneralSection() {
         onSuccess: () => {
           toast.success('Configuración actualizada');
         },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         onError: (error) => {
-          console.log(error);
           toast.error('Error al actualizar la configuración');
         }
       }

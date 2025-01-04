@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { toast } from 'sonner';
 
 import axiosApp from '@/lib/axios';
 import { ScheduleWithAvailable } from '@/types/tour.types';
@@ -17,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { ButtonLoading } from '@/components/button-loading';
 import { TimePicker } from '@/components/ui/time-picker-input';
 import { Input } from '@/components/ui/input';
+import { toast } from '@/components/notifications';
 
 type AddScheduleProps = {
   tourId: string;
@@ -27,6 +27,7 @@ type AddScheduleProps = {
   setToggleUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+// NOT USED @deprecated
 export function AddSchedule({
   tourId,
   schedules,

@@ -3,7 +3,7 @@ import { deleteBooking, updateStatusBooking } from '../booking.service';
 import { Status } from '@/types/booking.types';
 import { sleep } from '@/lib/utils';
 import { AxiosError } from 'axios';
-import { toast } from 'sonner';
+import { toast } from '@/components/notifications';
 
 type StatusProps = {
   id: string | number;

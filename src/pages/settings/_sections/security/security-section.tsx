@@ -5,8 +5,8 @@ import { FormValues, UserDataForm } from './user-data-form';
 import { Card, CardContent } from '@/components/ui/card';
 import { updateUserSelf } from '@/services/settings.service';
 import { useAuth } from '@/providers/auth-provider';
-import { toast } from 'sonner';
 import { AxiosError } from 'axios';
+import { toast } from '@/components/notifications';
 
 const useUpdateSecurity = () => {
   return useMutation({
