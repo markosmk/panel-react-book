@@ -1,11 +1,15 @@
 import axios from '@/lib/axios';
-import { SettingsApp } from '@/types/app.types';
+import { SettingsApp, SettingsSAdmin } from '@/types/app.types';
 
-export const getSettings = async () =>
-  await axios.get<SettingsApp>('/settings');
+export const getSettings = async () => {
+  return await axios.get<SettingsApp>('/options/all');
+};
 
-export const updateSettings = async (id: string | number, data: SettingsApp) =>
-  await axios.put<{ message: string }>('/settings/' + id, data);
+export const updateSettings = async (data: SettingsApp) =>
+  await axios.put<{ message: string }>('/options', data);
+
+export const updateSettinsSAdmin = async (data: SettingsSAdmin) =>
+  await axios.put<{ message: string }>('/options/sadmin', data);
 
 export const updateUserSelf = async (
   id: string | number,
