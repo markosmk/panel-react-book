@@ -19,7 +19,7 @@ const useSettings = () => {
       }
       return response.data;
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 2 * 60 * 1000,
     retry: false
   });
 };
@@ -32,7 +32,7 @@ const useUpdateSettings = () => {
     ): Promise<{
       message: string;
     }> => {
-      const response = await updateSettings(1, data);
+      const response = await updateSettings(data);
       return response.data;
     },
     onSuccess: async (data, variables) => {
@@ -60,8 +60,8 @@ export function GeneralSection() {
         email: data.email,
         phoneWhatsapp: data.phoneWhatsapp,
         aditionalNote: data.aditionalNote,
-        active: data.active ? '1' : '0',
-        termsAndConditions: data.termsAndConditions,
+        isActiveBooking: data.isActiveBooking ? '1' : '0',
+        terms: data.terms,
         messageDisabled: data.messageDisabled ?? ''
       },
       {

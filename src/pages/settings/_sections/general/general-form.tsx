@@ -38,14 +38,14 @@ const formSchema = z
       .min(1, 'El campo no puede estar vacio')
       .min(50, 'El campo debe tener al menos 50 caracteres')
       .max(240, 'El campo no puede tener más de 240 caracteres'),
-    termsAndConditions: z
+    terms: z
       .string()
       .trim()
       .min(50, 'El campo debe tener al menos 50 caracteres')
       .max(10000, 'El campo no puede tener más de 10000 caracteres')
       .optional()
       .or(z.literal('')),
-    active: z.boolean(),
+    isActiveBooking: z.boolean(),
     messageDisabled: z
       .string()
       .trim()
@@ -56,7 +56,7 @@ const formSchema = z
   })
   .refine(
     (data) => {
-      if (data.active) {
+      if (data.isActiveBooking) {
         return data.messageDisabled && data.messageDisabled.length > 0;
       }
       return true;
@@ -85,14 +85,14 @@ export function GeneralForm({
       phoneWhatsapp: data?.phoneWhatsapp || '',
       email: data?.email || '',
       aditionalNote: data?.aditionalNote || '',
-      active: data?.active == '1' ? true : false,
+      isActiveBooking: data?.isActiveBooking == '1' ? true : false,
       messageDisabled: data?.messageDisabled || '',
-      termsAndConditions: data?.termsAndConditions || ''
+      terms: data?.terms || ''
     },
     mode: 'onChange'
   });
 
-  const watchActive = form.watch('active');
+  const watchActive = form.watch('isActiveBooking');
 
   return (
     <Form {...form}>
@@ -169,7 +169,7 @@ export function GeneralForm({
 
           <FormField
             control={form.control}
-            name="termsAndConditions"
+            name="terms"
             render={({ field }) => (
               <FormItem>
                 <div className="space-y-0.5 pr-2">
@@ -196,13 +196,15 @@ export function GeneralForm({
 
           <FormField
             control={form.control}
-            name="active"
+            name="isActiveBooking"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between">
                 <div className="space-y-0.5 pr-2">
-                  <FormLabel className="text-base">Pausar Reservas</FormLabel>
+                  <FormLabel className="text-base">
+                    Activar Sistema de Reservas
+                  </FormLabel>
                   <FormDescription>
-                    Si se activa, los clientes no podrán realizar reservas. Esto
+                    Si esta activo, los clientes podrán realizar reservas. Esto
                     te permite pausar las reservas cuando quieras.
                   </FormDescription>
                 </div>
@@ -228,7 +230,7 @@ export function GeneralForm({
                     </FormLabel>
                     <FormDescription>
                       El mensaje que se mostrará en el panel cuando las reservas
-                      esten deshabilitadas
+                      esten deshabilitadas.
                     </FormDescription>
                   </div>
                   <FormControl>
