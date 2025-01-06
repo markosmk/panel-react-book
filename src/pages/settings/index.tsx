@@ -1,6 +1,7 @@
 import { AnimatedContent } from '@/components/animated-content';
 import { HeadingMain } from '@/components/heading-main';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { GeneralSection } from './_sections/general/general-section';
 import { SecuritySection } from './_sections/security/security-section';
 import { AdvancedSection } from './_sections/advanced/advanced-section';

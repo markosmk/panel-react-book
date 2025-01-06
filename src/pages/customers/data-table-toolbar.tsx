@@ -105,7 +105,7 @@ export function DataTableToolbar<TData>({
   };
 
   return (
-    <div className="flex items-center gap-x-2 py-4">
+    <div className="flex items-center gap-x-2 pb-4">
       <Input
         placeholder="Buscar por nombre, email o teléfono..."
         value={globalFilter}

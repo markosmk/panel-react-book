@@ -171,7 +171,7 @@ export function DataTableUsers({ data }: { data: UserTable[] }) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center gap-x-2 py-4">
+      <div className="flex items-center gap-x-2 pb-4">
         <Input
           placeholder="Buscar por nombre o email"
           value={globalFilter}

@@ -220,7 +220,7 @@ export function ToursDataTable({ data }: { data: Tour[] }) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center gap-x-2 py-4">
+      <div className="flex items-center gap-x-2 pb-4">
         <Input
           placeholder="Buscar por nombre o descripcion del tour..."
           value={globalFilter}
@@ -258,6 +258,7 @@ export function ToursDataTable({ data }: { data: Tour[] }) {
           </DropdownMenu>
         </div>
       </div>
+
       <div className="overflow-hidden rounded-lg bg-card text-card-foreground">
         <Table>
           <TableHeader>

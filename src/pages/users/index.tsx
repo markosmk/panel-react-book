@@ -26,7 +26,7 @@ export default function UsersPage() {
     <div className="mx-auto w-full max-w-6xl space-y-8 px-6">
       <HeadingMain
         title="Lista de Usuarios"
-        description="Administra todos los usuarios que pueden iniciar sesion en la aplicacion, puedes agregar, editar y eliminar usuarios."
+        description="Administra todos los usuarios que pueden iniciar sesion en la aplicacion."
       >
         <Button type="button" onClick={handleNewUser}>
           Crear Usuario
