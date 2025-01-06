@@ -49,8 +49,13 @@ export type SettingsApp = {
   phoneWhatsapp: string;
   email: string;
   aditionalNote: string;
-  termsAndConditions?: string;
+  terms?: string;
   privacyPolicy?: string;
-  active: '1' | '0';
+  isActiveBooking: '1' | '0';
   messageDisabled?: string;
+};
+
+export type SettingsSAdmin = {
+  notionToken: string;
+  notionDatabaseId: string;
 };
