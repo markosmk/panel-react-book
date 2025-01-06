@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import axiosApp from '@/lib/axios';
@@ -6,6 +7,10 @@ import { ButtonLoading } from '@/components/button-loading';
 import { toast } from '@/components/notifications';
 import { PendingContent } from '@/components/pending-content';
 import { ErrorContent } from '@/components/error-content';
+import { Label } from '@/components/ui/label';
+import { InputPassword } from '@/components/ui/input-password';
+import { updateSettinsSAdmin } from '@/services/settings.service';
+import { useAuth } from '@/providers/auth-provider';
 
 const useCache = () => {
   return useQuery({
@@ -31,6 +36,7 @@ const useCacheClean = () => {
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['cached'] });
+      queryClient.clear();
     }
   });
 };
@@ -46,8 +52,16 @@ function getMostRecentFile(files) {
 }
 
 export function AdvancedSection() {
+  const { user } = useAuth();
   const { mutateAsync, isPending } = useCacheClean();
   const { data, isLoading, isError } = useCache();
+  const [isPendingSAdmin, setIsPendingSAdmin] = React.useState(false);
+  // TODO: add validations
+  // TODO: add iniitla values from database
+  const [formValues, setFormValues] = React.useState({
+    notionToken: '',
+    notionDatabaseId: ''
+  });
 
   const handleClean = async () => {
     if (!data) return;
@@ -62,14 +76,24 @@ export function AdvancedSection() {
     });
   };
 
-  if (isLoading) {
-    return <PendingContent withOutText className="h-40" />;
-  }
+  const handleSave = async () => {
+    if (!formValues.notionDatabaseId || !formValues.notionToken) return;
+    if (!user || user?.role !== 'SUPERADMIN') return;
+    try {
+      setIsPendingSAdmin(true);
+      await updateSettinsSAdmin(formValues);
+      toast.success('Configuraciones guardadas correctamente.');
+    } catch (error) {
+      toast.error('Error al guardar las configuraciones');
+    } finally {
+      setIsPendingSAdmin(false);
+    }
+  };
 
-  if (isError) {
-    return <ErrorContent />;
-  }
+  if (isLoading) return <PendingContent withOutText className="h-40" />;
+  if (isError) return <ErrorContent />;
 
+  // TODO: Add Types to Log
   const mostRecentFile = getMostRecentFile(data?.content);
   const recentDate = mostRecentFile
     ? new Date(mostRecentFile.date).toLocaleString()
@@ -122,7 +146,63 @@ export function AdvancedSection() {
             </ButtonLoading>
           </div>
 
-          <div className="mt-4"></div>
+          {user?.role === 'SUPERADMIN' && (
+            <>
+              <hr className="-mx-4 md:-mx-6" />
+              <div>
+                <p className="text-xl font-semibold">Api Notion</p>
+                <p className="mb-2 mt-1 text-muted-foreground">
+                  Es utilizado para obtener los datos de la base de datos de
+                  Notion, para la documentacion del panel en /docs
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="notionToken" className="text-base">
+                    Internal Integration Token
+                  </Label>
+                  <InputPassword
+                    id="notionToken"
+                    placeholder="Ej: i49rodg9493GsvD786.."
+                    value={formValues.notionToken}
+                    onChange={(e) => {
+                      setFormValues({
+                        ...formValues,
+                        notionToken: e.target.value
+                      });
+                    }}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="notionDatabase" className="text-base">
+                    Notion Database ID
+                  </Label>
+                  <InputPassword
+                    id="notionDatabase"
+                    placeholder="Ej: 24b432895894038g4..."
+                    value={formValues.notionDatabaseId}
+                    onChange={(e) => {
+                      setFormValues({
+                        ...formValues,
+                        notionDatabaseId: e.target.value
+                      });
+                    }}
+                  />
+                </div>
+                <div>
+                  <ButtonLoading
+                    type="button"
+                    onClick={handleSave}
+                    isWorking={isPendingSAdmin}
+                  >
+                    Guardar Cambios
+                  </ButtonLoading>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </CardContent>
     </Card>
