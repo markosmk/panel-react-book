@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/components/notifications';
 
 import { cn } from '@/lib/utils';
 import { useStatusBooking } from '@/services/hooks/booking.mutation';
@@ -189,7 +189,7 @@ export function FormChangeStatus({
         {formValues.status === Status.CONFIRMED && (
           <div className="grid grid-cols-3 items-start gap-4">
             <Label htmlFor="sendMail" className="">
-              Enviar email al cliente?
+              Enviar email
             </Label>
             <div className="col-span-2 flex flex-col gap-y-2">
               <Switch
@@ -215,7 +215,6 @@ export function FormChangeStatus({
           Cancelar
         </Button>
         <ButtonLoading
-          variant="secondary"
           type="button"
           // disabled={!hasUnsavedChanges || isPending}
           isWorking={isPending}

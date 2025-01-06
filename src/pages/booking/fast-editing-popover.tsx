@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { toast } from 'sonner';
 
 import { TooltipHelper } from '@/components/tooltip-helper';
 import { Icons } from '@/components/icons';
@@ -12,6 +11,7 @@ import {
 } from '@/components/ui/popover';
 import { BookingTable } from '@/types/booking.types';
 import { FormChangeStatus } from './form-change-status';
+import { toast } from '@/components/notifications';
 
 export function FastEditingPopover({ booking }: { booking: BookingTable }) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -42,10 +42,7 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
 
         if (!isOpen && hasUnsavedChanges) {
           toast.warning(
-            'Tienes cambios sin guardar. Usa "Cancelar" o "Guardar Cambios".',
-            {
-              position: 'top-right'
-            }
+            'Tienes cambios sin guardar. Usa "Cancelar" o "Guardar Cambios".'
           );
           return;
         }
