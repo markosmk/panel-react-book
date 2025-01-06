@@ -6,15 +6,14 @@ import { useUsers } from '@/services/hooks/user.query';
 import { Button } from '@/components/ui/button';
 import { useModal } from '@/hooks/use-modal';
 import { FormUser } from './form-edit-user';
+import { ErrorContent } from '@/components/error-content';
 
 export default function UsersPage() {
   const { openModal, closeModal } = useModal();
   const { data, isLoading, isError } = useUsers();
 
-  if (isLoading) return <PendingContent />;
-
-  // TODO: show better errors
-  if (isError) return <div>Error</div>;
+  if (isLoading) return <PendingContent withOutText className="h-40" />;
+  if (isError) return <ErrorContent />;
 
   const handleNewUser = () => {
     openModal({

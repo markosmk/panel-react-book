@@ -5,6 +5,7 @@ import { useCustomers } from '@/services/hooks/customer.query';
 import { HeadingMain } from '@/components/heading-main';
 import { PendingContent } from '@/components/pending-content';
 import { DataTableCustomers } from './data-table-customers';
+import { ErrorContent } from '@/components/error-content';
 
 export default function CustomersPage() {
   const [searchParams] = useSearchParams();
@@ -12,10 +13,8 @@ export default function CustomersPage() {
   const perPage = Number(searchParams.get('perPage') || 10);
   const { data, isLoading, isError } = useCustomers(page, perPage);
 
-  if (isLoading) return <PendingContent />;
-
-  // TODO: show better errors
-  if (isError) return <div>Error</div>;
+  if (isLoading) return <PendingContent withOutText className="h-40" />;
+  if (isError) return <ErrorContent />;
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-8 px-6">

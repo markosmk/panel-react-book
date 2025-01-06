@@ -4,6 +4,8 @@ import axiosApp from '@/lib/axios';
 import { Card, CardContent } from '@/components/ui/card';
 import { ButtonLoading } from '@/components/button-loading';
 import { toast } from '@/components/notifications';
+import { PendingContent } from '@/components/pending-content';
+import { ErrorContent } from '@/components/error-content';
 
 const useCache = () => {
   return useQuery({
@@ -61,11 +63,11 @@ export function AdvancedSection() {
   };
 
   if (isLoading) {
-    return <div>Cargando...</div>;
+    return <PendingContent withOutText className="h-40" />;
   }
 
   if (isError) {
-    return <div>Error</div>;
+    return <ErrorContent />;
   }
 
   const mostRecentFile = getMostRecentFile(data?.content);

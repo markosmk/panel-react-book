@@ -8,6 +8,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { PendingContent } from '@/components/pending-content';
 import { HeadingMain } from '@/components/heading-main';
 import { buttonVariants } from '@/components/ui/button';
+import { NoContent } from '@/components/no-content';
+import { ErrorContent } from '@/components/error-content';
 
 export default function EditPage() {
   const { tourId } = useParams();
@@ -18,12 +20,9 @@ export default function EditPage() {
     isError
   } = useTourDetail(tourId || '');
 
-  if (isLoading) return <PendingContent />;
-
-  // TODO: better error handling
-  if (!tourDetail) return <></>;
-
-  if (isError) return <div>Error</div>;
+  if (isLoading) return <PendingContent withOutText className="h-40" />;
+  if (isError) return <ErrorContent />;
+  if (!tourDetail) return <NoContent description="Tour no encontrado." />;
 
   return (
     <div className="relative mx-auto w-full max-w-2xl space-y-8 px-4 pb-4 md:px-6 md:pb-6">

@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ToursDataTable } from './tours-data-table';
 import { useTours } from '@/services/hooks/tour.query';
 import { Button } from '@/components/ui/button';
+import { ErrorContent } from '@/components/error-content';
 
 export default function ToursPage() {
   const navigate = useNavigate();
@@ -13,16 +14,8 @@ export default function ToursPage() {
   // query
   const { data, isLoading, isError } = useTours(page, perPage);
 
-  if (isLoading) return <PendingContent />;
-
-  //TODO: implement better error handling
-  if (isError)
-    return (
-      <>
-        Error al cargar los tours, vuelva a intentarlo mas tarde, si el error
-        persiste contacte al administrador.
-      </>
-    );
+  if (isLoading) return <PendingContent withOutText className="h-40" />;
+  if (isError) return <ErrorContent />;
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-8 px-6">

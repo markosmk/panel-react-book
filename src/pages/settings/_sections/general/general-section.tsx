@@ -6,6 +6,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { SettingsApp } from '@/types/app.types';
 import { getSettings, updateSettings } from '@/services/settings.service';
 import { toast } from '@/components/notifications';
+import { ErrorContent } from '@/components/error-content';
+import { PendingContent } from '@/components/pending-content';
 
 const useSettings = () => {
   return useQuery({
@@ -75,11 +77,11 @@ export function GeneralSection() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <PendingContent withOutText className="h-40" />;
   }
 
   if (isError) {
-    return <div>Error</div>;
+    return <ErrorContent />;
   }
 
   return (

@@ -9,19 +9,21 @@ import { Card, CardContent } from '@/components/ui/card';
 
 import { FormSchedules } from './_components/form-schedules';
 import { Alert } from '@/components/ui/alert';
+import { ErrorContent } from '@/components/error-content';
+import { NoContent } from '@/components/no-content';
 
 export default function TourSchedulesPage() {
   const { tourId } = useParams();
   const {
     data: tourDetail,
     isLoading,
-    isFetching
+    isFetching,
+    isError
   } = useTourDetail(tourId || '');
 
-  if (isLoading) return <PendingContent />;
-
-  // TODO: better error handling
-  if (!tourDetail) return <>No hay tour</>;
+  if (isLoading) return <PendingContent withOutText className="h-40" />;
+  if (isError) return <ErrorContent />;
+  if (!tourDetail) return <NoContent description="Tour no encontrado." />;
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-8 px-4 pb-4 md:px-6 md:pb-6">

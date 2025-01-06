@@ -4,7 +4,8 @@ import { useBookings } from '@/services/hooks/booking.query';
 
 import { PendingContent } from '@/components/pending-content';
 import { HeadingMain } from '@/components/heading-main';
-import { BookingsDataTable } from './bookings-data-table';
+import { DataTableBooking } from './data-table-booking';
+import { ErrorContent } from '@/components/error-content';
 
 export function BookingPage() {
   // const { openModal } = useModal();
@@ -14,10 +15,8 @@ export function BookingPage() {
   // query
   const { data, isLoading, isError } = useBookings(page, perPage);
 
-  if (isLoading) return <PendingContent />;
-
-  // TODO: show better errors
-  if (isError) return <div>Error</div>;
+  if (isLoading) return <PendingContent withOutText className="h-40" />;
+  if (isError) return <ErrorContent />;
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-8 px-6">
@@ -25,7 +24,7 @@ export function BookingPage() {
         title="Lista de Reservas"
         description="Gestiona tus reservas desde esta seccion, puedes agregar, editar y eliminar reservas."
       />
-      <BookingsDataTable data={data?.results || []} />
+      <DataTableBooking data={data?.results || []} />
     </div>
   );
 }
