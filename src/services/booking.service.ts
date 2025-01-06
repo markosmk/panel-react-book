@@ -40,3 +40,12 @@ export const editBooking = async (
 
 export const deleteBooking = async (id: string | number) =>
   await axios.delete('/bookings/' + id);
+
+export const getBookingsByDateSchedule = async (
+  date: string,
+  signal?: AbortSignal
+) =>
+  await axios.get<BookingList>('/bookings/summary', {
+    params: { date },
+    signal
+  });
