@@ -3,7 +3,7 @@ import { ScheduleWithAvailable } from '@/types/tour.types';
 
 export const getSchedules = async (tourId: number | string, day: Date) =>
   await axiosApp.get<{ schedules: ScheduleWithAvailable[] }>(
-    `/schedules/${tourId}?date=${day.toISOString().split('T')[0]}`
+    `/schedules/${tourId}/all?date=${day.toISOString().split('T')[0]}`
   );
 
 export const createPeriodSchedule = async (
