@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { toast } from 'sonner';
 
+import { toast } from '@/components/notifications';
 import { CONFIG } from '@/constants/config';
 import { queryClient } from '@/providers';
 
