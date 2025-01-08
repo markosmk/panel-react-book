@@ -13,7 +13,7 @@ export default function Overview({
   }));
 
   if (isLoading) {
-    return <div className="p-5">CArcanfgo....</div>;
+    return <div className="p-5">Cargando....</div>;
   }
   return (
     <ResponsiveContainer width="100%" height={350}>

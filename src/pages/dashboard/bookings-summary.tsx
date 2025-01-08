@@ -12,7 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover';
-import { es, se } from 'date-fns/locale';
+import { es } from 'date-fns/locale';
 import { DataTableSummary } from './summary/data-table-summary';
 import { PendingContent } from '@/components/pending-content';
 import { ErrorContent } from '@/components/error-content';
