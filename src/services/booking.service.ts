@@ -6,6 +6,7 @@ import {
   BookingDetail,
   Status
 } from '@/types/booking.types';
+import { ScheduleSummary } from '@/types/summary.types';
 
 export const getBookings = async (page?: number, perPage?: number) =>
   await axios.get<BookingList>('/bookings', {
@@ -45,7 +46,11 @@ export const getBookingsByDateSchedule = async (
   date: string,
   signal?: AbortSignal
 ) =>
-  await axios.get<BookingList>('/bookings/summary', {
+  await axios.get<{
+    status: string;
+    date: string;
+    schedules: ScheduleSummary[];
+  }>('/bookings/summary', {
     params: { date },
     signal
   });
