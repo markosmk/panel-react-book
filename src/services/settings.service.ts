@@ -14,4 +14,4 @@ export const updateSettinsSAdmin = async (data: SettingsSAdmin) =>
 export const updateUserSelf = async (
   id: string | number,
   data: { name: string; email: string; password: string; newPassword?: string }
-) => await axios.put<{ message: string }>('/users/self/', data);
+) => await axios.put<{ message: string }>('/users/self', data);
