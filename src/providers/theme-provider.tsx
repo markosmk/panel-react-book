@@ -17,12 +17,11 @@ type ThemeProviderState = {
 const initialState: ThemeProviderState = {
   theme: 'system',
   setTheme: () => null,
-  themeColor: 'Zinc',
+  themeColor: 'Beige',
   setThemeColor: () => null
 };
 
-export const ThemeProviderContext =
-  createContext<ThemeProviderState>(initialState);
+const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 type ThemeProviderProps = {
   children: React.ReactNode;
@@ -31,9 +30,9 @@ type ThemeProviderProps = {
 };
 const getSavedThemeColor = () => {
   try {
-    return (localStorage.getItem('themeColor') as ThemeColors) || 'Green';
+    return (localStorage.getItem('themeZorzal') as ThemeColors) || 'Beige';
   } catch (error) {
-    'Green' as ThemeColors;
+    'Beige' as ThemeColors;
   }
 };
 
@@ -68,7 +67,7 @@ export function ThemeProvider({
     root.classList.add(theme);
 
     if (themeColor) {
-      localStorage.setItem('themeColor', themeColor);
+      localStorage.setItem('themeZorzal', themeColor);
       setGlobalColorTheme(theme, themeColor);
     }
 
