@@ -18,9 +18,9 @@ export function NavLink({
     <NavigateLink
       to={to}
       className={cn(
-        className,
+        'group block rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
         disabled && 'pointer-events-none select-none opacity-50',
-        'block rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
+        className
       )}
       {...props}
     >
@@ -28,7 +28,7 @@ export function NavLink({
         return (
           <div
             className={cn(
-              'group relative mb-1 flex cursor-pointer flex-col rounded-md bg-transparent px-3 py-2.5 text-base transition-transform duration-200 active:scale-[.97]',
+              'relative mb-1 flex cursor-pointer flex-col rounded-md bg-transparent px-3 py-2.5 text-base transition-transform duration-200 active:scale-[.97]',
               // hover:bg-gray-active hover:text-accent-foreground
               isActive && 'bg-gray-active',
               !isActive && 'text-muted-foreground',
