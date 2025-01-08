@@ -11,7 +11,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { InputPassword } from '@/components/ui/input-password';
 import { useAuth } from '@/providers/auth-provider';
-import { useLogin } from '@/routes/hooks/use-auth';
+import { useLogin } from '@/services/hooks/auth.mutation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -46,7 +46,7 @@ export default function UserAuthForm() {
   const onSubmit = async (data: UserFormValue) => {
     try {
       await mutateAsync(data, {
-        onSuccess: (data) => {
+        onSuccess: ({ data }) => {
           if (data) {
             loginAction(data.user, data?.token ?? undefined);
           }
