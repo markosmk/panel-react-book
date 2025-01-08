@@ -41,6 +41,7 @@ import { BookingTable } from '@/types/booking.types';
 import { DataTableActions } from './data-table-actions';
 import { DataTableToolbar } from './data-table-toolbar';
 import { DataTableSearch } from './data-table-search';
+import { DataTablePagination } from './data-table-pagination';
 
 const columns: ColumnDef<BookingTable>[] = [
   {
@@ -228,6 +229,10 @@ export function DataTableBooking({ data }: { data: BookingTable[] }) {
     });
   const [rowSelection, setRowSelection] = React.useState({});
   const [globalFilter, setGlobalFilter] = React.useState('');
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 10
+  });
 
   const table = useReactTable({
     data,
@@ -237,9 +242,11 @@ export function DataTableBooking({ data }: { data: BookingTable[] }) {
       columnVisibility,
       rowSelection,
       columnFilters,
-      globalFilter
+      globalFilter,
+      pagination
     },
     enableRowSelection: true,
+    onPaginationChange: setPagination,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
@@ -355,30 +362,7 @@ export function DataTableBooking({ data }: { data: BookingTable[] }) {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} de{' '}
-          {table.getFilteredRowModel().rows.length} fila(s) seleccionada(s).
-        </div>
-        <div className="flex space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Anterior
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Siguiente
-          </Button>
-        </div>
-      </div>
+      <DataTablePagination table={table} />
     </div>
   );
 }
