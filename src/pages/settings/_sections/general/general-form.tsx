@@ -218,7 +218,7 @@ export function GeneralForm({
             )}
           />
 
-          {watchActive && (
+          {!watchActive && (
             <FormField
               control={form.control}
               name="messageDisabled"
