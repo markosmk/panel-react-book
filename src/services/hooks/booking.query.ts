@@ -2,9 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { getBookings, getBookingsByDateSchedule } from '../booking.service';
 import { sleep } from '@/lib/utils';
 
-export function useBookings(page: number, perPage: number) {
+export function useBookings() {
+  //page: number, perPage: number) {
   return useQuery({
-    queryKey: ['bookings', page, perPage],
+    queryKey: ['bookings'], // page, perPage
     queryFn: async () => {
       const response = await getBookings(); // getBookings(page, perPage);
       if (response.status !== 200) {
@@ -13,6 +14,7 @@ export function useBookings(page: number, perPage: number) {
       return response.data;
     },
     staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: 'always',
     retry: false
   });
 }
@@ -28,7 +30,8 @@ export function useBookingSummary(date: string) {
       }
       return response.data;
     },
-    staleTime: 2 * 60 * 1000,
+    staleTime: 3 * 60 * 1000,
+    refetchOnWindowFocus: 'always',
     retry: false
   });
 }

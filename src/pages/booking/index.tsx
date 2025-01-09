@@ -1,5 +1,4 @@
-import { useSearchParams } from 'react-router-dom';
-
+// import { useSearchParams } from 'react-router-dom';
 import { useBookings } from '@/services/hooks/booking.query';
 
 import { PendingContent } from '@/components/pending-content';
@@ -9,11 +8,11 @@ import { ErrorContent } from '@/components/error-content';
 
 export function BookingPage() {
   // const { openModal } = useModal();
-  const [searchParams] = useSearchParams();
-  const page = Number(searchParams.get('page') || 1);
-  const perPage = Number(searchParams.get('perPage') || 20);
+  // const [searchParams] = useSearchParams();
+  // const page = Number(searchParams.get('page') || 1);
+  // const perPage = Number(searchParams.get('perPage') || 20);
   // query
-  const { data, isLoading, isError } = useBookings(page, perPage);
+  const { data, isLoading, isError } = useBookings();
 
   if (isLoading) return <PendingContent withOutText className="h-40" />;
   if (isError) return <ErrorContent />;
