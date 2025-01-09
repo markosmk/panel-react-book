@@ -20,7 +20,7 @@ export default function CustomersPage() {
     <div className="mx-auto w-full max-w-6xl space-y-8 px-6">
       <HeadingMain
         title="Lista de Clientes"
-        description="Administra tus clientes desde esta seccion, puedes agregar, editar y eliminar clientes."
+        description="Administra tus clientes desde esta seccion, puedes ver la reserva de un cliente en particular o exportar clientes una lista de excel (seleccionando)."
       />
       <DataTableCustomers data={data?.results || []} />
     </div>

@@ -109,7 +109,7 @@ function DetailModal({ detail }: { detail: CustomerDetail }) {
                       label="Desde"
                       value={
                         schedule?.startTime
-                          ? schedule?.endTime.split(':').slice(0, 2).join(':')
+                          ? schedule?.startTime.split(':').slice(0, 2).join(':')
                           : '-'
                       }
                     />
@@ -150,9 +150,9 @@ function DetailModal({ detail }: { detail: CustomerDetail }) {
                   <div className="grid w-full grid-cols-2 gap-2">
                     <div className="col-span-1 space-y-1">
                       <p className="text-xs text-muted-foreground">Estado:</p>
-                      <p className="font-semibold">
+                      <div className="font-semibold">
                         <BadgeStatus status={booking.status} />
-                      </p>
+                      </div>
                     </div>
                     <ItemInfo
                       label="Cantidad de Personas"
