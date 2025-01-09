@@ -22,6 +22,7 @@ type StatusProps = {
   active: '1' | '0';
 };
 
+// to fast editing
 export function useEditingTour() {
   const queryClient = useQueryClient();
   return useMutation({

@@ -5,7 +5,6 @@ export function useStats() {
   return useQuery({
     queryKey: ['stats_dashboard'],
     queryFn: async () => {
-      //   try {
       const response = await dashboardStats();
       if (response.status !== 200) {
         throw new Error('Invalid data');

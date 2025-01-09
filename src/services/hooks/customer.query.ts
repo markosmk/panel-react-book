@@ -12,6 +12,7 @@ export function useCustomers(page: number, perPage: number) {
       return response.data;
     },
     staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: 'always',
     retry: false
   });
 }

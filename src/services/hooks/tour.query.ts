@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { getTourById, getTours } from '@/services/tour.service';
-import { sleep } from '@/lib/utils';
 
 export function useTours(page: number, perPage: number) {
   return useQuery({
@@ -21,7 +20,6 @@ export function useTourDetail(id: string | number) {
   return useQuery({
     queryKey: ['tourDetail', id],
     queryFn: async () => {
-      await sleep(500);
       const response = await getTourById(id);
       if (response.status !== 200) {
         throw new Error('Invalid data');
