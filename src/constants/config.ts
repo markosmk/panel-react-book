@@ -1,8 +1,7 @@
 import { Config } from '@/types/app.types';
 
 export const CONFIG: Config = {
-  // apiUrl: 'https://api.zorzalwines.com/public/index.php/api/v1',
-  apiUrl: 'https://zorzal.host/api/v1',
+  apiUrl: import.meta.env.VITE_API_URL,
   defaultTheme: 'dark',
   storageKey: 'vite-ui-theme',
   // For Authentication
