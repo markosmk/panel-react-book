@@ -10,18 +10,12 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { PendingContent } from '@/components/pending-content';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger
-} from '@/components/ui/accordion';
-import { Icons } from '@/components/icons';
 
 import { CardSchedule } from './card-schedule';
 import { EditSchedule } from './edit-schedule';
 import { AddPeriodSchedule } from './add-period-schedule';
 import { StatusSchedule } from './status-schedule';
+import { CollapsibleHelp } from '@/components/collapsible-help';
 
 export function FormSchedules({ tour }: { tour: Tour }) {
   const { openModal, closeModal } = useModal();
@@ -133,58 +127,47 @@ export function FormSchedules({ tour }: { tour: Tour }) {
         </div>
       </div>
 
-      <Accordion type="single" collapsible className="w-full">
-        <AccordionItem value="item-1" className="border-none">
-          <AccordionTrigger>
-            <div className="flex items-center">
-              <Icons.help className="mr-2 h-4 w-4 text-muted-foreground" />
-              Ver Ayuda y/o Tips
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="relative mb-2 text-sm text-muted-foreground">
-              <p>
-                <b>Como leer los estados:</b>
-              </p>
-              <ul>
-                <li>
-                  <StatusSchedule
-                    active={'1'}
-                    available={5}
-                    className="inline-flex"
-                  />{' '}
-                  indica que hay 5 espacios disponibles para reservar y se
-                  encuentra activo para nuevas reservas.
-                </li>
-                <li>
-                  <StatusSchedule
-                    active={'1'}
-                    available={0}
-                    className="inline-flex"
-                  />{' '}
-                  indica que se han ocupado todos los espacios disponibles para
-                  reservar y aun se encuentra activo (es visible).
-                </li>
-                <li>
-                  <StatusSchedule
-                    active={'0'}
-                    available={7}
-                    className="inline-flex"
-                  />{' '}
-                  indica que el horario tiene aun 7 espacios disponibles, pero
-                  se encuentra pausado/inactivo, por lo que no pueden reservar y
-                  no sera visible.
-                </li>
-              </ul>
-            </div>
-
-            <p className="text-sm text-muted-foreground">
-              * Los horarios no se pueden eliminar, solo se pueden editar y/o
-              agregar nuevos.
-            </p>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+      <CollapsibleHelp title="Click para ver Ayuda" noIcon>
+        <div className="relative mb-2 text-sm text-muted-foreground">
+          <p>
+            <b>Como leer los estados:</b>
+          </p>
+          <ul>
+            <li>
+              <StatusSchedule
+                active={'1'}
+                available={5}
+                className="inline-flex"
+              />{' '}
+              indica que hay 5 espacios disponibles para reservar y se encuentra
+              activo para nuevas reservas.
+            </li>
+            <li>
+              <StatusSchedule
+                active={'1'}
+                available={0}
+                className="inline-flex"
+              />{' '}
+              indica que se han ocupado todos los espacios disponibles para
+              reservar y aun se encuentra activo (es visible).
+            </li>
+            <li>
+              <StatusSchedule
+                active={'0'}
+                available={7}
+                className="inline-flex"
+              />{' '}
+              indica que el horario tiene aun 7 espacios disponibles, pero se
+              encuentra pausado/inactivo, por lo que no pueden reservar y no
+              sera visible.
+            </li>
+          </ul>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          * Los horarios no se pueden eliminar, solo se pueden editar y/o
+          agregar nuevos.
+        </p>
+      </CollapsibleHelp>
     </div>
   );
 }

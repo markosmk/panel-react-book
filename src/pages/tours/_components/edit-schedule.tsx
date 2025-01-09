@@ -13,13 +13,7 @@ import { ButtonLoading } from '@/components/button-loading';
 import { TimePicker } from '@/components/ui/time-picker-input';
 import { Alert } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger
-} from '@/components/ui/accordion';
-import { Icons } from '@/components/icons';
+import { CollapsibleHelp } from '@/components/collapsible-help';
 
 export function EditSchedule({
   schedule,
@@ -201,36 +195,26 @@ export function EditSchedule({
           />
         </div>
 
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="item-1" className="border-none">
-            <AccordionTrigger>
-              <div className="flex items-center">
-                <Icons.help className="mr-2 h-4 w-4 text-muted-foreground" />
-                Ver Ayuda y/o Tips
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  * No es habitual hacer cambios en un horario especifico, pero
-                  si lo deseas puedes hacerlo.
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  * Esta seccion esta pensada para que puedas
-                  deshabilitar/habilitar un horario.{' '}
-                  <em>
-                    <b>Por ejemplo</b> para pausar reservas en un horario
-                    especifico.
-                  </em>
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  * Si el estado esta inactivo, el horario no se vera en la web
-                  de reservas.
-                </p>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+        <CollapsibleHelp title="Click para ver Tips" noIcon>
+          <div>
+            <p className="text-sm text-muted-foreground">
+              * No es habitual hacer cambios en un horario especifico, pero si
+              lo deseas puedes hacerlo.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              * Esta seccion esta pensada para que puedas deshabilitar/habilitar
+              un horario.{' '}
+              <em>
+                <b>Por ejemplo</b> para pausar reservas en un horario
+                especifico.
+              </em>
+            </p>
+            <p className="text-sm text-muted-foreground">
+              * Si el estado esta inactivo, el horario no se vera en la web de
+              reservas.
+            </p>
+          </div>
+        </CollapsibleHelp>
       </div>
 
       <div className="mt-4 flex items-center justify-end space-x-2">
