@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { queryClient } from '@/providers';
 import { authClient } from '@/services/auth';
 import { tokenClient } from '@/services/token';
@@ -27,17 +27,5 @@ export function useCurrentUser() {
     },
     staleTime: 5 * 60 * 1000,
     retry: false
-  });
-}
-
-export function useLogin() {
-  // const { loginAction } = useAuth();
-  return useMutation({
-    mutationFn: authClient.login,
-    onSuccess: async () => {},
-    onError: () => {
-      // console.log('Login failed', error);
-      // toast('Login failed', { variant: 'error' });
-    }
   });
 }

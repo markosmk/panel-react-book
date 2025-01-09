@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { BrowserRouter } from 'react-router-dom';
 
-import { useRouter } from '@/routes/hooks';
+import { useRouter } from '@/routes/hooks/use-router';
 // Providers
 import { ThemeProvider } from './theme-provider';
 import { AuthProvider } from './auth-provider';

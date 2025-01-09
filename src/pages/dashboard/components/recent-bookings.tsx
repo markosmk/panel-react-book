@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatDateFriendly } from '@/lib/utils';
 import { DashboardBooking } from '@/types/dashboard.types';
 
@@ -24,12 +23,7 @@ export default function RecentBookings({
                 className="flex items-center justify-between space-x-4"
               >
                 <div className="flex items-center space-x-4">
-                  <Avatar>
-                    <AvatarImage src="/avatars/03.png" />
-                    <AvatarFallback className="uppercase">
-                      {booking.customer_name.slice(0, 2)}
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="">{booking.customer_name.slice(0, 2)}</div>
                   <div>
                     <p className="text-sm font-medium leading-none">
                       {booking.customer_name}

@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 
 import { useAuth } from '@/providers/auth-provider';
 import { toast } from '@/components/notifications';
-import { usePathname } from './hooks';
+import { usePathname } from '@/routes/hooks/use-pathname';
 
 export function SAdminRoute({ children }: React.PropsWithChildren) {
   const pathname = usePathname();

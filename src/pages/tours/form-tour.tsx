@@ -21,7 +21,7 @@ import { ButtonLoading } from '@/components/button-loading';
 import { CardForm, CardFormFooter } from '@/components/card-footer-action';
 import { Icons } from '@/components/icons';
 
-import { useRouter } from '@/routes/hooks';
+import { useRouter } from '@/routes/hooks/use-router';
 import { useCreateEditTour } from '@/services/hooks/tour.mutation';
 import { Tour, TourRequest, TourRequestCreate } from '@/types/tour.types';
 
