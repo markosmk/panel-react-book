@@ -16,9 +16,16 @@ export default defineConfig({
         manualChunks(id) {
           if (id.includes('node_modules')) {
             if (id.includes('xlsx')) return 'xlsx-vendors';
-            if (id.includes('react-router-dom')) return 'router-vendors';
-            if (id.includes('react')) return 'react-vendors';
-            return 'vendor';
+            if (id.includes('react-router-dom') || id.includes('react-router'))
+              return 'router-vendors';
+            if (id.includes('@tanstack')) return 'tanstack-vendors';
+            if (id.includes('zod') || id.includes('react-hook-form'))
+              return 'forms-vendors';
+            if (id.includes('@radix-ui')) return 'ui-vendors';
+            if (id.includes('date-fns') || id.includes('date-fns-tz'))
+              return 'date-vendors';
+            if (id.includes('react') || id.includes('react-dom'))
+              return 'vendor';
           }
         }
       }
