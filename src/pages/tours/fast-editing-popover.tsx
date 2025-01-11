@@ -70,7 +70,7 @@ export function FastEditingPopover({ data }: { data: Tour }) {
           toast.success('Tour actualizado correctamente.');
           setTimeout(() => {
             setIsOpen(false);
-          }, 100);
+          }, 150);
         }
       }
     );

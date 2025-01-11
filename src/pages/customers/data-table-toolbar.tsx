@@ -86,7 +86,7 @@ export function DataTableToolbar<TData>({
           downloadLinkRef.current.click();
           setTimeout(() => {
             URL.revokeObjectURL(url);
-          }, 100);
+          }, 150);
         }
 
         toast.success('Archivo generado correctamente. Descarga en progreso.');
@@ -100,7 +100,7 @@ export function DataTableToolbar<TData>({
       setIsPending(false);
       setTimeout(() => {
         setIsOpen(false);
-      }, 100);
+      }, 150);
     }
   };
 

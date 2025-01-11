@@ -83,7 +83,7 @@ export function FormUser({ data, closeModal }: FormChangeStatusProps) {
           toast.success('Usuario actualizado correctamente.');
           setTimeout(() => {
             closeModal();
-          }, 100);
+          }, 150);
         }
       }
     );

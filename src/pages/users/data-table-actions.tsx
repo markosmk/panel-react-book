@@ -89,7 +89,7 @@ export function ActionsDataTable({ data }: { data: UserTable }) {
         toast.success(message || 'Usuario eliminado correctamente.');
         setTimeout(() => {
           setOpenDialog(false);
-        }, 100);
+        }, 150);
       }
     });
   };

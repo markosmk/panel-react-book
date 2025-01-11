@@ -303,7 +303,7 @@ export function DataTableActions({ data: booking }: { data: BookingTable }) {
         toast.success(message || 'Reserva eliminada correctamente.');
         setTimeout(() => {
           setOpenDialog(false);
-        }, 100);
+        }, 150);
       }
     });
   };

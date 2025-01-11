@@ -41,7 +41,7 @@ export function ActionsDataTable({ data: tour }: { data: Tour }) {
           toast.success(message || 'Tour eliminado correctamente.');
           setTimeout(() => {
             setOpenDialog(false);
-          }, 100);
+          }, 200);
         }
       }
     );

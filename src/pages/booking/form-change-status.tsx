@@ -86,7 +86,7 @@ export function FormChangeStatus({
           toast.success('Estado actualizado correctamente.');
           setTimeout(() => {
             setIsOpen(false);
-          }, 100);
+          }, 150);
         }
       }
     );
