@@ -1,0 +1,59 @@
+{
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2024-12-14",
+      "description": "Lanzamiento Inicial.",
+      "changes": [
+        "la app incluye las secciones de reservas, tours y clientes, ademas de la configuracion (los cambios en la configuracion permiten modificar acciones en la web de reservas.)"
+      ]
+    },
+    {
+      "version": "1.0.13",
+      "date": "2024-12-18",
+      "description": "Nuevas Funciones agregadas.",
+      "changes": [
+        "feat: Mejoras en la seleccion de horarios",
+        "feat: se agrego seccion para agregar horarios al crear un tour",
+        "feat: una nueva accion desde la tabla de reservas, para accion rapida de cambio de estado.",
+        "feat: una nueva accion rapida en la tabla de tours, para edicion rapida sin entrar a la pagina de edicion",
+        "fix: se soluciono un error al mostrar datos de los clientes, con la informacion de la reserva asociada.",
+        "mejoras en las interfaz en general."
+      ]
+    },
+    {
+      "version": "1.0.30",
+      "date": "2024-12-28",
+      "description": "Correccion de errores.",
+      "changes": [
+        "feat: se traslado la creacion de horarios a una nueva pagina, accesible desde la tabla de tours, permite crear, y editar horarios.",
+        "feat: se agrego una opcion en la configuracion 'tab->avanzado', que permite limpiar la cache utilizada para datos en el panel.",
+        "fix: se corrigio un error al cerrar sesion.",
+        "pequeños cambios que mejoran la usabilidad en general."
+      ]
+    },
+    {
+      "version": "1.0.31",
+      "date": "2025-01-04",
+      "description": "Agregado de Funcionalidad.",
+      "changes": [
+        "feat: se agrego una seccion en el inicio, que permite mostrar las reservas por dia, actualmente se muestra la del dia actual, pero hay un selector de dia incluido.",
+        "fix: se corrigio un error que no permitia guardar los cambios en la configuracion.",
+        "fix: se actualizo el limite de campo de texto para los terminos en configuracion.",
+        "varias mejoras en la interfaz y optimizaciones de la app en general."
+      ]
+    },
+    {
+      "version": "1.1.0",
+      "date": "2025-01-12",
+      "description": "Agregado de seccion para control de adicionales, y personalizar traducciones de info de tour.",
+      "changes": [
+        "feat: se agrego una seccion en configuracion 'tab->complementos', que muestra la tabla de adcionales, se puede agregar, eliminar, editar adicionales.",
+        "feat: se agrego la opcion de agregar traducciones para portugues e ingles, en los siguientes campos al crear o editar un tour, 'nombre, descripcion breve y contenido'.",
+        "feat: los adicionales tambien permiten agregar traduccion a portuges e ingles, de los campos: 'nombre y descripcion'",
+        "feat: se agrego la opcion de eliminar un horario especifico, se accede desde horarios, al editar un horario veras un boton eliminar (no se permite eliminar un horario que tiene reservas).",
+        "chore: cambios menores y optimizacion en general de la app."
+      ]
+    }
+  ]
+}

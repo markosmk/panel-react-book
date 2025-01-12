@@ -14,14 +14,25 @@ import { CONFIG } from '@/constants/config';
 import { useAuth } from '@/providers/auth-provider';
 import { useNavigate } from 'react-router-dom';
 import { supportOptions } from '@/constants/navigation';
+import { useModal } from '@/hooks/use-modal';
+import { ModalChangelog } from './modal-changelog';
 
 export function DropdownUser() {
   const navigate = useNavigate();
   const { user, logoutAction, isClosing } = useAuth();
   const [openDialog, setOpenDialog] = React.useState(false);
+  const { openModal } = useModal();
 
   const handleLogout = async () => {
     await logoutAction();
+  };
+
+  const handleChangelog = () => {
+    openModal({
+      title: 'Registro de cambios',
+      description: 'Mantente actualizado con los ultimos cambios de la app',
+      component: <ModalChangelog />
+    });
   };
 
   return (
@@ -80,10 +91,13 @@ export function DropdownUser() {
             <Icons.logout className="mr-3 h-5 w-5" /> Salir
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <div className="flex w-full select-none items-center px-2 py-1.5 text-sm text-muted-foreground/50">
+          <DropdownMenuItem
+            onClick={handleChangelog}
+            className="cursor-pointer text-left opacity-40 transition-opacity hover:opacity-100"
+          >
             <Icons.info className="mr-3 h-5 w-5" />
             Version: {CONFIG.app.platformVersion}
-          </div>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
