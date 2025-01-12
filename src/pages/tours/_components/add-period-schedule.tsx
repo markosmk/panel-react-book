@@ -296,7 +296,7 @@ export function AddPeriodSchedule({
                   disabled={isPending}
                   onClick={() => append({ value: '' })}
                 >
-                  Añadir Horario
+                  Agregar Horario
                 </Button>
                 <Button
                   type="button"

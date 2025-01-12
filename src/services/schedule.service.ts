@@ -24,3 +24,6 @@ export const updateSchedule = async (
   scheduleId: string | number,
   formData: { startTime: string; endTime: string; active: '1' | '0' }
 ) => await axiosApp.put(`/schedules/${scheduleId}`, formData);
+
+export const deleteSchedule = async (scheduleId: string | number) =>
+  await axiosApp.delete(`/schedules/${scheduleId}`);

@@ -2,9 +2,15 @@ import * as React from 'react';
 import { AxiosError } from 'axios';
 
 import { ScheduleWithAvailable } from '@/types/tour.types';
-import { convertToMinutes, formatTime, sleep, timeToDate } from '@/lib/utils';
+import {
+  cn,
+  convertToMinutes,
+  formatTime,
+  sleep,
+  timeToDate
+} from '@/lib/utils';
 import { toast } from '@/components/notifications';
-import { updateSchedule } from '@/services/schedule.service';
+import { deleteSchedule, updateSchedule } from '@/services/schedule.service';
 
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -29,6 +35,8 @@ export function EditSchedule({
   closeModal: () => void;
   setToggleUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const [readyToDelete, setReadyToDelete] = React.useState(false);
+  const [isDeleting, setIsDeleting] = React.useState(false);
   const [isPending, setIsPending] = React.useState(false);
   const [formValues, setFormValues] = React.useState<{
     duration: number;
@@ -59,7 +67,6 @@ export function EditSchedule({
       }
 
       setIsPending(true);
-      await sleep(500);
 
       await updateSchedule(schedule.id, {
         startTime: formValues.startTime,
@@ -79,6 +86,26 @@ export function EditSchedule({
       toast.error(message);
     } finally {
       setIsPending(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    toast.dismiss();
+    try {
+      setIsDeleting(true);
+      await deleteSchedule(schedule.id);
+      toast.success('Horario eliminado correctamente.');
+      closeModal();
+      setToggleUpdate((prev) => !prev);
+    } catch (error) {
+      let message =
+        'Error al eliminar el horario, contacta a un administrador.';
+      if (error instanceof AxiosError) {
+        message = error.response?.data.messages?.error;
+      }
+      toast.error(message);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -217,22 +244,68 @@ export function EditSchedule({
         </CollapsibleHelp>
       </div>
 
-      <div className="mt-4 flex items-center justify-end space-x-2">
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={closeModal}
-          disabled={isPending}
+      <div className="mt-4 flex items-center justify-between space-x-2">
+        {isDeleting ? (
+          <div className="flex min-h-12 items-center">
+            <p className="text-sm italic text-muted-foreground">
+              Eliminando... Un momento
+            </p>
+          </div>
+        ) : (
+          <div>
+            {readyToDelete ? (
+              <div className="flex min-h-12 items-center gap-x-2">
+                <p className="text-sm">Estas seguro?</p>
+                <Button
+                  type="button"
+                  size={'sm'}
+                  variant={'destructive'}
+                  onClick={handleDelete}
+                >
+                  Si
+                </Button>
+                <Button
+                  type="button"
+                  size={'sm'}
+                  variant={'secondary'}
+                  onClick={() => setReadyToDelete(false)}
+                >
+                  No
+                </Button>
+              </div>
+            ) : (
+              <ButtonLoading
+                type="button"
+                variant="destructive"
+                onClick={() => setReadyToDelete(true)}
+              >
+                Eliminar
+              </ButtonLoading>
+            )}
+          </div>
+        )}
+        <div
+          className={cn(
+            'flex gap-x-2 transition-opacity duration-500 ease-in-out',
+            readyToDelete && 'pointer-events-none opacity-30'
+          )}
         >
-          Cancelar
-        </Button>
-        <ButtonLoading
-          type="button"
-          isWorking={isPending}
-          onClick={handleSubmit}
-        >
-          Guardar Cambios
-        </ButtonLoading>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={closeModal}
+            disabled={isPending}
+          >
+            Cancelar
+          </Button>
+          <ButtonLoading
+            type="button"
+            isWorking={isPending}
+            onClick={handleSubmit}
+          >
+            Guardar Cambios
+          </ButtonLoading>
+        </div>
       </div>
     </div>
   );
