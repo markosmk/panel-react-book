@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { GeneralSection } from './_sections/general/general-section';
 import { SecuritySection } from './_sections/security/security-section';
 import { AdvancedSection } from './_sections/advanced/advanced-section';
+import { ComplementsSection } from './_sections/complements/complements-section';
 
 export default function SettingsPage() {
   return (
@@ -14,12 +15,19 @@ export default function SettingsPage() {
         <TabsList>
           <TabsTrigger value="gral">General</TabsTrigger>
           <TabsTrigger value="security">Seguridad</TabsTrigger>
+          <TabsTrigger value="complements">Complementos</TabsTrigger>
           <TabsTrigger value="advanced">Avanzado</TabsTrigger>
         </TabsList>
 
         <TabsContent value="gral" className="py-4">
           <AnimatedContent>
             <GeneralSection />
+          </AnimatedContent>
+        </TabsContent>
+
+        <TabsContent value="complements" className="py-4">
+          <AnimatedContent>
+            <ComplementsSection />
           </AnimatedContent>
         </TabsContent>
 

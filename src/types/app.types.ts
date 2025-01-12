@@ -59,3 +59,28 @@ export type SettingsSAdmin = {
   notionToken: string;
   notionDatabaseId: string;
 };
+
+export interface Additional {
+  id: string;
+  name: string;
+  description: string;
+  price: string;
+  availability: string;
+  active: string;
+  created_at: string;
+  updated_at: string;
+  translations: TranslationAditional[];
+}
+
+export interface TranslationAditional {
+  id?: string;
+  additional_id?: string;
+  language: string;
+  name: string;
+  description: string;
+}
+
+export interface AdditionalRequest
+  extends Omit<Additional, 'id' | 'created_at' | 'updated_at'> {
+  id?: string | null;
+}
