@@ -1,0 +1,135 @@
+{
+  "documents": [
+    {
+      "name": "intro",
+      "path": "intro.md",
+      "title": "Introducción"
+    },
+    {
+      "name": "flow",
+      "path": "flow-reserva.md",
+      "title": "Flujo de Reservas"
+    },
+    {
+      "name": "home",
+      "title": "Inicio Panel",
+      "children": [
+        {
+          "name": "resumen",
+          "path": "home/resumen.md",
+          "title": "Resumen del Dia"
+        }
+      ]
+    },
+    {
+      "name": "reservas",
+      "title": "Reservas",
+      "children": [
+        {
+          "name": "intro",
+          "path": "reservas/overview.md",
+          "title": "Vista General"
+        },
+        {
+          "name": "acciones",
+          "path": "reservas/acciones.md",
+          "title": "Acciones en la Tabla"
+        },
+        {
+          "name": "filtros",
+          "path": "reservas/filtros.md",
+          "title": "Filtros y Búsquedas "
+        },
+        {
+          "name": "cambiar-estado-precio",
+          "path": "reservas/cambiar-estado-precio.md",
+          "title": "Cambiar Estado y Precio de una Reserva"
+        }
+      ]
+    },
+    {
+      "name": "tours",
+      "title": "Tours",
+      "children": [
+        {
+          "name": "overview",
+          "path": "tours/overview.md",
+          "title": "Vista General"
+        },
+        {
+          "name": "acciones",
+          "path": "tours/acciones.md",
+          "title": "Acciones en la Tabla"
+        },
+        {
+          "name": "horarios",
+          "path": "tours/horarios.md",
+          "title": "Gestionar Horarios"
+        },
+        {
+          "name": "crear-editar",
+          "path": "tours/crear-editar.md",
+          "title": "Crear y Editar Tours"
+        }
+      ]
+    },
+    {
+      "name": "clientes",
+      "title": "Clientes",
+      "children": [
+        {
+          "name": "intro",
+          "path": "clientes/overview.md",
+          "title": "Vista General"
+        }
+      ]
+    },
+    {
+      "name": "configuracion",
+      "title": "Configuración",
+      "children": [
+        {
+          "name": "general",
+          "path": "configuracion/general.md",
+          "title": "Configuración General"
+        },
+        {
+          "name": "cuenta",
+          "path": "configuracion/cuenta.md",
+          "title": "Cuenta"
+        },
+        {
+          "name": "complementos",
+          "path": "configuracion/complementos.md",
+          "title": "Complementos"
+        },
+        {
+          "name": "avanzado",
+          "path": "configuracion/avanzado.md",
+          "title": "Avanzado"
+        },
+        {
+          "name": "menu-soporte",
+          "path": "configuracion/menu-soporte.md",
+          "title": "Menu de Soporte"
+        }
+      ]
+    },
+    {
+      "name": "videos",
+      "title": "Videos Tutoriales",
+      "children": [
+        {
+          "name": "cambiar-estado",
+          "path": "videos/cambiar-estado.md",
+          "title": "Cambiar Estado de una Reserva"
+        },
+        {
+          "name": "crear-tour",
+          "path": "videos/crear-tour.md",
+          "title": "Crear un Tour"
+        }
+      ]
+    }
+  ]
+}

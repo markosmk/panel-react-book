@@ -22,7 +22,7 @@ export const supportOptions: NavigationItem[] = [
     href: 'https://wa.me/' + CONFIG.app.supportPhone,
     icon: Icons.whatsapp
   },
-  { name: 'Leer Documentacion', href: '#', icon: Icons.book, disabled: true }
+  { name: 'Documentación', href: '/docs', icon: Icons.book }
 ];
 
 export const adminNavigation: NavigationItem[] = [

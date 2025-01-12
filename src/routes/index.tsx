@@ -16,6 +16,7 @@ const TourEditPage = lazy(() => import('@/pages/tours/edit-page'));
 const TourCreatePage = lazy(() => import('@/pages/tours/create-page'));
 const TourSchedulesPage = lazy(() => import('@/pages/tours/schedules-page'));
 const UsersPage = lazy(() => import('@/pages/users'));
+const DocsPage = lazy(() => import('@/pages/docs'));
 
 export default function AppRouter() {
   const panelRoutes = [
@@ -70,6 +71,10 @@ export default function AppRouter() {
               <UsersPage />
             </SAdminRoute>
           )
+        },
+        {
+          path: 'docs/*',
+          element: <DocsPage />
         }
       ]
     }

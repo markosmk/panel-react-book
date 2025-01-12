@@ -24,6 +24,7 @@ export default defineConfig({
             if (id.includes('@radix-ui')) return 'ui-vendors';
             if (id.includes('date-fns') || id.includes('date-fns-tz'))
               return 'date-vendors';
+            if (id.includes('marked')) return 'marked-vendors';
             if (id.includes('react') || id.includes('react-dom'))
               return 'vendor';
           }
