@@ -1,0 +1,31 @@
+.markdown h1 {
+  @apply mb-4 text-3xl font-bold text-white;
+}
+
+.markdown h2 {
+  @apply mb-3 text-2xl font-semibold text-stone-300;
+}
+
+.markdown p {
+  @apply mb-4 text-base leading-relaxed text-stone-400;
+}
+
+.markdown ul {
+  @apply mb-4 list-inside list-disc text-stone-400;
+}
+
+.markdown li {
+  @apply mb-1;
+}
+
+.markdown a {
+  @apply text-blue-300 underline transition-colors hover:text-blue-500;
+}
+
+.markdown pre {
+  @apply overflow-x-auto rounded-md bg-stone-500 p-4 text-sm;
+}
+
+.markdown code {
+  @apply rounded bg-stone-700 px-1.5 py-0.5 text-sm text-stone-300;
+}
