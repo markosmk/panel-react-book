@@ -73,7 +73,7 @@ const columns: ColumnDef<Tour>[] = [
         <div className="flex flex-col gap-x-2 sm:min-w-52">
           {row.getValue('name')}
           <span className="text-xs text-muted-foreground">
-            Dur.: {row.original.duration ?? '0'} min - Cap.:{' '}
+            Dur.: {row.original.duration ?? '0'} - Cap.:{' '}
             {row.original.capacity ?? '0'} personas
           </span>
         </div>

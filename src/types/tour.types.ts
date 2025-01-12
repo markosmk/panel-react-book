@@ -12,18 +12,25 @@ export interface Tour {
   active: '1' | '0';
   created_at: string;
   updated_at: string;
+  translations?: Translation[];
+}
+
+export interface Translation {
+  id?: number;
+  toud_id?: number;
+  language: string;
+  name: string;
+  description: string;
+  content: string;
+}
+
+export interface TranslationRequest {
+  en: { name?: string; description?: string; content?: string };
+  pt: { name?: string; description?: string; content?: string };
 }
 
 export interface TourRequest
   extends Omit<Tour, 'id' | 'created_at' | 'updated_at'> {}
-
-export interface TourRequestCreate extends TourRequest {
-  dateFrom?: string;
-  dateTo?: string;
-  startTime?: string;
-  endTime?: string;
-  weekends?: '1' | '0';
-}
 
 export interface Availability {
   dateFrom: string;

@@ -2,7 +2,7 @@ import axios from '@/lib/axios';
 import { SettingsApp, SettingsSAdmin } from '@/types/app.types';
 
 export const getSettings = async () => {
-  return await axios.get<SettingsApp>('/options/all');
+  return await axios.get<SettingsApp>('/options/panel');
 };
 
 export const updateSettings = async (data: SettingsApp) =>

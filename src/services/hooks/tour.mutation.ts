@@ -10,7 +10,7 @@ import {
   updateFastTour,
   updateTour
 } from '@/services/tour.service';
-import { TourDetail, TourRequest, TourRequestCreate } from '@/types/tour.types';
+import { TourDetail, TourRequest } from '@/types/tour.types';
 import { CustomAxiosError } from '@/types/app.types';
 import { toast } from '@/components/notifications';
 
@@ -73,9 +73,9 @@ export function useCreateEditTour() {
       data
     }: {
       id: string | number | null;
-      data: TourRequest | TourRequestCreate;
+      data: TourRequest;
     }) => {
-      await sleep(500);
+      // await sleep(500);
       if (id !== null) {
         return updateTour(id, data);
       }
@@ -88,6 +88,7 @@ export function useCreateEditTour() {
         queryClient.setQueryData(
           ['tourDetail', variables.id],
           (oldData: TourDetail) => {
+            console.log('oldData', oldData);
             if (!oldData) return null;
             return {
               ...oldData,

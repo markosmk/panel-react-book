@@ -207,7 +207,7 @@ export function FastEditingPopover({ data }: { data: Tour }) {
             </div>
 
             <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="active">Activo</Label>
+              <Label htmlFor="active">Estado</Label>
 
               <div className="col-span-2 flex">
                 <Switch

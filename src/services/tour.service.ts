@@ -1,10 +1,5 @@
 import axios from '@/lib/axios';
-import {
-  Tour,
-  TourDetail,
-  TourRequest,
-  TourRequestCreate
-} from '@/types/tour.types';
+import { Tour, TourDetail, TourRequest } from '@/types/tour.types';
 
 export const getTours = async (page?: number, perPage?: number) =>
   await axios.get<Tour[]>('/tours/all', {
@@ -27,7 +22,7 @@ export const updateFastTour = async (
 export const updateTour = async (id: string | number, data: TourRequest) =>
   await axios.put('/tours/' + id, data);
 
-export const createTour = async (data: TourRequestCreate) =>
+export const createTour = async (data: TourRequest) =>
   await axios.post('/tours', data);
 
 export const deleteTour = async (id: string | number, force?: boolean) =>
