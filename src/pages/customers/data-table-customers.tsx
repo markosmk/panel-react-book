@@ -80,7 +80,7 @@ const columns: ColumnDef<CustomerTable>[] = [
       <div className="hidden flex-col gap-x-2 sm:flex">
         {formatDateFriendly(row.getValue('created_at'))}
         <span className="text-xs text-muted-foreground">
-          {formatDateOnly(row.getValue('created_at'))}
+          {formatDateOnly(row.getValue('created_at'), "EEEE dd 'de' MMM, yyyy")}
         </span>
       </div>
     )
