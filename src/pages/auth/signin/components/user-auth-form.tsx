@@ -1,3 +1,9 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+
+import { useLogin } from '@/services/hooks/auth.mutation';
+
 import { ButtonLoading } from '@/components/button-loading';
 import { Alert } from '@/components/ui/alert';
 import {
@@ -10,11 +16,9 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { InputPassword } from '@/components/ui/input-password';
-import { useAuth } from '@/providers/auth-provider';
-import { useLogin } from '@/services/hooks/auth.mutation';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+import { useAuthStore } from '@/stores/use-auth-store';
+import { useEffect } from 'react';
+import { useModal } from '@/hooks/use-modal';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Ingresa un correo válido.' }),
@@ -36,12 +40,18 @@ const defaultValues = {
 };
 
 export default function UserAuthForm() {
-  const { loginAction } = useAuth();
+  const { isOpen, closeModal } = useModal();
+  const { loginAction } = useAuthStore();
   const { mutateAsync, isPending } = useLogin();
+
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
     defaultValues
   });
+
+  useEffect(() => {
+    if (isOpen) closeModal();
+  }, [isOpen, closeModal]);
 
   const onSubmit = async (data: UserFormValue) => {
     try {

@@ -1,12 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
 import { FormValues, UserDataForm } from './user-data-form';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { updateUserSelf } from '@/services/settings.service';
-import { useAuth } from '@/providers/auth-provider';
-import { AxiosError } from 'axios';
 import { toast } from '@/components/notifications';
+import { updateUserSelf } from '@/services/settings.service';
+import { useAuthStore } from '@/stores/use-auth-store';
 
 const useUpdateSecurity = () => {
   return useMutation({
@@ -66,7 +66,7 @@ const useUpdateSecurity = () => {
 };
 
 export function SecuritySection() {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const { mutateAsync, isPending } = useUpdateSecurity();
 
   const handleSubmit = async (data: FormValues) => {

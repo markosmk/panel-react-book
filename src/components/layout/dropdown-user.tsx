@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { DialogConfirm } from '@/components/dialog-confirm';
 import { Icons } from '@/components/icons';
@@ -10,16 +11,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+
 import { CONFIG } from '@/constants/config';
-import { useAuth } from '@/providers/auth-provider';
-import { useNavigate } from 'react-router-dom';
 import { supportOptions } from '@/constants/navigation';
 import { useModal } from '@/hooks/use-modal';
+import { useAuthStore } from '@/stores/use-auth-store';
 import { ModalChangelog } from './modal-changelog';
 
 export function DropdownUser() {
   const navigate = useNavigate();
-  const { user, logoutAction, isClosing } = useAuth();
+  const { user, logoutAction, isClosing } = useAuthStore();
   const [openDialog, setOpenDialog] = React.useState(false);
   const { openModal } = useModal();
 
