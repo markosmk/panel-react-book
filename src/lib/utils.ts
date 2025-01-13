@@ -9,7 +9,6 @@ import {
 } from 'date-fns';
 import { format as formatZonedTime, toZonedTime } from 'date-fns-tz';
 import { es } from 'date-fns/locale';
-import { ScheduleWithAvailable } from '@/types/tour.types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -19,45 +18,62 @@ export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/** Inverse date format ex: 2024-12-31 => 31-12-2024 */
 export function formatDateString(dateString: string) {
   const dateParts = dateString.split('-');
   return `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
 }
 
+/**
+ * Format a date in a specific format, and in a specific timezone.
+ * If the date is a string, it can be in the format 'yyyy-mm-dd' or
+ * 'yyyy-mm-ddTHH:MM:SSZ'. If it's a Date object, it will be converted
+ * to the specified timezone.
+ */
 export function formatDateOnly(
   date: string | Date,
-  formatStr = "EEEE dd 'de' MMMM, yyyy HH:mm"
-) {
+  formatStr: string = "EEEE dd 'de' MMMM, yyyy HH:mm",
+  timeZone: string = 'America/Argentina/Mendoza'
+): string {
   if (!date || formatStr === '') return '--';
-
-  let dateToFormat = date;
+  let dateToFormat: Date;
   if (typeof date === 'string') {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    dateToFormat = dateRegex.test(date)
-      ? new Date(`${date}T00:00:00Z`)
-      : new Date(`${date}Z`);
-  }
+    const dateTimeRegex = /^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}$/;
 
-  const zonedDate = toZonedTime(dateToFormat, 'UTC');
+    if (dateRegex.test(date)) {
+      // Trata "yyyy-MM-dd" como una fecha local
+      const [year, month, day] = date.split('-').map(Number);
+      dateToFormat = new Date(year, month - 1, day); // Sin UTC
+    } else if (dateTimeRegex.test(date)) {
+      // Trata "yyyy-MM-dd HH:mm:ss" o "yyyy-MM-ddTHH:mm:ss" como local
+      const [datePart, timePart] = date.split(/[ T]/);
+      const [year, month, day] = datePart.split('-').map(Number);
+      const [hours, minutes, seconds] = timePart.split(':').map(Number);
+      dateToFormat = new Date(year, month - 1, day, hours, minutes, seconds);
+    } else {
+      // Asume que otros formatos tienen zona horaria UTC
+      dateToFormat = new Date(`${date}Z`);
+    }
+  } else {
+    dateToFormat = date;
+  }
+  const zonedDate = toZonedTime(dateToFormat, timeZone);
   return formatZonedTime(zonedDate, formatStr, { locale: es });
 }
 
-export function formatDateFriendly(dateString: string) {
-  // const date = parseISO(dateString);
+/** transform date to human readable */
+export function formatDateFriendly(
+  dateString: string,
+  timeZone = 'America/Argentina/Mendoza'
+) {
   // timestamp from mysql always in UTC, so add Z to make it local
   const utcDate = new Date(`${dateString}Z`);
-  return formatDistanceToNow(utcDate, { addSuffix: true, locale: es });
+  const zonedDate = toZonedTime(utcDate, timeZone);
+  return formatDistanceToNow(zonedDate, { addSuffix: true, locale: es });
 }
 
-/** used to format time to send backend */
-export function formatTime(date: Date | undefined): string {
-  if (!date) return '00:00:00';
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
-  return `${hours}:${minutes}:${seconds}`;
-}
-
+/** transform time to human readable, ex: "15:30:00" => "15:30hs" */
 export function formatTimeTo24Hour(time: string): string {
   const timeRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
   if (!timeRegex.test(time)) {
@@ -67,78 +83,98 @@ export function formatTimeTo24Hour(time: string): string {
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}hs`;
 }
 
-export function formatPrice(price: number) {
-  return new Intl.NumberFormat('es-AR', {
-    style: 'currency',
-    currency: 'ARS'
-  }).format(price);
-}
-
+/**
+ * Checks if a given date string is either today or within a specified number of days ago,
+ * adjusted to a given time zone.
+ * Returns a boolean indicating whether the date is today or within the specified number of days ago.
+ */
 export function isTodayOrRecent(
   dateString: string,
-  numDaysAgo: number = 0
+  numDaysAgo: number = 1,
+  timeZone: string = 'America/Argentina/Mendoza'
 ): boolean {
-  const date = parseISO(dateString);
+  const utcDate = parseISO(dateString);
+  const dateInTimeZone = toZonedTime(utcDate, timeZone);
+
   const today = new Date();
-  const recentDate = addDays(today, -numDaysAgo);
-  // return isBefore(date, today) && isAfter(date, recentDate);
-  return isToday(date) || isAfter(date, recentDate);
+  const todayInTimeZone = toZonedTime(today, timeZone);
+  const recentDateInTimeZone = addDays(todayInTimeZone, -numDaysAgo);
+
+  return (
+    isToday(dateInTimeZone) || isAfter(dateInTimeZone, recentDateInTimeZone)
+  );
 }
 
-/** change "00:00:00" to minutes, ex: "00:30:00" => 30min */
+/**
+ * Converts a time string in the format "HH:mm:ss" to minutes.
+ * For example, "02:30:00" becomes 150 minutes.
+ */
 export function convertToMinutes(timeString: string): number {
   if (!timeString) return 0;
   const [hours, minutes] = timeString.split(':').map(Number);
   return hours * 60 + minutes;
 }
 
-/** convert "00:00:00" to Date */
+/**
+ * Calculates the duration in minutes between two given times.
+ * The times are given as strings in the format "HH:mm:ss".
+ * If the times cross midnight, the duration is still calculated correctly.
+ */
+export function calculateDurationInMinutes(
+  startTime: string,
+  endTime: string
+): number {
+  if (!startTime || !endTime) return 0;
+  const timeToSeconds = (time: string): number => {
+    const [hours, minutes, seconds] = time.split(':').map(Number);
+    return hours * 3600 + minutes * 60 + seconds;
+  };
+  const startSeconds = timeToSeconds(startTime);
+  const endSeconds = timeToSeconds(endTime);
+
+  const durationInSeconds =
+    endSeconds >= startSeconds
+      ? endSeconds - startSeconds
+      : 24 * 3600 - startSeconds + endSeconds;
+
+  // convert to minutes
+  return Math.floor(durationInSeconds / 60);
+}
+
+/**
+ * Formats a given Date object to a string in "HH:mm:ss" format.
+ * If the date is undefined, returns "00:00:00".
+ */
+export function formatTime(date: Date | undefined): string {
+  if (!date) return '00:00:00';
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+  return `${hours}:${minutes}:${seconds}`;
+}
+
+/**
+ * Converts a given time string in the format "HH:mm:ss" to a Date object.
+ * If the input string is undefined, returns a Date object set to 1970-01-01 00:00:00 UTC.
+ */
 export function timeToDate(timeString: string): Date {
-  const [hours, minutes, seconds] = timeString.split(':');
-  const date = new Date();
-  date.setHours(parseInt(hours, 10));
-  date.setMinutes(parseInt(minutes, 10));
-  date.setSeconds(parseInt(seconds, 10));
+  if (!timeString) return new Date(Date.UTC(1970, 0, 1));
+  const [hours, minutes, seconds] = timeString.split(':').map(Number);
+  const date = new Date(Date.UTC(1970, 0, 1));
+  date.setUTCHours(hours, minutes, seconds);
   return date;
 }
 
-export function doesOverlap(
-  schedules: ScheduleWithAvailable[],
-  startInMinutes: number,
-  endInMinutes: number,
-  excludeId?: string
-): boolean {
-  const listSchedules = excludeId
-    ? schedules.filter((schedule) => schedule.id !== excludeId)
-    : schedules;
-
-  return listSchedules?.some((schedule) => {
-    if (!schedule.active) return false;
-
-    const existingStartInMinutes = convertToMinutes(schedule.startTime);
-    const existingEndInMinutes = schedule.endTime
-      ? convertToMinutes(schedule.endTime)
-      : null; // null if no endTime is defined
-
-    if (existingEndInMinutes !== null) {
-      const existingRange = {
-        start: existingStartInMinutes,
-        end:
-          existingEndInMinutes >= existingStartInMinutes
-            ? existingEndInMinutes
-            : existingEndInMinutes + 1440
-      };
-
-      const newRange = {
-        start: startInMinutes,
-        end: endInMinutes >= startInMinutes ? endInMinutes : endInMinutes + 1440
-      };
-
-      return (
-        newRange.start < existingRange.end && newRange.end > existingRange.start
-      );
-    }
-
-    return startInMinutes >= existingStartInMinutes;
-  });
+/**
+ * Formats a given number as a string in the specified currency and locale.
+ */
+export function formatPrice(
+  price: number,
+  currency = 'ARS',
+  locale = 'es-AR'
+): string {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency
+  }).format(price);
 }

@@ -3,10 +3,10 @@ import { AxiosError } from 'axios';
 
 import { ScheduleWithAvailable } from '@/types/tour.types';
 import {
+  calculateDurationInMinutes,
   cn,
   convertToMinutes,
   formatTime,
-  sleep,
   timeToDate
 } from '@/lib/utils';
 import { toast } from '@/components/notifications';
@@ -45,8 +45,7 @@ export function EditSchedule({
     active: boolean;
   }>({
     duration: schedule?.endTime
-      ? convertToMinutes(schedule.endTime) -
-        convertToMinutes(schedule.startTime)
+      ? calculateDurationInMinutes(schedule.startTime, schedule.endTime)
       : 30,
     startTime: schedule.startTime,
     endTime: schedule?.endTime || '',
@@ -180,7 +179,11 @@ export function EditSchedule({
                       startTime: formatTime(field)
                     })
                   }
-                  date={timeToDate(formValues.startTime) || new Date()}
+                  date={
+                    formValues.startTime
+                      ? timeToDate(formValues.startTime)
+                      : new Date(Date.UTC(1970, 0, 1))
+                  }
                 />
               </div>
             </div>
@@ -197,7 +200,11 @@ export function EditSchedule({
                   setDate={(field) =>
                     setFormValues({ ...formValues, endTime: formatTime(field) })
                   }
-                  date={timeToDate(formValues.endTime) || new Date()}
+                  date={
+                    formValues.endTime
+                      ? timeToDate(formValues.endTime)
+                      : new Date(Date.UTC(1970, 0, 1))
+                  }
                   disabled={formValues.duration !== 0}
                 />
               </div>
