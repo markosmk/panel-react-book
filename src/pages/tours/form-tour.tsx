@@ -20,20 +20,46 @@ import { InputNumber } from '@/components/ui/input-number';
 import { ButtonLoading } from '@/components/button-loading';
 import { CardForm, CardFormFooter } from '@/components/card-footer-action';
 import { Icons } from '@/components/icons';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { useRouter } from '@/routes/hooks/use-router';
 import { useCreateEditTour } from '@/services/hooks/tour.mutation';
-import { Tour, TourRequest, TourRequestCreate } from '@/types/tour.types';
+import { Tour, TourRequest } from '@/types/tour.types';
 
 const formSchema = z.object({
   name: z
     .string()
     .min(3, 'El nombre debe tener al menos 3 caracteres.')
     .max(200, 'El nombre no puede tener más de 200 caracteres.'),
+  name_en: z
+    .string()
+    .min(3, 'El nombre debe tener al menos 3 caracteres.')
+    .max(200, 'El nombre no puede tener más de 200 caracteres.')
+    .optional()
+    .or(z.literal('')),
+  name_pt: z
+    .string()
+    .min(3, 'El nombre debe tener al menos 3 caracteres.')
+    .max(200, 'El nombre no puede tener más de 200 caracteres.')
+    .optional()
+    .or(z.literal('')),
   description: z
     .string()
     .min(10, 'La descripción debe tener al menos 10 caracteres.')
-    .max(200, 'La descripción no puede tener más de 200 caracteres.'),
+    .max(120, 'La descripción no puede tener más de 120 caracteres.'),
+  description_en: z
+    .string()
+    .min(10, 'La descripción debe tener al menos 10 caracteres.')
+    .max(120, 'La descripción no puede tener más de 120 caracteres.')
+    .optional()
+    .or(z.literal('')),
+  description_pt: z
+    .string()
+    .min(10, 'La descripción debe tener al menos 10 caracteres.')
+    .max(120, 'La descripción no puede tener más de 120 caracteres.')
+    .optional()
+    .or(z.literal('')),
   media: z
     .string()
     .url('La URL proporcionada no es válida.')
@@ -48,8 +74,20 @@ const formSchema = z.object({
   duration: z.string().min(1, 'La duracion debe tener al menos 10 caracteres.'),
   content: z
     .string()
-    .min(100, 'El contenido debe tener al menos 100 caracteres.')
-    .max(1000, 'El contenido no puede tener más de 1500 caracteres.'),
+    .min(10, 'El contenido debe tener al menos 10 caracteres.')
+    .max(10000, 'El contenido no puede tener más de 10000 caracteres.'),
+  content_en: z
+    .string()
+    .min(10, 'El contenido debe tener al menos 10 caracteres.')
+    .max(10000, 'El contenido no puede tener más de 10000 caracteres.')
+    .optional()
+    .or(z.literal('')),
+  content_pt: z
+    .string()
+    .min(10, 'El contenido debe tener al menos 10 caracteres.')
+    .max(10000, 'El contenido no puede tener más de 10000 caracteres.')
+    .optional()
+    .or(z.literal('')),
   active: z.boolean()
 });
 
@@ -64,16 +102,18 @@ type ExtendedFormData = FormData & {
 const initDefaultValues: Tour = {
   name: '',
   description: '',
+  content: '',
   media: '',
   price: '0',
   capacity: '0',
   duration: '0',
-  content: '',
   active: '1',
   id: '',
   created_at: '',
   updated_at: ''
 };
+
+// initDefaultValues
 
 export function FormTour({
   data = initDefaultValues,
@@ -88,12 +128,28 @@ export function FormTour({
   const form = useForm<ExtendedFormData>({
     defaultValues: {
       name: data.name,
+      name_en:
+        data.translations?.find((item) => item?.language === 'en')?.name || '',
+      name_pt:
+        data.translations?.find((item) => item?.language === 'pt')?.name || '',
       description: data.description,
+      description_en:
+        data.translations?.find((item) => item?.language === 'en')
+          ?.description || '',
+      description_pt:
+        data.translations?.find((item) => item?.language === 'pt')
+          ?.description || '',
+      content: data.content,
+      content_en:
+        data.translations?.find((item) => item?.language === 'en')?.content ||
+        '',
+      content_pt:
+        data.translations?.find((item) => item?.language === 'pt')?.content ||
+        '',
       media: data.media,
       price: parseFloat(data.price) || 0,
       capacity: parseFloat(data.capacity) || 0,
       duration: data.duration.toString() || '0',
-      content: data.content,
       active: data.active === '1' ? true : false
     },
     resolver: zodResolver(formSchema)
@@ -103,15 +159,34 @@ export function FormTour({
   function onSubmit(values: FormData) {
     toast.dismiss();
 
-    const dataValues: TourRequestCreate | TourRequest = {
+    const translations = [
+      {
+        language: 'en',
+        name: values.name_en || '',
+        description: values.description_en || '',
+        content: values.content_en || ''
+      },
+      {
+        language: 'pt',
+        name: values.name_pt || '',
+        description: values.description_pt || '',
+        content: values.content_pt || ''
+      }
+    ].filter(
+      (translation) =>
+        translation.name || translation.description || translation.content
+    );
+
+    const dataValues: TourRequest = {
       name: values.name,
       description: values.description,
+      content: values.content,
       media: values.media || '',
       price: values.price.toFixed(2),
       capacity: values.capacity.toString(),
       duration: values.duration.toString(),
-      content: values.content,
-      active: values.active ? '1' : '0'
+      active: values.active ? '1' : '0',
+      translations: translations
     };
 
     mutateAsync(
@@ -142,45 +217,188 @@ export function FormTour({
             </p>
           </div>
 
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel required>Nombre</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Tour Visita a la Bodega"
-                    type="text"
-                    {...field}
-                    autoComplete="off"
-                    data-lpignore="true"
-                    data-form-type="other"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <Tabs defaultValue="spanish" className="">
+            <div className="flex items-center justify-between gap-x-2">
+              <Label required>Nombre</Label>
+              <TabsList className="mr-4 inline w-[100px]">
+                <TabsTrigger
+                  value="spanish"
+                  className="mx-0 -mb-0 select-none py-0"
+                >
+                  Es
+                </TabsTrigger>
+                <TabsTrigger
+                  value="english"
+                  className="mx-0 -mb-0 select-none py-0"
+                >
+                  En
+                </TabsTrigger>
+                <TabsTrigger
+                  value="portuguese"
+                  className="mx-0 -mb-0 select-none py-0"
+                >
+                  Pt
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel required>Descripción</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Detalles breves del tour"
-                    className="resize-none"
-                    rows={3}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <TabsContent value="spanish" className="mt-0">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="sr-only">Nombre</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Tour Visita a la Bodega"
+                        type="text"
+                        {...field}
+                        autoComplete="off"
+                        data-lpignore="true"
+                        data-form-type="other"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </TabsContent>
+            <TabsContent value="english" className="mt-0">
+              <FormField
+                control={form.control}
+                name="name_en"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="sr-only">Nombre</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Tour Visit to the Winery"
+                        type="text"
+                        {...field}
+                        autoComplete="off"
+                        data-lpignore="true"
+                        data-form-type="other"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </TabsContent>
+
+            <TabsContent value="portuguese" className="mt-0">
+              <FormField
+                control={form.control}
+                name="name_pt"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="sr-only">Nombre</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Visita guiada à adega"
+                        type="text"
+                        {...field}
+                        autoComplete="off"
+                        data-lpignore="true"
+                        data-form-type="other"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </TabsContent>
+          </Tabs>
+
+          {/* control 3 fields */}
+          <Tabs defaultValue="spanish" className="">
+            <div className="flex items-center justify-between gap-x-2">
+              <Label required>Descripción Breve</Label>
+              <TabsList className="mr-4 inline w-[100px]">
+                <TabsTrigger
+                  value="spanish"
+                  className="mx-0 -mb-0 select-none py-0"
+                >
+                  Es
+                </TabsTrigger>
+                <TabsTrigger
+                  value="english"
+                  className="mx-0 -mb-0 select-none py-0"
+                >
+                  En
+                </TabsTrigger>
+                <TabsTrigger
+                  value="portuguese"
+                  className="mx-0 -mb-0 select-none py-0"
+                >
+                  Pt
+                </TabsTrigger>
+              </TabsList>
+            </div>
+
+            <TabsContent value="spanish" className="mt-0">
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="sr-only">Descripción</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Pequeño mensaje introductorio"
+                        className="resize-none"
+                        rows={2}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </TabsContent>
+            <TabsContent value="english" className="mt-0">
+              <FormField
+                control={form.control}
+                name="description_en"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="sr-only">Descripción</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Small introductory message"
+                        className="resize-none"
+                        rows={2}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </TabsContent>
+
+            <TabsContent value="portuguese" className="mt-0">
+              <FormField
+                control={form.control}
+                name="description_pt"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="sr-only">Descripción</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Breve mensagem introdutória"
+                        className="resize-none"
+                        rows={2}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </TabsContent>
+          </Tabs>
 
           <FormField
             control={form.control}
@@ -273,27 +491,94 @@ export function FormTour({
             </div>
           </div>
 
-          <FormField
-            control={form.control}
-            name="content"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel required>Contenido</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Itinerario del tour..."
-                    className="resize-none"
-                    rows={8}
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  El Itinerario o detalles de lo que contiene el tour
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {/* control 3 fields */}
+          <Tabs defaultValue="spanish" className="">
+            <div className="flex items-center justify-between gap-x-2">
+              <Label required>Contenido</Label>
+              <TabsList className="mr-4 inline w-[100px]">
+                <TabsTrigger
+                  value="spanish"
+                  className="mx-0 -mb-0 select-none py-0"
+                >
+                  Es
+                </TabsTrigger>
+                <TabsTrigger
+                  value="english"
+                  className="mx-0 -mb-0 select-none py-0"
+                >
+                  En
+                </TabsTrigger>
+                <TabsTrigger
+                  value="portuguese"
+                  className="mx-0 -mb-0 select-none py-0"
+                >
+                  Pt
+                </TabsTrigger>
+              </TabsList>
+            </div>
+
+            <TabsContent value="spanish" className="mt-0">
+              <FormField
+                control={form.control}
+                name="content"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="sr-only">Contenido</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="El Itinerario o detalles de lo que contiene el tour"
+                        className="resize-none"
+                        rows={8}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </TabsContent>
+            <TabsContent value="english" className="mt-0">
+              <FormField
+                control={form.control}
+                name="content_en"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="sr-only">Contenido</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="The Itinerary or details of what the tour contains"
+                        className="resize-none"
+                        rows={8}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </TabsContent>
+
+            <TabsContent value="portuguese" className="mt-0">
+              <FormField
+                control={form.control}
+                name="content_pt"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="sr-only">Contenido</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="O Itinerário ou detalhes do que o passeio contém"
+                        className="resize-none"
+                        rows={8}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </TabsContent>
+          </Tabs>
 
           <FormField
             control={form.control}
