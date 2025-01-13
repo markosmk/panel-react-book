@@ -29,8 +29,8 @@ export function FormSchedules({ tour }: { tour: Tour }) {
   React.useEffect(() => {
     const fetchSchedules = async () => {
       setIsLoading(true);
-      await sleep(300);
       const response = await getSchedules(tour.id, day);
+      await sleep(150);
       setSchedules(response.data.schedules);
       setIsLoading(false);
     };

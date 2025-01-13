@@ -18,7 +18,7 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { cn, formatDateOnly, sleep } from '@/lib/utils';
+import { cn, formatDateOnly } from '@/lib/utils';
 import { ScheduleWithAvailable } from '@/types/tour.types';
 import { DatePickerWithRange } from '@/components/ui/date-picker';
 import { SelectTagInput } from '@/components/ui/select-tag-input';
@@ -150,8 +150,6 @@ export function AddPeriodSchedule({
           return;
         }
       }
-
-      await sleep(500);
 
       const currentDate = date ? date : new Date().toISOString().split('T')[0];
       const dataSchedule = {
