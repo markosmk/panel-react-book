@@ -234,7 +234,9 @@ export function UserDataForm({
             render={({ field }) => (
               <FormItem>
                 <div className="space-y-0.5 pr-2">
-                  <FormLabel className="text-base">Contraseña Actual</FormLabel>
+                  <FormLabel className="text-base" required>
+                    Contraseña Actual
+                  </FormLabel>
                 </div>
                 <FormControl>
                   <InputPassword
