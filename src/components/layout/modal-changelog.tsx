@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { formatDateOnly } from '@/lib/utils';
 import React from 'react';
 
