@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { Suspense } from 'react';
+import * as React from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -8,13 +8,14 @@ import { BrowserRouter } from 'react-router-dom';
 import { useRouter } from '@/routes/hooks/use-router';
 // Providers
 import { ThemeProvider } from './theme-provider';
-import { AuthProvider } from './auth-provider';
 import { SidebarProvider } from '@/hooks/use-sidebar';
+import { ModalProvider } from '@/hooks/use-modal';
 // Components
 import { Button } from '@/components/ui/button';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { ModalProvider } from '@/hooks/use-modal';
 import { NotificationContainer } from '@/components/notifications';
+// Stores
+import { useAuthStore } from '@/stores/use-auth-store';
 
 export const queryClient = new QueryClient();
 
@@ -40,8 +41,14 @@ export default function AppProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const checkLogin = useAuthStore((state) => state.checkLogin);
+
+  React.useEffect(() => {
+    checkLogin();
+  }, [checkLogin]);
+
   return (
-    <Suspense>
+    <React.Suspense>
       <BrowserRouter
         future={{
           v7_startTransition: true,
@@ -55,15 +62,13 @@ export default function AppProvider({
               <NotificationContainer />
               <TooltipProvider delayDuration={400}>
                 <ModalProvider>
-                  <SidebarProvider>
-                    <AuthProvider>{children}</AuthProvider>
-                  </SidebarProvider>
+                  <SidebarProvider>{children}</SidebarProvider>
                 </ModalProvider>
               </TooltipProvider>
             </ThemeProvider>
           </QueryClientProvider>
         </ErrorBoundary>
       </BrowserRouter>
-    </Suspense>
+    </React.Suspense>
   );
 }
