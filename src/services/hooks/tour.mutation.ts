@@ -2,8 +2,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-import { sleep } from '@/lib/utils';
-
 import {
   createTour,
   deleteTour,
@@ -33,7 +31,6 @@ export function useEditingTour() {
       duration,
       active
     }: StatusProps) => {
-      await sleep(500);
       return updateFastTour(id, { price, capacity, duration, active });
     },
     onSuccess: async (data, variables) => {
@@ -88,7 +85,6 @@ export function useCreateEditTour() {
         queryClient.setQueryData(
           ['tourDetail', variables.id],
           (oldData: TourDetail) => {
-            console.log('oldData', oldData);
             if (!oldData) return null;
             return {
               ...oldData,
@@ -145,7 +141,6 @@ export function useDeleteTour() {
       id: string | number;
       force?: boolean;
     }) => {
-      await sleep(500);
       return await deleteTour(id, force);
     },
     onSuccess: async () => {

@@ -3,7 +3,7 @@ import { Table } from '@tanstack/react-table';
 import { ChevronDown } from 'lucide-react';
 import { saveAs } from 'file-saver';
 
-import { cn, sleep } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { CustomerTable } from '@/types/customer.types';
 
 import { Icons } from '@/components/icons';
@@ -56,8 +56,6 @@ export function DataTableToolbar<TData>({
         (row) => row.original
       ) as CustomerTable[];
       const dataFormated = formatedData(selectedData);
-
-      await sleep(1500);
 
       // import dinamically
       const { utils, write } = await import('xlsx');

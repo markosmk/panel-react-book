@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { createUser, deleteUser, updateUser } from '../user.service';
-import { sleep } from '@/lib/utils';
+
 import { Role } from '@/types/user.types';
+import { createUser, deleteUser, updateUser } from '../user.service';
 import { toast } from '@/components/notifications';
 
 type StatusProps = {
@@ -18,7 +18,6 @@ export function useEditOrCreateUser() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: StatusProps) => {
-      await sleep(500);
       if (!data.id) {
         return createUser(data);
       } else {
@@ -73,7 +72,6 @@ export function useDeleteUser() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string | number) => {
-      await sleep(500);
       return await deleteUser(id);
     },
     onSuccess: async () => {

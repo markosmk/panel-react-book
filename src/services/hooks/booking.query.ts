@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
+
 import { getBookings, getBookingsByDateSchedule } from '../booking.service';
-import { sleep } from '@/lib/utils';
 
 export function useBookings() {
   //page: number, perPage: number) {
@@ -24,7 +24,6 @@ export function useBookingSummary(date: string) {
     queryKey: ['bookingSummary', date],
     queryFn: async () => {
       const response = await getBookingsByDateSchedule(date);
-      await sleep(500);
       if (response.status !== 200) {
         throw new Error('Invalid booking data');
       }

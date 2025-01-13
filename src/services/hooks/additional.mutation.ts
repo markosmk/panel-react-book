@@ -1,19 +1,19 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { sleep } from '@/lib/utils';
 import { AxiosError } from 'axios';
-import { toast } from '@/components/notifications';
+
+import { Additional, AdditionalRequest } from '@/types/app.types';
 import {
   createAdditional,
   deleteAdditional,
   updateAdditional
 } from '../additional.service';
-import { Additional, AdditionalRequest } from '@/types/app.types';
+import { toast } from '@/components/notifications';
 
 export function useCreateEditAdditional() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: AdditionalRequest) => {
-      await sleep(500);
+      // await sleep(500);
       if (data?.id && data?.id !== null) {
         return updateAdditional(data.id, data);
       } else {
@@ -55,7 +55,7 @@ export function useAdditionalDelete() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string | number) => {
-      await sleep(500);
+      // await sleep(500);
       return await deleteAdditional(id);
     },
     onSuccess: async () => {

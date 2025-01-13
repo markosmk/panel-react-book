@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteBooking, updateStatusBooking } from '../booking.service';
-import { Status } from '@/types/booking.types';
-import { sleep } from '@/lib/utils';
 import { AxiosError } from 'axios';
+
+import { Status } from '@/types/booking.types';
+import { deleteBooking, updateStatusBooking } from '../booking.service';
 import { toast } from '@/components/notifications';
 
 type StatusProps = {
@@ -16,7 +16,6 @@ export function useStatusBooking() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, status, totalPrice, sendMail }: StatusProps) => {
-      await sleep(500);
       return updateStatusBooking(id, { status, totalPrice, sendMail });
     },
     onSuccess: async () => {
@@ -39,7 +38,6 @@ export function useDeleteBooking() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string | number) => {
-      await sleep(500);
       return await deleteBooking(id);
     },
     onSuccess: async () => {

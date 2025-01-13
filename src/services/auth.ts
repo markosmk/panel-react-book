@@ -22,11 +22,11 @@ export const authClient = {
   },
   logout: async () => {
     try {
-      await sleep(500);
       await fetch(CONFIG.apiUrl + '/logout', {
         method: 'POST',
         credentials: 'include'
       });
+      await sleep(300);
     } catch (error: unknown) {
       console.error('Error fetch in logout:', error);
       // throw error;
@@ -34,7 +34,6 @@ export const authClient = {
   },
   getUser: async () => {
     try {
-      await sleep(500);
       const response = await fetch(CONFIG.apiUrl + '/me', {
         method: 'GET',
         headers: {
@@ -43,6 +42,7 @@ export const authClient = {
         },
         credentials: 'include'
       });
+      await sleep(300);
 
       if (!response.ok) throw new Error('Failed to fetch user');
 
