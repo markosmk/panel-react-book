@@ -5,9 +5,6 @@ export function useLogin() {
   return useMutation({
     mutationFn: login,
     onSuccess: async () => {},
-    onError: () => {
-      // console.log('Login failed', error);
-      // toast('Login failed', { variant: 'error' });
-    }
+    onError: () => {}
   });
 }
