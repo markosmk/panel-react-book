@@ -45,14 +45,17 @@
     },
     {
       "version": "1.1.0",
-      "date": "2025-01-12",
+      "date": "2025-01-13",
       "description": "Agregado de seccion para control de adicionales, y personalizar traducciones de info de tour.",
       "changes": [
         "feat: se agrego una seccion en configuracion 'tab->complementos', que muestra la tabla de adcionales, se puede agregar, eliminar, editar adicionales.",
         "feat: se agrego la opcion de agregar traducciones para portugues e ingles, en los siguientes campos al crear o editar un tour, 'nombre, descripcion breve y contenido'.",
         "feat: los adicionales tambien permiten agregar traduccion a portuges e ingles, de los campos: 'nombre y descripcion'",
-        "feat: se agrego la opcion de eliminar un horario especifico, se accede desde horarios, al editar un horario veras un boton eliminar (no se permite eliminar un horario que tiene reservas).",
-        "chore: cambios menores y optimizacion en general de la app."
+        "feat: se agrego la opcion de eliminar un horario especifico, se accede desde la tabla tours->horarios, al editar un horario verás un boton eliminar (no se permite eliminar un horario que tiene reservas).",
+        "feat: se agrego la seccion de /docs, que permitirá ver detalles de cada seccion. (en proceso, se irá actualizando pronto con mas información)",
+        "fix: se corrigio un error que no permitia cerrar sesion en la app.",
+        "fix: se agrego la zona horaria de America/Argentina/Mendoza para mostrar fechas.",
+        "chore: cambios menores en ui y optimizacion de la app en general."
       ]
     }
   ]
