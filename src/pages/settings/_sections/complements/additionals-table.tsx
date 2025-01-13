@@ -11,7 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/datatable';
 import { PendingContent } from '@/components/pending-content';
-import { DataTableActions, FormAdditional } from './data-table-actions';
+import { DataTableActions } from './data-table-actions';
+import { AdditionalForm } from './additional-form';
 
 const columns: ColumnDef<Additional>[] = [
   {
@@ -121,7 +122,7 @@ export function AdditionalsTable() {
           onClick={() => {
             openModal({
               title: 'Crear Nuevo',
-              component: <FormAdditional closeModal={closeModal} />
+              component: <AdditionalForm closeModal={closeModal} />
             });
           }}
         >
