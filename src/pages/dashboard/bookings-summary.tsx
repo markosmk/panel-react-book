@@ -58,6 +58,7 @@ export function BookingSummarySection() {
               selected={dateSelected}
               onSelect={setDateSelected}
               disabled={isLoading || isFetching}
+              locale={es}
               initialFocus
             />
           </PopoverContent>
