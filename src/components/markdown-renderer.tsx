@@ -4,7 +4,7 @@ import './markdown.css';
 
 const MarkdownRenderer: React.FC<{ content: string }> = ({ content }) => {
   return (
-    <div className="markdown">
+    <div className="markdown max-w-4xl overflow-hidden">
       <div dangerouslySetInnerHTML={{ __html: marked(content) }} />
     </div>
   );

@@ -9,17 +9,28 @@
 .markdown p {
   @apply mb-4 text-base leading-relaxed text-stone-400;
 }
+.markdown hr {
+  @apply my-4 border-stone-600;
+}
+.markdown ul,
+.markdown ol {
+  @apply mb-4 list-inside list-disc pl-4 text-stone-400;
+}
 
-.markdown ul {
-  @apply mb-4 list-inside list-disc text-stone-400;
+.markdown ol {
+  @apply list-decimal;
 }
 
 .markdown li {
   @apply mb-1;
 }
 
+.markdown li p:first-child {
+  @apply inline-flex;
+}
+
 .markdown a {
-  @apply text-blue-300 underline transition-colors hover:text-blue-500;
+  @apply text-stone-300 underline transition-colors hover:text-primary;
 }
 
 .markdown pre {
@@ -28,4 +39,8 @@
 
 .markdown code {
   @apply rounded bg-stone-700 px-1.5 py-0.5 text-sm text-stone-300;
+}
+
+.markdown img {
+  @apply max-w-full;
 }
