@@ -21,13 +21,19 @@ export const queryClient = new QueryClient();
 
 const ErrorFallback = ({ error }: FallbackProps) => {
   const router = useRouter();
+  const isDev = import.meta.env.MODE === 'development';
   return (
     <div
       className="flex h-screen w-screen flex-col items-center  justify-center text-red-500"
       role="alert"
     >
-      <h2 className="text-2xl font-semibold">Ooops, something went wrong:</h2>
-      <pre className="text-2xl font-bold">{error.message}</pre>
+      <h2 className="text-2xl font-semibold">¡Ooops! Algo salió mal.</h2>
+      {isDev && (
+        <>
+          <pre className="text-2xl font-bold">{error.message}</pre>
+          <pre>{error.stack}</pre>
+        </>
+      )}
       <pre>{error.stack}</pre>
       <Button className="mt-4" onClick={() => router.back()}>
         Go back
