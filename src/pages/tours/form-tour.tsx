@@ -21,7 +21,12 @@ import { ButtonLoading } from '@/components/button-loading';
 import { CardForm, CardFormFooter } from '@/components/card-footer-action';
 import { Icons } from '@/components/icons';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger
+} from '@/components/ui/tabs-basic';
 
 import { useRouter } from '@/routes/hooks/use-router';
 import { useCreateEditTour } from '@/services/hooks/tour.mutation';
@@ -217,43 +222,38 @@ export function FormTour({
             </p>
           </div>
 
-          <Tabs defaultValue="spanish" className="">
+          {/* control 3 fields name */}
+          <Tabs defaultValue="spanish">
             <div className="flex items-center justify-between gap-x-2">
               <Label required>Nombre</Label>
-              <TabsList className="mr-4 inline w-[100px]">
-                <TabsTrigger
-                  value="spanish"
-                  className="mx-0 -mb-0 select-none py-0"
-                >
+              <TabsList>
+                <TabsTrigger value="spanish" focusId="name-spanish">
                   Es
                 </TabsTrigger>
-                <TabsTrigger
-                  value="english"
-                  className="mx-0 -mb-0 select-none py-0"
-                >
+                <TabsTrigger value="english" focusId="name-english">
                   En
                 </TabsTrigger>
-                <TabsTrigger
-                  value="portuguese"
-                  className="mx-0 -mb-0 select-none py-0"
-                >
+                <TabsTrigger value="portuguese" focusId="name-portuguese">
                   Pt
                 </TabsTrigger>
               </TabsList>
             </div>
 
-            <TabsContent value="spanish" className="mt-0">
+            <TabsContent value="spanish">
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                    <FormLabel className="sr-only">Nombre</FormLabel>
+                    <FormLabel htmlFor="name-spanish" className="sr-only">
+                      Nombre
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Tour Visita a la Bodega"
                         type="text"
                         {...field}
+                        id="name-spanish"
                         autoComplete="off"
                         data-lpignore="true"
                         data-form-type="other"
@@ -264,18 +264,21 @@ export function FormTour({
                 )}
               />
             </TabsContent>
-            <TabsContent value="english" className="mt-0">
+            <TabsContent value="english">
               <FormField
                 control={form.control}
                 name="name_en"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                    <FormLabel className="sr-only">Nombre</FormLabel>
+                    <FormLabel htmlFor="name-english" className="sr-only">
+                      Nombre
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Tour Visit to the Winery"
                         type="text"
                         {...field}
+                        id="name-english"
                         autoComplete="off"
                         data-lpignore="true"
                         data-form-type="other"
@@ -287,18 +290,21 @@ export function FormTour({
               />
             </TabsContent>
 
-            <TabsContent value="portuguese" className="mt-0">
+            <TabsContent value="portuguese">
               <FormField
                 control={form.control}
                 name="name_pt"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                    <FormLabel className="sr-only">Nombre</FormLabel>
+                    <FormLabel htmlFor="name-portuguese" className="sr-only">
+                      Nombre
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Visita guiada à adega"
                         type="text"
                         {...field}
+                        id="name-portuguese"
                         autoComplete="off"
                         data-lpignore="true"
                         data-form-type="other"
@@ -311,45 +317,45 @@ export function FormTour({
             </TabsContent>
           </Tabs>
 
-          {/* control 3 fields */}
-          <Tabs defaultValue="spanish" className="">
+          {/* control 3 fields description */}
+          <Tabs defaultValue="spanish">
             <div className="flex items-center justify-between gap-x-2">
               <Label required>Descripción Breve</Label>
-              <TabsList className="mr-4 inline w-[100px]">
-                <TabsTrigger
-                  value="spanish"
-                  className="mx-0 -mb-0 select-none py-0"
-                >
+              <TabsList>
+                <TabsTrigger value="spanish" focusId="description-spanish">
                   Es
                 </TabsTrigger>
-                <TabsTrigger
-                  value="english"
-                  className="mx-0 -mb-0 select-none py-0"
-                >
+                <TabsTrigger value="english" focusId="description-english">
                   En
                 </TabsTrigger>
                 <TabsTrigger
                   value="portuguese"
-                  className="mx-0 -mb-0 select-none py-0"
+                  focusId="description-portuguese"
                 >
                   Pt
                 </TabsTrigger>
               </TabsList>
             </div>
 
-            <TabsContent value="spanish" className="mt-0">
+            <TabsContent value="spanish">
               <FormField
                 control={form.control}
                 name="description"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                    <FormLabel className="sr-only">Descripción</FormLabel>
+                    <FormLabel
+                      htmlFor="description-spanish"
+                      className="sr-only"
+                    >
+                      Descripción
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Pequeño mensaje introductorio"
                         className="resize-none"
                         rows={2}
                         {...field}
+                        id="description-spanish"
                       />
                     </FormControl>
                     <FormMessage />
@@ -357,19 +363,25 @@ export function FormTour({
                 )}
               />
             </TabsContent>
-            <TabsContent value="english" className="mt-0">
+            <TabsContent value="english">
               <FormField
                 control={form.control}
                 name="description_en"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                    <FormLabel className="sr-only">Descripción</FormLabel>
+                    <FormLabel
+                      htmlFor="description-english"
+                      className="sr-only"
+                    >
+                      Descripción
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Small introductory message"
                         className="resize-none"
                         rows={2}
                         {...field}
+                        id="description-english"
                       />
                     </FormControl>
                     <FormMessage />
@@ -377,20 +389,25 @@ export function FormTour({
                 )}
               />
             </TabsContent>
-
-            <TabsContent value="portuguese" className="mt-0">
+            <TabsContent value="portuguese">
               <FormField
                 control={form.control}
                 name="description_pt"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                    <FormLabel className="sr-only">Descripción</FormLabel>
+                    <FormLabel
+                      htmlFor="description-portuguese"
+                      className="sr-only"
+                    >
+                      Descripción
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Breve mensagem introdutória"
                         className="resize-none"
                         rows={2}
                         {...field}
+                        id="description-portuguese"
                       />
                     </FormControl>
                     <FormMessage />
@@ -491,45 +508,39 @@ export function FormTour({
             </div>
           </div>
 
-          {/* control 3 fields */}
-          <Tabs defaultValue="spanish" className="">
+          {/* control 3 fields content */}
+          <Tabs defaultValue="spanish">
             <div className="flex items-center justify-between gap-x-2">
               <Label required>Contenido</Label>
-              <TabsList className="mr-4 inline w-[100px]">
-                <TabsTrigger
-                  value="spanish"
-                  className="mx-0 -mb-0 select-none py-0"
-                >
+              <TabsList>
+                <TabsTrigger value="spanish" focusId="content-spanish">
                   Es
                 </TabsTrigger>
-                <TabsTrigger
-                  value="english"
-                  className="mx-0 -mb-0 select-none py-0"
-                >
+                <TabsTrigger value="english" focusId="content-english">
                   En
                 </TabsTrigger>
-                <TabsTrigger
-                  value="portuguese"
-                  className="mx-0 -mb-0 select-none py-0"
-                >
+                <TabsTrigger value="portuguese" focusId="content-portuguese">
                   Pt
                 </TabsTrigger>
               </TabsList>
             </div>
 
-            <TabsContent value="spanish" className="mt-0">
+            <TabsContent value="spanish">
               <FormField
                 control={form.control}
                 name="content"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                    <FormLabel className="sr-only">Contenido</FormLabel>
+                    <FormLabel htmlFor="content-spanish" className="sr-only">
+                      Contenido
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="El Itinerario o detalles de lo que contiene el tour"
                         className="resize-none"
                         rows={8}
                         {...field}
+                        id="content-spanish"
                       />
                     </FormControl>
                     <FormMessage />
@@ -537,19 +548,22 @@ export function FormTour({
                 )}
               />
             </TabsContent>
-            <TabsContent value="english" className="mt-0">
+            <TabsContent value="english">
               <FormField
                 control={form.control}
                 name="content_en"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                    <FormLabel className="sr-only">Contenido</FormLabel>
+                    <FormLabel htmlFor="content-english" className="sr-only">
+                      Contenido
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="The Itinerary or details of what the tour contains"
                         className="resize-none"
                         rows={8}
                         {...field}
+                        id="content-english"
                       />
                     </FormControl>
                     <FormMessage />
@@ -557,20 +571,22 @@ export function FormTour({
                 )}
               />
             </TabsContent>
-
-            <TabsContent value="portuguese" className="mt-0">
+            <TabsContent value="portuguese">
               <FormField
                 control={form.control}
                 name="content_pt"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                    <FormLabel className="sr-only">Contenido</FormLabel>
+                    <FormLabel htmlFor="content-portuguese" className="sr-only">
+                      Contenido
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="O Itinerário ou detalhes do que o passeio contém"
                         className="resize-none"
                         rows={8}
                         {...field}
+                        id="content-portuguese"
                       />
                     </FormControl>
                     <FormMessage />
