@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { toast } from '@/components/notifications';
 import { CONFIG } from '@/constants/config';
-import { queryClient } from '@/providers';
+import { useAuthStore } from '@/stores/use-auth-store';
 
 const axiosApp = axios.create({
   baseURL: CONFIG.apiUrl,
@@ -19,10 +19,10 @@ axiosApp.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('accessToken');
-      queryClient.clear();
-      // queryClient.invalidateQueries({ queryKey: ['currentUser'] });
-      window.location.href = '/login';
+      toast.warning('Tu sesión ha expirado. Vuelve a iniciar sesión.');
+      const logout = useAuthStore.getState().logoutAction;
+      logout();
+      // return (window.location.href = '/login');
     } else if (
       error.response?.status === 429 &&
       error.config.method === 'post'
