@@ -1,3 +1,4 @@
+import { Role } from '@/types/user.types';
 import { CONFIG } from './config';
 
 import { Icons, IconSVG } from '@/components/icons';
@@ -8,7 +9,7 @@ export type NavigationItem = {
   href: string;
   icon: IconSVG;
   disabled?: boolean;
-  role?: string[];
+  role?: Role[];
 };
 
 export const supportOptions: NavigationItem[] = [
@@ -50,7 +51,7 @@ export const adminNavigation: NavigationItem[] = [
     name: 'Usuarios',
     href: '/users',
     icon: Icons.users,
-    role: ['SUPERADMIN']
+    role: [Role.SUPERADMIN]
   },
   {
     name: 'Configuración',

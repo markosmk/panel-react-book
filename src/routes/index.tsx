@@ -4,7 +4,8 @@ import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 import { ProtectedRoute } from './protected-route';
 import { PublicRoute } from './public-route';
 import { BookingPage } from '@/pages/booking';
-import { SAdminRoute } from './sadmin-route';
+import { RoleRoute } from './role-route';
+import { Role } from '@/types/user.types';
 
 const SignInPage = lazy(() => import('@/pages/auth/signin'));
 const PanelLayout = lazy(() => import('@/components/layout/panel-layout'));
@@ -67,9 +68,9 @@ export default function AppRouter() {
         {
           path: 'users',
           element: (
-            <SAdminRoute>
+            <RoleRoute allowedRoles={[Role.SUPERADMIN]}>
               <UsersPage />
-            </SAdminRoute>
+            </RoleRoute>
           )
         },
         {

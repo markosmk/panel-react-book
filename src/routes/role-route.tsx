@@ -1,19 +1,21 @@
 import * as React from 'react';
 import { Navigate } from 'react-router-dom';
 
-import { useAuth } from '@/providers/auth-provider';
 import { toast } from '@/components/notifications';
 import { usePathname } from '@/routes/hooks/use-pathname';
+import { useAuthStore } from '@/stores/use-auth-store';
+import { Role } from '@/types/user.types';
 
-export function SAdminRoute({ children }: React.PropsWithChildren) {
+type Props = {
+  children: React.ReactNode;
+  allowedRoles: Role[];
+};
+
+export function RoleRoute({ children, allowedRoles }: Props) {
   const pathname = usePathname();
-  const {
-    user,
-    isAuthenticated
-    // logoutAction
-  } = useAuth();
+  const { user, isAuthenticated } = useAuthStore();
 
-  if (!isAuthenticated || !user || user?.role !== 'SUPERADMIN') {
+  if (!isAuthenticated || !user || !allowedRoles.includes(user.role as Role)) {
     toast.error('No tienes permiso para acceder a esta sección: ' + pathname);
     return <Navigate to="/" replace />;
   }

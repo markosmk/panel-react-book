@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import axiosApp from '@/lib/axios';
 import { Card, CardContent } from '@/components/ui/card';
 import { ButtonLoading } from '@/components/button-loading';
 import { toast } from '@/components/notifications';
@@ -9,8 +8,11 @@ import { PendingContent } from '@/components/pending-content';
 import { ErrorContent } from '@/components/error-content';
 import { Label } from '@/components/ui/label';
 import { InputPassword } from '@/components/ui/input-password';
+
+import axiosApp from '@/lib/axios';
 import { updateSettinsSAdmin } from '@/services/settings.service';
-import { useAuth } from '@/providers/auth-provider';
+import { useAuthStore } from '@/stores/use-auth-store';
+import { Role } from '@/types/user.types';
 
 const useCache = () => {
   return useQuery({
@@ -52,7 +54,7 @@ function getMostRecentFile(files) {
 }
 
 export function AdvancedSection() {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const { mutateAsync, isPending } = useCacheClean();
   const { data, isLoading, isError } = useCache();
   const [isPendingSAdmin, setIsPendingSAdmin] = React.useState(false);
@@ -78,7 +80,7 @@ export function AdvancedSection() {
 
   const handleSave = async () => {
     if (!formValues.notionDatabaseId || !formValues.notionToken) return;
-    if (!user || user?.role !== 'SUPERADMIN') return;
+    if (!user || user?.role !== Role.SUPERADMIN) return;
     try {
       setIsPendingSAdmin(true);
       await updateSettinsSAdmin(formValues);
@@ -146,7 +148,7 @@ export function AdvancedSection() {
             </ButtonLoading>
           </div>
 
-          {user?.role === 'SUPERADMIN' && (
+          {user?.role === Role.SUPERADMIN && (
             <>
               <hr className="-mx-4 md:-mx-6" />
               <div>
