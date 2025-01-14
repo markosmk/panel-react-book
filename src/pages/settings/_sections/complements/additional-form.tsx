@@ -174,9 +174,15 @@ export function AdditionalForm({
             <div className="flex items-center justify-between gap-x-2">
               <Label required>Nombre</Label>
               <TabsList>
-                <TabsTrigger value="spanish">Es</TabsTrigger>
-                <TabsTrigger value="english">En</TabsTrigger>
-                <TabsTrigger value="portuguese">Pt</TabsTrigger>
+                <TabsTrigger value="spanish" focusId="name-spanish">
+                  Es
+                </TabsTrigger>
+                <TabsTrigger value="english" focusId="name-english">
+                  En
+                </TabsTrigger>
+                <TabsTrigger value="portuguese" focusId="name-portuguese">
+                  Pt
+                </TabsTrigger>
               </TabsList>
             </div>
 
@@ -186,12 +192,15 @@ export function AdditionalForm({
                 name="name"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                    <FormLabel className="sr-only">Nombre</FormLabel>
+                    <FormLabel htmlFor="name-spanish" className="sr-only">
+                      Nombre
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Ej: Degustacion Malbec"
                         type="text"
                         {...field}
+                        id="name-spanish"
                         autoComplete="off"
                         data-lpignore="true"
                         data-form-type="other"
@@ -208,12 +217,15 @@ export function AdditionalForm({
                 name="name_en"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                    <FormLabel className="sr-only">Nombre</FormLabel>
+                    <FormLabel htmlFor="name-english" className="sr-only">
+                      Nombre
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Ex: Degustation Malbec"
                         type="text"
                         {...field}
+                        id="name-english"
                         autoComplete="off"
                         data-lpignore="true"
                         data-form-type="other"
@@ -230,12 +242,15 @@ export function AdditionalForm({
                 name="name_pt"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                    <FormLabel className="sr-only">Nombre</FormLabel>
+                    <FormLabel htmlFor="name-portuguese" className="sr-only">
+                      Nombre
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Ex: Degustacao Malbec"
                         type="text"
                         {...field}
+                        id="name-portuguese"
                         autoComplete="off"
                         data-lpignore="true"
                         data-form-type="other"
@@ -252,9 +267,18 @@ export function AdditionalForm({
             <div className="flex items-center justify-between gap-x-2">
               <Label required>Descripción Breve</Label>
               <TabsList>
-                <TabsTrigger value="spanish">Es</TabsTrigger>
-                <TabsTrigger value="english">En</TabsTrigger>
-                <TabsTrigger value="portuguese">Pt</TabsTrigger>
+                <TabsTrigger value="spanish" focusId="description-spanish">
+                  Es
+                </TabsTrigger>
+                <TabsTrigger value="english" focusId="description-english">
+                  En
+                </TabsTrigger>
+                <TabsTrigger
+                  value="portuguese"
+                  focusId="description-portuguese"
+                >
+                  Pt
+                </TabsTrigger>
               </TabsList>
             </div>
 
@@ -264,11 +288,17 @@ export function AdditionalForm({
                 name="description"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                    <FormLabel className="sr-only">Descripción</FormLabel>
+                    <FormLabel
+                      htmlFor="description-spanish"
+                      className="sr-only"
+                    >
+                      Descripción
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Ej: Duracion de 10 a 20 minutos"
                         {...field}
+                        id="description-spanish"
                       />
                     </FormControl>
                     <FormMessage />
@@ -282,11 +312,17 @@ export function AdditionalForm({
                 name="description_en"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                    <FormLabel className="sr-only">Descripción</FormLabel>
+                    <FormLabel
+                      htmlFor="description-english"
+                      className="sr-only"
+                    >
+                      Descripción
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Ex: Duration of 10 to 20 minutes"
                         {...field}
+                        id="description-english"
                       />
                     </FormControl>
                     <FormMessage />
@@ -300,11 +336,17 @@ export function AdditionalForm({
                 name="description_pt"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                    <FormLabel className="sr-only">Descripción</FormLabel>
+                    <FormLabel
+                      htmlFor="description-portuguese"
+                      className="sr-only"
+                    >
+                      Descripción
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Ex: Duracao de 10 a 20 minutos"
                         {...field}
+                        id="description-portuguese"
                       />
                     </FormControl>
                     <FormMessage />
