@@ -157,7 +157,7 @@ export function ActionsDataTable({ data }: { data: UserTable }) {
 
       <DialogConfirm
         title={`¿Seguro que quieres Eliminar a: ${data.name}?`}
-        description={`Esta acción no se puede deshacer.\nHaz click en "Si, Continuar" para eliminar la reserva.`}
+        description={`Esta acción no se puede deshacer.\nHaz click en "Si, Continuar" para eliminar el usuario.`}
         onConfirm={handleDelete}
         isOpen={openDialog}
         onOpenChange={setOpenDialog}
