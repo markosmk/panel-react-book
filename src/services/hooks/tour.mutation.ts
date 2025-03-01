@@ -72,7 +72,6 @@ export function useCreateEditTour() {
       id: string | number | null;
       data: TourRequest;
     }) => {
-      // await sleep(500);
       if (id !== null) {
         return updateTour(id, data);
       }
@@ -134,14 +133,8 @@ export function useCreateEditTour() {
 export function useDeleteTour() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({
-      id,
-      force
-    }: {
-      id: string | number;
-      force?: boolean;
-    }) => {
-      return await deleteTour(id, force);
+    mutationFn: async ({ id }: { id: string | number }) => {
+      return await deleteTour(id);
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['tours'] });

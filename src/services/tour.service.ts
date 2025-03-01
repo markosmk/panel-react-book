@@ -25,5 +25,5 @@ export const updateTour = async (id: string | number, data: TourRequest) =>
 export const createTour = async (data: TourRequest) =>
   await axios.post('/tours', data);
 
-export const deleteTour = async (id: string | number, force?: boolean) =>
-  await axios.delete(`/tours/${id}${force ? '?force=true' : ''}`);
+export const deleteTour = async (id: string | number) =>
+  await axios.delete(`/tours/${id}`);

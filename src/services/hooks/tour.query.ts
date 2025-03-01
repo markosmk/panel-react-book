@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { getTourById, getTours } from '@/services/tour.service';
 
-export function useTours(page: number, perPage: number) {
+export function useTours() {
+  // page: number, perPage: number
   return useQuery({
-    queryKey: ['tours', page, perPage],
+    queryKey: ['tours'], //page, perPage
     queryFn: async () => {
       const response = await getTours(); //getTours(page, perPage);
       if (response.status !== 200) {
