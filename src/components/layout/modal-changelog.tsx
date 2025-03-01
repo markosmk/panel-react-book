@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { formatDateOnly } from '@/lib/utils';
 import React from 'react';
+import { PendingContent } from '../pending-content';
 
 type Log = {
   version: string;
@@ -11,10 +12,12 @@ type Log = {
 
 export function ModalChangelog() {
   const [content, setContent] = React.useState<Log[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     const fetchChangelog = async () => {
       try {
+        setIsLoading(true);
         const response = await fetch('/assets/changelog.json');
         if (!response.ok) {
           throw new Error('listing not found');
@@ -29,11 +32,18 @@ export function ModalChangelog() {
       } catch (error) {
         console.error('Error loading changelog:', error);
         setContent([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchChangelog();
   }, []);
+
+  if (isLoading) {
+    return <PendingContent withOutText sizeIcon="sm" className="h-40" />;
+  }
+
   return (
     <div className="flex flex-col">
       {content.map((item: any, index: number) => (
