@@ -16,7 +16,7 @@ export function HeadingMain({
   const navigate = useNavigate();
   return (
     <>
-      <div className="relative mt-4 flex items-start gap-4 md:mt-6">
+      <div className="relative mt-4 flex flex-col items-start gap-4 md:mt-6 md:flex-row">
         {hasBackNavigation && (
           <div className="absolute -left-12 top-0 hidden lg:block">
             <Button
@@ -35,39 +35,13 @@ export function HeadingMain({
             <h1 className="text-xl font-semibold tracking-tight md:text-2xl">
               {title}
             </h1>
-            {/* <Badge variant="outline" className="ml-auto sm:ml-0">
-              Disponible
-            </Badge> */}
           </div>
           <p className="text-sm text-muted-foreground md:text-base">
             {description}
           </p>
         </div>
-        {/* {children && ( */}
-        <div className="hidden items-center gap-2 md:ml-auto md:flex">
-          {children}
-          {/* <Button variant="outline" size="sm">
-            Cancelar
-          </Button>
-          <Button size="sm">Guardar Cambios</Button> */}
-        </div>
-        {/* )} */}
+        <div className="items-center gap-2 md:ml-auto">{children}</div>
       </div>
-      {/* <div className="relative mt-6 flex items-start justify-between">
-        <div className="flex w-full flex-col">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 md:text-3xl">
-            {title}
-          </h2>
-          <p className="text-sm text-muted-foreground md:text-lg">
-            {description}
-          </p>
-        </div>
-        {children && (
-          <div className="mt-2 flex items-center justify-center space-x-2">
-            {children}
-          </div>
-        )}
-      </div> */}
     </>
   );
 }
