@@ -7,9 +7,10 @@ import { Icons, IconSVG } from '@/components/icons';
 export type NavigationItem = {
   name: string;
   href: string;
-  icon: IconSVG;
+  icon?: IconSVG;
   disabled?: boolean;
   role?: Role[];
+  submenu?: NavigationItem[];
 };
 
 export const supportOptions: NavigationItem[] = [
@@ -35,12 +36,31 @@ export const adminNavigation: NavigationItem[] = [
   {
     name: 'Reservas',
     href: '/bookings',
-    icon: Icons.bookings
+    icon: Icons.bookings,
+    submenu: [
+      {
+        name: 'Reservas Activas',
+        href: '/bookings'
+      },
+      {
+        name: 'Historial de Reservas',
+        href: '/bookings/history'
+      },
+      {
+        name: 'Crear Reserva',
+        href: '/bookings/create'
+      }
+    ]
   },
   {
     name: 'Tours',
     href: '/tours',
     icon: Icons.tours
+  },
+  {
+    name: 'Adicionales',
+    href: '/additionals',
+    icon: Icons.additionals
   },
   {
     name: 'Clientes',
