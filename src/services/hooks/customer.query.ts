@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { getCustomers } from '../customer.service';
 
-export function useCustomers(page: number, perPage: number) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function useCustomers(page?: number, perPage?: number) {
   return useQuery({
-    queryKey: ['customers', page, perPage],
+    queryKey: ['customers'], //     queryKey: ['customers', page, perPage],
     queryFn: async () => {
       const response = await getCustomers(); //getCustomers(page, perPage);
       if (response.status !== 200) {
