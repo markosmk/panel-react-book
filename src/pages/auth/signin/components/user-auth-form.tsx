@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -17,8 +18,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { InputPassword } from '@/components/ui/input-password';
 import { useAuthStore } from '@/stores/use-auth-store';
-import { useEffect } from 'react';
-import { useModal } from '@/hooks/use-modal';
+import { useModalStore } from '@/utils/modal/use-modal-store';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Ingresa un correo válido.' }),
@@ -40,7 +40,7 @@ const defaultValues = {
 };
 
 export default function UserAuthForm() {
-  const { isOpen, closeModal } = useModal();
+  const { isOpen, closeModal } = useModalStore();
   const { loginAction } = useAuthStore();
   const { mutateAsync, isPending } = useLogin();
 
@@ -49,6 +49,7 @@ export default function UserAuthForm() {
     defaultValues
   });
 
+  //TODO: close modals make in provider, too for confirmModal
   useEffect(() => {
     if (isOpen) closeModal();
   }, [isOpen, closeModal]);
