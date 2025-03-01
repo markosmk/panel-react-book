@@ -39,6 +39,7 @@ export type BookingTable = {
   tour_price: string | null;
   schedule_date: string | null;
   schedule_startTime: string | null;
+  language: string | null;
 };
 
 export interface BookingList {
@@ -60,25 +61,32 @@ export interface BookingDetail {
   quantity: string;
   status: Status;
   tourData: TourSaved | null;
-  aditionalData: AditionalSaved[] | null;
+  additionals: AdditionalRelated[] | null;
   customer: {
     name: string;
     email: string;
     phone: string;
   };
-  tour: Omit<Tour, 'id' | 'createdAt'>;
+  tour: TourBooking;
   schedule: Pick<Schedule, 'date' | 'startTime' | 'endTime'>;
+  notes: string;
+  language?: string;
   created_at: string;
 }
 
-export type TourSaved = Omit<Tour, 'id' | 'created_at' | 'updated_at'> & {
-  last_updated: string;
-};
+export type TourSaved = Pick<Tour, 'name' | 'price' | 'duration'>;
 
-export type AditionalSaved = {
-  id: number | string;
-  name: string;
-  price: number;
+export type TourBooking = Pick<
+  Tour,
+  'name' | 'description' | 'content' | 'duration' | 'price' | 'capacity'
+> & { updatedAt: string };
+
+export type AdditionalRelated = {
+  booking_id: string;
+  additional_id: string;
+  additional_name: string;
+  additional_price: string;
+  additional_description: string;
 };
 
 // to create booking
@@ -95,4 +103,24 @@ export type BookingUpdateRequest = {
   quantity: string | number;
   status: Status;
   totalPrice: string;
+};
+
+export type BookingDelete = {
+  id: string;
+  customerId: string;
+  tourId: string;
+  scheduleId: string;
+  quantity: string;
+  status: Status;
+  totalPrice: string;
+  notes: string;
+  language: string | null;
+  tour_data: {
+    name: string;
+    price: string;
+    duration: string;
+  };
+  created_at: string;
+  updated_at: string;
+  deleted_at: string;
 };

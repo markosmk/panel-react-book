@@ -40,6 +40,7 @@ export interface Availability {
 export interface TourDetail {
   tour: Tour;
   schedules: ScheduleWithAvailable[];
+  // TODO: remover de la aPI availability, ya no lo mostraremos mas
   availability: Availability;
 }
 

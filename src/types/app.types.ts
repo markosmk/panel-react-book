@@ -22,6 +22,8 @@ export type Config = {
   /** only 'cookie' or 'localStorage' for save auth, if use authInjectCookie, this is not necesary */
   authStorageMethod: 'cookie' | 'localStorage';
   app: {
+    /** App name */
+    name: string;
     platformVersion: string;
     supportEmail: string;
     supportPhone: string;
@@ -53,11 +55,6 @@ export type SettingsApp = {
   privacyPolicy?: string;
   isActiveBooking: '1' | '0';
   messageDisabled?: string;
-};
-
-export type SettingsSAdmin = {
-  notionToken: string;
-  notionDatabaseId: string;
 };
 
 export interface Additional {
