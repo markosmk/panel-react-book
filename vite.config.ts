@@ -21,14 +21,25 @@ export default defineConfig({
             if (id.includes('@tanstack')) return 'tanstack-vendors';
             if (id.includes('zod') || id.includes('react-hook-form'))
               return 'forms-vendors';
-            if (id.includes('@radix-ui')) return 'ui-vendors';
+            // if (id.includes('@radix-ui')) return 'ui-vendors';
             if (id.includes('date-fns') || id.includes('date-fns-tz'))
               return 'date-vendors';
             if (id.includes('marked')) return 'marked-vendors';
-            if (id.includes('react') || id.includes('react-dom'))
-              return 'vendor';
+            if (id.includes('react') || id.includes('@radix-ui')) {
+              return 'react-ui-vendors'; // Agrupa React y Radix juntos
+            }
+            // if (id.includes('react') || id.includes('react-dom')) return 'react-vendors';
+            return 'vendor';
           }
         }
+        // manualChunks(id) {
+        //   if (id.includes('node_modules')) {
+        //     if (id.includes('xlsx')) return 'xlsx-vendors';
+        //     if (id.includes('react-router-dom')) return 'router-vendors';
+        //     if (id.includes('react')) return 'react-vendors';
+        //     return 'vendor';
+        //   }
+        // }
       }
     }
   }
