@@ -2,7 +2,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 import { Status } from '@/types/booking.types';
-import { deleteBooking, updateStatusBooking } from '../booking.service';
+import {
+  BookingManualParams,
+  createManualBooking,
+  deleteBooking,
+  editBooking,
+  updateStatusBooking
+} from '../booking.service';
 import { toast } from '@/components/notifications';
 
 type StatusProps = {
@@ -54,4 +60,42 @@ export function useDeleteBooking() {
       toast.error(message);
     }
   });
+}
+
+export function useCreateEditBooking() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      id,
+      data
+    }: {
+      id: string | number | null;
+      data: BookingManualParams;
+    }) => {
+      if (id !== null) {
+        return editBooking(id, data);
+        // return;
+      }
+      return createManualBooking(data);
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+    },
+    onError: handleMutationError
+  });
+}
+
+export function handleMutationError(error: unknown) {
+  let message = 'Error al procesar la solicitud.';
+  // AxiosError<{ messages: { error?: string; email?: string; phone?: string } }>
+  if (error instanceof AxiosError) {
+    const data = error.response?.data;
+    if (data?.messages?.error) {
+      message = data.messages.error;
+    }
+    if (data?.messages?.email || data?.messages?.phone) {
+      message = data.messages.email || data.messages.phone || message;
+    }
+  }
+  toast.error(message);
 }

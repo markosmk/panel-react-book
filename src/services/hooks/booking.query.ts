@@ -1,19 +1,23 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getBookings, getBookingsByDateSchedule } from '../booking.service';
+import {
+  BookingParams,
+  getBookings,
+  getBookingsByDateSchedule,
+  getBookingsDeleted
+} from '../booking.service';
 
-export function useBookings() {
-  //page: number, perPage: number) {
+export function useBookings(filters?: BookingParams) {
   return useQuery({
-    queryKey: ['bookings'], // page, perPage
+    queryKey: ['bookings', filters],
     queryFn: async () => {
-      const response = await getBookings(); // getBookings(page, perPage);
+      const response = await getBookings(filters); // getBookings(page, perPage);
       if (response.status !== 200) {
         throw new Error('Invalid booking data');
       }
       return response.data;
     },
-    staleTime: 2 * 60 * 1000,
+    staleTime: 1 * 60 * 1000,
     refetchOnWindowFocus: 'always',
     retry: false
   });
@@ -30,6 +34,22 @@ export function useBookingSummary(date: string) {
       return response.data;
     },
     staleTime: 3 * 60 * 1000,
+    refetchOnWindowFocus: 'always',
+    retry: false
+  });
+}
+
+export function useBookingsDeleted() {
+  return useQuery({
+    queryKey: ['bookingsDeleted'],
+    queryFn: async () => {
+      const response = await getBookingsDeleted();
+      if (response.status !== 200) {
+        throw new Error('Invalid booking data');
+      }
+      return response.data;
+    },
+    staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: 'always',
     retry: false
   });
