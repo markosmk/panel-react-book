@@ -27,14 +27,13 @@ import {
 import { cn, formatPrice } from '@/lib/utils';
 import { ScheduleSummary } from '@/types/summary.types';
 import { BadgeStatus } from '@/components/badge-status';
-import { Status } from '@/types/booking.types';
 import { EyeClosedIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 
 // import { DataTableActions } from './data-table-actions';
 
 const columns: ColumnDef<ScheduleSummary>[] = [
   {
-    accessorKey: 'startTime',
+    accessorKey: 'schedule_start_time',
     header: ({ column }) => {
       return (
         <div className="flex max-w-20 items-center gap-x-2">
@@ -52,16 +51,16 @@ const columns: ColumnDef<ScheduleSummary>[] = [
     },
     cell: ({ row }) => (
       <div className="flex max-w-20 select-none flex-col gap-x-2">
-        {row.getValue('startTime')?.toString().slice(0, 5)}hs
+        {row.getValue('schedule_start_time')?.toString().slice(0, 5)}hs
         <span className="truncate text-xs text-muted-foreground">
-          {row.original.endTime || ''}
+          {row.original.schedule_end_time || ''}
         </span>
       </div>
     )
   },
 
   {
-    accessorKey: 'tourName',
+    accessorKey: 'tour_name',
     header: ({ column }) => (
       <div className="flex items-center gap-x-2">
         <Button
@@ -78,13 +77,13 @@ const columns: ColumnDef<ScheduleSummary>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex select-none flex-col gap-x-2 md:min-w-44">
-          {row.getValue('tourName')}
+          {row.getValue('tour_name')}
           <span className="text-xs text-muted-foreground">
             Precio/Persona:{' '}
-            {formatPrice(Number(row.original.tourPrice)) ?? 'N/A'} | Duracion:{' '}
-            {row.original.tourDuration ?? ''} | Capadidad:{' '}
-            {row.original.tourCapacity}
-            {`${Number(row.original.tourCapacity) > 1 ? 'personas' : 'persona'}`}
+            {formatPrice(Number(row.original.tour_price)) ?? 'N/A'} | Duracion:{' '}
+            {row.original.tour_duration ?? ''} | Capadidad:{' '}
+            {row.original.tour_capacity}
+            {`${Number(row.original.tour_capacity) > 1 ? ' personas' : ' persona'}`}
           </span>
         </div>
       );
@@ -92,7 +91,7 @@ const columns: ColumnDef<ScheduleSummary>[] = [
   },
 
   {
-    accessorKey: 'reservationsCount',
+    accessorKey: 'reservations_count',
     header: () => (
       <div className="hidden max-w-32 text-xs font-semibold uppercase md:flex">
         Cant. de Reservas
@@ -101,13 +100,13 @@ const columns: ColumnDef<ScheduleSummary>[] = [
     cell: ({ row }) => {
       return (
         <div className="hidden max-w-32 select-none flex-col gap-x-2 text-center md:flex">
-          {row.getValue('reservationsCount')}
+          {row.getValue('reservations_count')}
         </div>
       );
     }
   },
   {
-    accessorKey: 'totalReserved',
+    accessorKey: 'total_reserved',
     header: () => (
       <div className="hidden max-w-32 text-xs font-semibold uppercase md:flex">
         Cant. de Personas
@@ -116,7 +115,7 @@ const columns: ColumnDef<ScheduleSummary>[] = [
     cell: ({ row }) => {
       return (
         <div className="hidden max-w-32 select-none flex-col gap-x-2 text-center md:flex">
-          {row.getValue('totalReserved')}
+          {row.getValue('total_reserved')}
         </div>
       );
     }
@@ -145,9 +144,9 @@ const columns: ColumnDef<ScheduleSummary>[] = [
 const renderSubComponent = ({ row }: { row: Row<ScheduleSummary> }) => {
   return (
     <div className="space-y-4 divide-y bg-background p-2 lg:p-4">
-      {row.original.reservations.map((reservation) => (
+      {row.original.reservations?.map((reservation) => (
         <div
-          key={reservation.id}
+          key={reservation.booking_id}
           className="flex flex-wrap items-start justify-between gap-4 py-2 first:pt-0 last:pb-0 last:pt-2"
         >
           <div className="flex flex-col items-start">
@@ -155,13 +154,13 @@ const renderSubComponent = ({ row }: { row: Row<ScheduleSummary> }) => {
               Cliente
             </p>
             <span className="text-sm font-semibold">
-              {reservation.customerName}
+              {reservation.customer_name}
             </span>
             <span className="text-xs text-muted-foreground">
-              {reservation.customerEmail} | {reservation.customerPhone}
+              {reservation.customer_email} | {reservation.customer_phone}
             </span>
             <span className="text-xs text-muted-foreground">
-              Notas: {reservation.notes || 'ninguno'}
+              Notas: {reservation.booking_notes || 'ninguno'}
             </span>
           </div>
 
@@ -170,8 +169,8 @@ const renderSubComponent = ({ row }: { row: Row<ScheduleSummary> }) => {
               Cantidad Reservada
             </p>
             <span className="text-sm font-semibold">
-              {reservation.quantity} persona
-              {Number(reservation.quantity) > 1 ? 's' : ''}
+              {reservation.booking_quantity} persona
+              {Number(reservation.booking_quantity) > 1 ? 's' : ''}
             </span>
           </div>
 
@@ -180,7 +179,7 @@ const renderSubComponent = ({ row }: { row: Row<ScheduleSummary> }) => {
               Precio Total
             </p>
             <span className="text-sm font-semibold">
-              {formatPrice(Number(reservation.totalPrice))}
+              {formatPrice(Number(reservation.booking_total_price))}
             </span>
           </div>
 
@@ -188,7 +187,7 @@ const renderSubComponent = ({ row }: { row: Row<ScheduleSummary> }) => {
             <p className="mb-1 text-xs font-light uppercase text-muted-foreground">
               Estado Actual
             </p>
-            <BadgeStatus status={reservation.status as Status} />
+            <BadgeStatus status={reservation.booking_status} />
           </div>
         </div>
       ))}
