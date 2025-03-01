@@ -1,5 +1,5 @@
 import axios from '@/lib/axios';
-import { SettingsApp, SettingsSAdmin } from '@/types/app.types';
+import { SettingsApp } from '@/types/app.types';
 
 export const getSettings = async () => {
   return await axios.get<SettingsApp>('/options/panel');
@@ -8,8 +8,8 @@ export const getSettings = async () => {
 export const updateSettings = async (data: SettingsApp) =>
   await axios.put<{ message: string }>('/options', data);
 
-export const updateSettinsSAdmin = async (data: SettingsSAdmin) =>
-  await axios.put<{ message: string }>('/options/sadmin', data);
+// export const updateSettinsSAdmin = async (data: SettingsSAdmin) =>
+//   await axios.put<{ message: string }>('/options/sadmin', data);
 
 export const updateUserSelf = async (
   id: string | number,
