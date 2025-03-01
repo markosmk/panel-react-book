@@ -100,12 +100,8 @@ export function FormChangeStatus({
 
   return (
     <div className="grid gap-4">
-      <div className="space-y-2">
+      <div className="hidden space-y-2 md:block">
         <h4 className="font-medium leading-none">Edicion Rápida</h4>
-        <p className="text-sm text-muted-foreground">
-          Los cambios en el estado permiten organizar tus reservas, actualizarán
-          además las estadísticas mensuales.
-        </p>
       </div>
       <div
         className={cn(

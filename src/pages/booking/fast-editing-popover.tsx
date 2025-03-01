@@ -22,24 +22,6 @@ export function FastEditingPopover({ booking }: { booking: BookingTable }) {
       open={isOpen}
       modal={true}
       onOpenChange={(isOpen) => {
-        // if (!isOpen && hasUnsavedChanges) {
-        //   const confirmClose = window.confirm(
-        //     'Tienes cambios sin guardar. ¿Deseas descartarlos?'
-        //   );
-
-        //   if (!confirmClose) {
-        //     // this is when user clicks cancel
-        //     setIsOpen(true); // mantain the popover open
-        //     return;
-        //   }
-
-        //   // user confirms to close
-        //   resetForm();
-        // }
-
-        // // use normal to close or open
-        // setIsOpen(isOpen);
-
         if (!isOpen && hasUnsavedChanges) {
           toast.warning(
             'Tienes cambios sin guardar. Usa "Cancelar" o "Guardar Cambios".'
