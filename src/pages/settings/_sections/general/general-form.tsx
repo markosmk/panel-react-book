@@ -29,9 +29,17 @@ const formSchema = z
       .max(20, 'El campo no puede tener más de 20 caracteres'),
     email: z
       .string()
-      .email()
       .min(1, 'El campo no puede estar vacio')
-      .max(150, 'El campo no puede tener más de 150 caracteres'),
+      .refine(
+        (value) => {
+          const emails = value.split(',').map((email) => email.trim());
+          return emails.every((email) => /\S+@\S+\.\S+/.test(email));
+        },
+        { message: 'Uno o más correos electrónicos no son válidos.' }
+      )
+      .refine((value) => value.split(',').length <= 4, {
+        message: 'No puedes agregar más de 4 correos electrónicos.'
+      }),
     aditionalNote: z
       .string()
       .trim()
@@ -104,7 +112,7 @@ export function GeneralForm({
             render={({ field }) => (
               <FormItem>
                 <div className="space-y-0.5 pr-2">
-                  <FormLabel className="text-base">
+                  <FormLabel className="text-base" required>
                     Número de Contacto
                   </FormLabel>
                   <FormDescription>
@@ -126,17 +134,22 @@ export function GeneralForm({
             render={({ field }) => (
               <FormItem>
                 <div className="space-y-0.5 pr-2">
-                  <FormLabel className="text-base">
+                  <FormLabel className="text-base" required>
                     Correo Electrónico
                   </FormLabel>
                   <FormDescription>
-                    El email en el que recibirás un mensaje cuando un cliente
-                    realize una reserva.
+                    Los emails en donde recibirás un mensaje cuando un cliente
+                    realize una reserva. Puedes agregar más de uno, separandolos
+                    con una coma (max 4 emails).
                   </FormDescription>
                 </div>
                 <FormControl>
-                  <Input placeholder="Ej: usuario@gmail.com" {...field} />
+                  <Input
+                    placeholder="Ej: usuario@gmail.com, usuario2@gmail.com"
+                    {...field}
+                  />
                 </FormControl>
+
                 <FormMessage />
               </FormItem>
             )}
@@ -148,7 +161,9 @@ export function GeneralForm({
             render={({ field }) => (
               <FormItem>
                 <div className="space-y-0.5 pr-2">
-                  <FormLabel className="text-base">Notas Adicionales</FormLabel>
+                  <FormLabel className="text-base" required>
+                    Notas Adicionales
+                  </FormLabel>
                   <FormDescription>
                     Antes de finalizar la reserva, y antes que el cliente envie
                     un mensaje por whatsapp puedes mostrar esta nota adicional.
@@ -173,7 +188,7 @@ export function GeneralForm({
             render={({ field }) => (
               <FormItem>
                 <div className="space-y-0.5 pr-2">
-                  <FormLabel className="text-base">
+                  <FormLabel className="text-base" required>
                     Términos y Condiciones de Reserva
                   </FormLabel>
                   <FormDescription>
