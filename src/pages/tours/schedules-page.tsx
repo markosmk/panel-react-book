@@ -1,25 +1,43 @@
 import { useParams } from 'react-router-dom';
 
 import { useTourDetail } from '@/services/hooks/tour.query';
-import { cn, formatDateOnly, formatPrice } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
 
 import { HeadingMain } from '@/components/heading-main';
 import { PendingContent } from '@/components/pending-content';
-import { Card, CardContent } from '@/components/ui/card';
-
-import { FormSchedules } from './_components/form-schedules';
-import { Alert } from '@/components/ui/alert';
 import { ErrorContent } from '@/components/error-content';
 import { NoContent } from '@/components/no-content';
+import { Card, CardContent } from '@/components/ui/card';
+import { Alert } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+
+import { FormSchedules } from './_components/form-schedules';
+import { ModifyPeriodSchedule } from './_components/modify-period-schedule';
+import { useModalStore } from '@/utils/modal/use-modal-store';
 
 export default function TourSchedulesPage() {
   const { tourId } = useParams();
+  const { openModal, closeModal } = useModalStore();
   const {
     data: tourDetail,
     isLoading,
     isFetching,
     isError
   } = useTourDetail(tourId || '');
+
+  const handleAddByRange = () => {
+    if (!tourDetail?.tour.id) return;
+    openModal({
+      title: 'Agregar o Modificar Horarios',
+      content: (
+        <ModifyPeriodSchedule
+          tourId={tourDetail?.tour.id}
+          closeModal={closeModal}
+          action="create"
+        />
+      )
+    });
+  };
 
   if (isLoading) return <PendingContent withOutText className="h-40" />;
   if (isError) return <ErrorContent />;
@@ -31,47 +49,41 @@ export default function TourSchedulesPage() {
         title="Gestion de Horarios"
         description={`Tour: ${tourDetail.tour.name}`}
         hasBackNavigation
-      />
+      >
+        <Button
+          type="button"
+          title="Acciones"
+          disabled={isLoading || isFetching}
+          onClick={handleAddByRange}
+        >
+          <span>Acciones</span>
+        </Button>
+      </HeadingMain>
 
       <Card className={cn(isFetching && 'cursor-wait')}>
         <CardContent>
-          {tourDetail.availability && (
-            <Alert variant="info" className="mb-4">
-              <p className="mb-2 text-lg font-medium">Informacion del Tour:</p>
-              <div className="flex gap-2">
-                <div className="flex w-full flex-col">
-                  <p>Precio:</p>
-                  <p className="font-semibold text-cyan-200">
-                    {formatPrice(Number(tourDetail.tour.price))}
-                  </p>
-                </div>
-                <div className="flex w-full flex-col">
-                  <p>Capacidad:</p>
-                  <p className="font-semibold text-cyan-200">
-                    {tourDetail.tour.capacity} personas
-                  </p>
-                </div>
-                <div className="flex w-full flex-col">
-                  <p>Duracion:</p>
-                  <p className="font-semibold text-cyan-200">
-                    {tourDetail.tour.duration}
-                  </p>
-                </div>
+          <h3 className="mb-1 text-lg font-bold">Informacion del Tour</h3>
+          <Alert className="mb-4">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              <div className="flex flex-col">
+                <p className="font-light text-muted-foreground">Precio:</p>
+                <p className="font-semibold">
+                  {formatPrice(Number(tourDetail.tour.price))}
+                </p>
               </div>
-              <p>Disponibilidad desde:</p>
-              <p className="e font-semibold text-cyan-200">
-                {formatDateOnly(
-                  tourDetail.availability.dateFrom,
-                  "dd 'de' MMMM, yyyy"
-                )}
-                <span className="px-1 text-cyan-500">{' -> '}</span>
-                {formatDateOnly(
-                  tourDetail.availability.dateTo,
-                  "dd 'de' MMMM, yyyy"
-                )}
-              </p>
-            </Alert>
-          )}
+              <div className="flex flex-col">
+                <p className="font-light text-muted-foreground">Capacidad:</p>
+                <p className="font-semibold">
+                  {tourDetail.tour.capacity} personas
+                </p>
+              </div>
+              <div className="flex flex-col">
+                <p className="font-light text-muted-foreground">Duracion:</p>
+                <p className="font-semibold">{tourDetail.tour.duration}</p>
+              </div>
+            </div>
+          </Alert>
+
           <FormSchedules tour={tourDetail.tour} />
         </CardContent>
       </Card>

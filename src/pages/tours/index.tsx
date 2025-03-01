@@ -1,21 +1,18 @@
-import { HeadingMain } from '@/components/heading-main';
-import { PendingContent } from '@/components/pending-content';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ToursDataTable } from './tours-data-table';
+import { useNavigate } from 'react-router-dom';
+import { ToursTable } from './tours-table';
 import { useTours } from '@/services/hooks/tour.query';
+
+import { HeadingMain } from '@/components/heading-main';
 import { Button } from '@/components/ui/button';
-import { ErrorContent } from '@/components/error-content';
+import { WrapperQueryTable } from '@/components/wrapper-query-table';
 
 export default function ToursPage() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const page = Number(searchParams.get('page') || 1);
-  const perPage = Number(searchParams.get('perPage') || 10);
+  // const [searchParams] = useSearchParams();
+  // const page = Number(searchParams.get('page') || 1);
+  // const perPage = Number(searchParams.get('perPage') || 10);
   // query
-  const { data, isLoading, isError } = useTours(page, perPage);
-
-  if (isLoading) return <PendingContent withOutText className="h-40" />;
-  if (isError) return <ErrorContent />;
+  const { data, isLoading, isFetching, isError } = useTours();
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-8 px-6">
@@ -28,7 +25,14 @@ export default function ToursPage() {
         </Button>
       </HeadingMain>
 
-      <ToursDataTable data={data ?? []} />
+      <WrapperQueryTable
+        data={data}
+        isLoading={isLoading}
+        isFetching={isFetching}
+        isError={isError}
+      >
+        <ToursTable data={data || []} />
+      </WrapperQueryTable>
     </div>
   );
 }

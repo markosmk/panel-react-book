@@ -117,8 +117,8 @@ export function FastEditingPopover({ data }: { data: Tour }) {
           <div className="space-y-2">
             <h4 className="font-medium leading-none">Edicion Rápida</h4>
             <p className="text-sm text-muted-foreground">
-              Al actualizar no se cambiarán los datos de las reservas ya
-              realizadas, se aplicarán los cambios para las nuevas reservas.
+              Al actualizar el precio de un tour se pueden ver afectadas las
+              reservas realizadas.
             </p>
           </div>
           <div
