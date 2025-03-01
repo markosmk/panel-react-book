@@ -1,24 +1,23 @@
-import { DataTableUsers } from './data-table-users';
-import { PendingContent } from '@/components/pending-content';
-import { HeadingMain } from '@/components/heading-main';
+// import { useNavigate } from 'react-router-dom';
 
+import { UserForm } from './user-form';
 import { useUsers } from '@/services/hooks/user.query';
+
 import { Button } from '@/components/ui/button';
-import { useModal } from '@/hooks/use-modal';
-import { FormUser } from './form-edit-user';
-import { ErrorContent } from '@/components/error-content';
+import { HeadingMain } from '@/components/heading-main';
+import { useModalStore } from '@/utils/modal/use-modal-store';
+import { WrapperQueryTable } from '@/components/wrapper-query-table';
+import { UserTable } from './user-table';
 
 export default function UsersPage() {
-  const { openModal, closeModal } = useModal();
-  const { data, isLoading, isError } = useUsers();
-
-  if (isLoading) return <PendingContent withOutText className="h-40" />;
-  if (isError) return <ErrorContent />;
+  // const navigate = useNavigate();
+  const { openModal, closeModal } = useModalStore();
+  const { data, isLoading, isFetching, isError } = useUsers();
 
   const handleNewUser = () => {
     openModal({
       title: 'Crear Usuario',
-      component: <FormUser data={null} closeModal={closeModal} />
+      content: <UserForm data={null} closeModal={closeModal} />
     });
   };
 
@@ -28,11 +27,22 @@ export default function UsersPage() {
         title="Lista de Usuarios"
         description="Administra todos los usuarios que pueden iniciar sesion en la aplicacion."
       >
+        {/* <Button type="button" onClick={() => navigate('/users/roles')}>
+          Roles
+        </Button> */}
         <Button type="button" onClick={handleNewUser}>
           Crear Usuario
         </Button>
       </HeadingMain>
-      <DataTableUsers data={data || []} />
+
+      <WrapperQueryTable
+        data={data}
+        isLoading={isLoading}
+        isFetching={isFetching}
+        isError={isError}
+      >
+        <UserTable data={data || []} />
+      </WrapperQueryTable>
     </div>
   );
 }

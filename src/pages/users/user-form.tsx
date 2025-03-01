@@ -38,7 +38,7 @@ const baseUserSchema = z.object({
 });
 
 const createUserSchema = baseUserSchema.extend({
-  password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres')
+  password: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres')
 });
 
 const updateUserSchema = baseUserSchema.extend({
@@ -50,7 +50,7 @@ type FormChangeStatusProps = {
   closeModal: () => void;
 };
 
-export function FormUser({ data, closeModal }: FormChangeStatusProps) {
+export function UserForm({ data, closeModal }: FormChangeStatusProps) {
   const isEditing = !!data;
   const schema = isEditing ? updateUserSchema : createUserSchema;
   const form = useForm<z.infer<typeof schema>>({
