@@ -202,3 +202,37 @@ export function display12HourValue(hours: number) {
   if (hours % 12 > 9) return `${hours}`;
   return `0${hours % 12}`;
 }
+
+export function getTimeByType(time: string, timePicker: TimePickerType) {
+  switch (timePicker) {
+    case '12hours':
+      return time;
+    case 'hours':
+      return time.split(':')[0];
+    case 'minutes':
+      return time.split(':')[1];
+    case 'seconds':
+      return time.split(':')[2];
+    default:
+      return '00:00:00';
+  }
+}
+
+export function setTimeByType(
+  time: string,
+  newValue: string,
+  picker: TimePickerType
+) {
+  switch (picker) {
+    case '12hours':
+      return newValue;
+    case 'hours':
+      return `${newValue}:${time.split(':')[1]}:${time.split(':')[2]}`;
+    case 'minutes':
+      return `${time.split(':')[0]}:${newValue}:${time.split(':')[2]}`;
+    case 'seconds':
+      return `${time.split(':')[0]}:${time.split(':')[1]}:${newValue}`;
+    default:
+      return '00:00:00';
+  }
+}
