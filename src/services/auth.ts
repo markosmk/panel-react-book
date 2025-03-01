@@ -1,6 +1,5 @@
 /* eslint-disable no-useless-catch */
 import { CONFIG } from '@/constants/config';
-import { sleep } from '@/lib/utils';
 
 export const authClient = {
   login: async (credentials: { email: string; password: string }) => {
@@ -26,7 +25,6 @@ export const authClient = {
         method: 'POST',
         credentials: 'include'
       });
-      await sleep(300);
     } catch (error: unknown) {
       console.error('Error fetch in logout:', error);
       // throw error;
@@ -42,7 +40,6 @@ export const authClient = {
         },
         credentials: 'include'
       });
-      await sleep(300);
 
       if (!response.ok) throw new Error('Failed to fetch user');
 

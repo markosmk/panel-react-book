@@ -13,7 +13,6 @@ export function useCreateEditAdditional() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: AdditionalRequest) => {
-      // await sleep(500);
       if (data?.id && data?.id !== null) {
         return updateAdditional(data.id, data);
       } else {
@@ -55,7 +54,6 @@ export function useAdditionalDelete() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string | number) => {
-      // await sleep(500);
       return await deleteAdditional(id);
     },
     onSuccess: async () => {
