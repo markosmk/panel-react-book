@@ -18,6 +18,19 @@ export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export function formatId(id: number | string, prefix: string = '#B00k') {
+  const idString = id.toString();
+  return `${prefix}${idString.length < 5 ? idString.padStart(5, '0') : idString}`;
+}
+
+/** add 12 hours to object Date To normalize the date when the date object adds the local time zone, by adding 12 hours, it will never go from the current day,
+ * object Date take timeZone local, then for ex for +3 output ex: 2025-01-24T15:00:00.000Z */
+export function normalizeDate(date: Date): Date {
+  const normalized = new Date(date);
+  normalized.setHours(12, 0, 0, 0);
+  return normalized;
+}
+
 /** Inverse date format ex: 2024-12-31 => 31-12-2024 */
 export function formatDateString(dateString: string) {
   const dateParts = dateString.split('-');
@@ -109,70 +122,71 @@ export function isTodayOrRecent(
  * Converts a time string in the format "HH:mm:ss" to minutes.
  * For example, "02:30:00" becomes 150 minutes.
  */
-export function convertToMinutes(timeString: string): number {
-  if (!timeString) return 0;
-  const [hours, minutes] = timeString.split(':').map(Number);
-  return hours * 60 + minutes;
-}
+// export function convertToMinutes(timeString: string): number {
+//   if (!timeString) return 0;
+//   const [hours, minutes] = timeString.split(':').map(Number);
+//   return hours * 60 + minutes;
+// }
 
 /**
  * Calculates the duration in minutes between two given times.
  * The times are given as strings in the format "HH:mm:ss".
  * If the times cross midnight, the duration is still calculated correctly.
  */
-export function calculateDurationInMinutes(
-  startTime: string,
-  endTime: string
-): number {
-  if (!startTime || !endTime) return 0;
-  const timeToSeconds = (time: string): number => {
-    const [hours, minutes, seconds] = time.split(':').map(Number);
-    return hours * 3600 + minutes * 60 + seconds;
-  };
-  const startSeconds = timeToSeconds(startTime);
-  const endSeconds = timeToSeconds(endTime);
+// export function calculateDurationInMinutes(
+//   startTime: string,
+//   endTime: string
+// ): number {
+//   if (!startTime || !endTime) return 0;
+//   const timeToSeconds = (time: string): number => {
+//     const [hours, minutes, seconds] = time.split(':').map(Number);
+//     return hours * 3600 + minutes * 60 + seconds;
+//   };
+//   const startSeconds = timeToSeconds(startTime);
+//   const endSeconds = timeToSeconds(endTime);
 
-  const durationInSeconds =
-    endSeconds >= startSeconds
-      ? endSeconds - startSeconds
-      : 24 * 3600 - startSeconds + endSeconds;
+//   const durationInSeconds =
+//     endSeconds >= startSeconds
+//       ? endSeconds - startSeconds
+//       : 24 * 3600 - startSeconds + endSeconds;
 
-  // convert to minutes
-  return Math.floor(durationInSeconds / 60);
-}
+//   // convert to minutes
+//   return Math.floor(durationInSeconds / 60);
+// }
 
 /**
  * Formats a given Date object to a string in "HH:mm:ss" format.
  * If the date is undefined, returns "00:00:00".
  */
-export function formatTime(date: Date | undefined): string {
-  if (!date) return '00:00:00';
-  const hours = String(date.getUTCHours()).padStart(2, '0');
-  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
-  return `${hours}:${minutes}:${seconds}`;
-}
+// export function formatTime(date: Date | undefined): string {
+//   if (!date) return '00:00:00';
+//   const hours = String(date.getUTCHours()).padStart(2, '0');
+//   const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+//   const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+//   return `${hours}:${minutes}:${seconds}`;
+// }
 
 /**
  * Converts a given time string in the format "HH:mm:ss" to a Date object.
  * If the input string is undefined, returns a Date object set to 1970-01-01 00:00:00 UTC.
  */
-export function timeToDate(timeString: string): Date {
-  if (!timeString) return new Date(Date.UTC(1970, 0, 1));
-  const [hours, minutes, seconds] = timeString.split(':').map(Number);
-  const date = new Date(Date.UTC(1970, 0, 1));
-  date.setUTCHours(hours, minutes, seconds);
-  return date;
-}
+// export function timeToDate(timeString: string): Date {
+//   if (!timeString) return new Date(Date.UTC(1970, 0, 1));
+//   const [hours, minutes, seconds] = timeString.split(':').map(Number);
+//   const date = new Date(Date.UTC(1970, 0, 1));
+//   date.setUTCHours(hours, minutes, seconds);
+//   return date;
+// }
 
 /**
  * Formats a given number as a string in the specified currency and locale.
  */
 export function formatPrice(
-  price: number,
+  price: number | string,
   currency = 'ARS',
   locale = 'es-AR'
 ): string {
+  if (typeof price === 'string') price = parseFloat(price);
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency: currency
