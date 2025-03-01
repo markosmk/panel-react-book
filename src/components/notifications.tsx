@@ -92,6 +92,7 @@ export const NotificationContainer = ({ ...props }: ToasterProps) => (
     visibleToasts={1}
     expand={true}
     position="top-right"
+    className="flex justify-end"
     toastOptions={{
       duration: 2500
     }}
