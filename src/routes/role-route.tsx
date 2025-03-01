@@ -14,11 +14,16 @@ type Props = {
 export function RoleRoute({ children, allowedRoles }: Props) {
   const pathname = usePathname();
   const { user, isAuthenticated } = useAuthStore();
+  const hasShownToast = React.useRef(false);
 
   if (!isAuthenticated || !user || !allowedRoles.includes(user.role as Role)) {
-    toast.error('No tienes permiso para acceder a esta sección: ' + pathname);
+    if (!hasShownToast.current) {
+      toast.error('No tienes permiso para acceder a esta sección: ' + pathname);
+      hasShownToast.current = true;
+    }
     return <Navigate to="/" replace />;
   }
 
+  hasShownToast.current = false;
   return <>{children}</>;
 }

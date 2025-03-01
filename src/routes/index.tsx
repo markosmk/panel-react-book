@@ -17,7 +17,11 @@ const TourEditPage = lazy(() => import('@/pages/tours/edit-page'));
 const TourCreatePage = lazy(() => import('@/pages/tours/create-page'));
 const TourSchedulesPage = lazy(() => import('@/pages/tours/schedules-page'));
 const UsersPage = lazy(() => import('@/pages/users'));
+const RolesPage = lazy(() => import('@/pages/roles'));
 const DocsPage = lazy(() => import('@/pages/docs'));
+const AdditionalPage = lazy(() => import('@/pages/additional'));
+const BookingHistoryPage = lazy(() => import('@/pages/booking-history'));
+const BookingCreatePage = lazy(() => import('@/pages/booking/create-page'));
 
 export default function AppRouter() {
   const panelRoutes = [
@@ -42,6 +46,15 @@ export default function AppRouter() {
           element: <BookingPage />
         },
         {
+          path: 'bookings/create',
+          element: <BookingCreatePage />
+        },
+
+        {
+          path: 'bookings/history',
+          element: <BookingHistoryPage />
+        },
+        {
           path: 'tours',
           element: <ToursPage />
         },
@@ -58,20 +71,40 @@ export default function AppRouter() {
           element: <TourSchedulesPage />
         },
         {
+          path: 'additionals',
+          element: <AdditionalPage />
+        },
+        {
           path: 'customers',
           element: <CustomersPage />
         },
         {
           path: 'settings',
-          element: <SettingsPage />
+          element: (
+            // <RoleRoute allowedRoles={[Role.SUPERADMIN]}>
+            <SettingsPage />
+            // </RoleRoute>
+          )
         },
         {
           path: 'users',
           element: (
             <RoleRoute allowedRoles={[Role.SUPERADMIN]}>
-              <UsersPage />
+              <Suspense>
+                <Outlet />
+              </Suspense>
             </RoleRoute>
-          )
+          ),
+          children: [
+            {
+              index: true,
+              element: <UsersPage />
+            },
+            {
+              path: 'roles',
+              element: <RolesPage />
+            }
+          ]
         },
         {
           path: 'docs/*',
