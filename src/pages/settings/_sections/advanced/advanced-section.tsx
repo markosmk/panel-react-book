@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { Card, CardContent } from '@/components/ui/card';
@@ -6,13 +5,8 @@ import { ButtonLoading } from '@/components/button-loading';
 import { toast } from '@/components/notifications';
 import { PendingContent } from '@/components/pending-content';
 import { ErrorContent } from '@/components/error-content';
-import { Label } from '@/components/ui/label';
-import { InputPassword } from '@/components/ui/input-password';
 
 import axiosApp from '@/lib/axios';
-import { updateSettinsSAdmin } from '@/services/settings.service';
-import { useAuthStore } from '@/stores/use-auth-store';
-import { Role } from '@/types/user.types';
 
 const useCache = () => {
   return useQuery({
@@ -54,16 +48,8 @@ function getMostRecentFile(files) {
 }
 
 export function AdvancedSection() {
-  const { user } = useAuthStore();
   const { mutateAsync, isPending } = useCacheClean();
   const { data, isLoading, isError } = useCache();
-  const [isPendingSAdmin, setIsPendingSAdmin] = React.useState(false);
-  // TODO: add validations
-  // TODO: add iniitla values from database
-  const [formValues, setFormValues] = React.useState({
-    notionToken: '',
-    notionDatabaseId: ''
-  });
 
   const handleClean = async () => {
     if (!data) return;
@@ -76,20 +62,6 @@ export function AdvancedSection() {
         toast.error('Error al ejecutar la accion. intenta mas tarde');
       }
     });
-  };
-
-  const handleSave = async () => {
-    if (!formValues.notionDatabaseId || !formValues.notionToken) return;
-    if (!user || user?.role !== Role.SUPERADMIN) return;
-    try {
-      setIsPendingSAdmin(true);
-      await updateSettinsSAdmin(formValues);
-      toast.success('Configuraciones guardadas correctamente.');
-    } catch (error) {
-      toast.error('Error al guardar las configuraciones');
-    } finally {
-      setIsPendingSAdmin(false);
-    }
   };
 
   if (isLoading) return <PendingContent withOutText className="h-40" />;
@@ -147,64 +119,6 @@ export function AdvancedSection() {
               Limpiar {data?.totalSize} de Cache
             </ButtonLoading>
           </div>
-
-          {user?.role === Role.SUPERADMIN && (
-            <>
-              <hr className="-mx-4 md:-mx-6" />
-              <div>
-                <p className="text-xl font-semibold">Api Notion</p>
-                <p className="mb-2 mt-1 text-muted-foreground">
-                  Es utilizado para obtener los datos de la base de datos de
-                  Notion, para la documentacion del panel en /docs
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="notionToken" className="text-base">
-                    Internal Integration Token
-                  </Label>
-                  <InputPassword
-                    id="notionToken"
-                    placeholder="Ej: i49rodg9493GsvD786.."
-                    value={formValues.notionToken}
-                    onChange={(e) => {
-                      setFormValues({
-                        ...formValues,
-                        notionToken: e.target.value
-                      });
-                    }}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="notionDatabase" className="text-base">
-                    Notion Database ID
-                  </Label>
-                  <InputPassword
-                    id="notionDatabase"
-                    placeholder="Ej: 24b432895894038g4..."
-                    value={formValues.notionDatabaseId}
-                    onChange={(e) => {
-                      setFormValues({
-                        ...formValues,
-                        notionDatabaseId: e.target.value
-                      });
-                    }}
-                  />
-                </div>
-                <div>
-                  <ButtonLoading
-                    type="button"
-                    onClick={handleSave}
-                    isWorking={isPendingSAdmin}
-                  >
-                    Guardar Cambios
-                  </ButtonLoading>
-                </div>
-              </div>
-            </>
-          )}
         </div>
       </CardContent>
     </Card>
