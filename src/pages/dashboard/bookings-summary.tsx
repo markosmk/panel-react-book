@@ -52,12 +52,13 @@ export function BookingSummarySection() {
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
+          <PopoverContent className="w-auto p-2" align="end">
             <Calendar
               mode="single"
               selected={dateSelected}
               onSelect={setDateSelected}
               disabled={isLoading || isFetching}
+              defaultMonth={dateSelected}
               locale={es}
               initialFocus
             />
