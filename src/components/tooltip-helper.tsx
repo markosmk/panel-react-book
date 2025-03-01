@@ -9,13 +9,15 @@ type Props = {
   className?: string;
   icon?: LucideIcon;
   children?: React.ReactNode;
+  align?: 'start' | 'center' | 'end';
 };
 
 export function TooltipHelper({
   icon: Icon,
   content,
   className,
-  children
+  children,
+  align
 }: Props) {
   return (
     <Tooltip>
@@ -30,7 +32,7 @@ export function TooltipHelper({
           )}
         </div>
       </TooltipTrigger>
-      <TooltipContent className="max-w-64 bg-black">
+      <TooltipContent className="max-w-64 bg-black" align={align}>
         <p className="text-sm">{content}</p>
       </TooltipContent>
     </Tooltip>
