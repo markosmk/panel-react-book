@@ -6,8 +6,11 @@ import { GeneralSection } from './_sections/general/general-section';
 import { SecuritySection } from './_sections/security/security-section';
 import { AdvancedSection } from './_sections/advanced/advanced-section';
 import { ComplementsSection } from './_sections/complements/complements-section';
+import { useAuthStore } from '@/stores/use-auth-store';
+import { Role } from '@/types/user.types';
 
 export default function SettingsPage() {
+  const user = useAuthStore((state) => state.user);
   return (
     <div className="mx-auto w-full max-w-4xl space-y-8 px-6">
       <HeadingMain title="Configuración" />
@@ -15,19 +18,17 @@ export default function SettingsPage() {
         <TabsList>
           <TabsTrigger value="gral">General</TabsTrigger>
           <TabsTrigger value="security">Seguridad</TabsTrigger>
-          <TabsTrigger value="complements">Complementos</TabsTrigger>
-          <TabsTrigger value="advanced">Avanzado</TabsTrigger>
+          {user?.role === Role.SUPERADMIN && (
+            <TabsTrigger value="restore">Restaurar</TabsTrigger>
+          )}
+          {user?.role === Role.SUPERADMIN && (
+            <TabsTrigger value="advanced">Avanzado</TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="gral" className="py-4">
           <AnimatedContent>
             <GeneralSection />
-          </AnimatedContent>
-        </TabsContent>
-
-        <TabsContent value="complements" className="py-4">
-          <AnimatedContent>
-            <ComplementsSection />
           </AnimatedContent>
         </TabsContent>
 
@@ -37,11 +38,21 @@ export default function SettingsPage() {
           </AnimatedContent>
         </TabsContent>
 
-        <TabsContent value="advanced" className="py-4">
-          <AnimatedContent>
-            <AdvancedSection />
-          </AnimatedContent>
-        </TabsContent>
+        {user?.role === Role.SUPERADMIN && (
+          <TabsContent value="restore" className="py-4">
+            <AnimatedContent>
+              <ComplementsSection />
+            </AnimatedContent>
+          </TabsContent>
+        )}
+
+        {user?.role === Role.SUPERADMIN && (
+          <TabsContent value="advanced" className="py-4">
+            <AnimatedContent>
+              <AdvancedSection />
+            </AnimatedContent>
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   );
