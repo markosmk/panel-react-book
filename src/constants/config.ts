@@ -10,7 +10,8 @@ export const CONFIG: Config = {
   tokenKey: 'accessToken',
   authStorageMethod: 'localStorage',
   app: {
-    platformVersion: '0.1.0',
+    name: 'Zorzal Wines',
+    platformVersion: '1.3.0',
     supportEmail: 'siwebmasteruno@gmail.com',
     supportPhone: '5492616090461'
   }

@@ -57,6 +57,43 @@
         "fix: se agrego la zona horaria de America/Argentina/Mendoza para mostrar fechas.",
         "chore: cambios menores en ui y optimizacion de la app en general."
       ]
+    },
+    {
+      "version": "1.2.0",
+      "date": "2025-01-21",
+      "description": "Mejoras y algunos cambios en como gestionamos los permisos de administrador, ofreciendo mas seguridad y que permita escalar el sistema.",
+      "changes": [
+        "chore: Cambio de ubicacion de Adicionales (anteriormente se encontraba en configuracion), ahora esta en el menu principal, asi permite un acceso mas rapido, esta seccion permite crear, editar y eliminar adicionales.",
+        "fix: Se corrigio un error con la zona horario al editar un horario, no se mostraba correctamente el horario seleccionado.",
+        "fix: se corrigio un error que permitia editar un horario que tenia reservas, ahora no se puede editar un horario con reservas asociadas.",
+        "fix: Se corrigio la paginacion en reservas y clientes, que no permitia ver mas de 20 items.",
+        "feat: Se creo un rol especial superadmin, el cual habilita acceso a una nueva seccion Usuarios, donde se podra crear, editar y administrar usuarios con roles menores. Esta funcionalidad esta diseñada para dar un mayor control y flexibilidad en la gestion del sistema a futuro. Este cambio tuvo que realizar actualizaciones en las cuentas actuales pero no afectara futuras modificaciones ni implicara cambios en las configuración de usuarios en el futuro."
+      ]
+    },
+    {
+      "version": "1.3.0",
+      "date": "2025-02-28",
+      "description": "Nuevas paginas y funciones agregadas en reservas, gestion de horarios y clientes.",
+      "changes": [
+        "feat: la seccion de reservas tiene 3 secciones, una muestra las reservas activas (a partir del dia actual), el historial de reservas (mediante un selector de periodo, permite ver informacion de reservas pasadas), crear una reserva.",
+        "feat: agregado crear reserva manual, accesible desde la seccion `reservas activas`, o desde la pagina `crear reserva`. este formulario permite seleccionar o crear un cliente, seleccionar un tour (activo), seleccionar adicionales, elegir la fecha de reserva, y de acuerdo a esa fecha el horario y cantidad de personas, estado e idioma principal.",
+        "feat: edicion de reserva, puedes editar los datos de una reserva, (no puedes re asignar el cliente de una reserva)",
+        "feat: se agrego creacion y edicion de cliente, ademas una lista breve de las ultimas reservas.",
+        "chore: se mejoro la seccion de tablas, ahora puedes habilitar mas columnas para ver mas informacion.",
+        "chore: desde la informacion de reservas, se muestra el identificador, el cual es unico, y puede resultar util para encontrar o identificar una reserva en particular.",
+        "feat: eliminacion de reservas, se ajusto para que los usuarios con rol Admin, pueda unicamente desactivar (no eliminar), esto permite que se puedan recuperar los datos, una reserva desactivada solo puede ser eliminada completamente por el superadmin (o restaurada).",
+        "chore: se ajusto el filtro `fecha reserva` en la lista de reservas, para hasta 30 dias. Es decir, las fechas que se pueden filtrar desde alli, son para reservas hasta 30 dias desde la fecha actual.",
+        "chore: al crear una reserva, ya sea manual o desde la web, se guarda ademas 3 datos del tour elegido (nombre, precio, duracion), esto con el fin de tener un historial ajustado al momento que el usuario creo la reserva, se puede ver desde el detalle de reserva.",
+        "feat: mejoras en la gestion de horarios, hay un panel de acciones donde puedes, `crear, pausar, reanudar o eliminar` horarios en un periodo determinado. Este panel tambien es accesible desde la lista de tours, si seleccionas uno o mas tours.",
+        "feat: acciones por seleccion de horarios por dia, puedes seleccionar uno o mas horarios, y pausarlos o eliminarlos al mismo tiempo.",
+        "fix: los horarios que tienen reservas no se pueden eliminar ni editar la fecha de inicio, se muestra la informacion de cuantas reservas tiene.",
+        "feat: se puede agregar clientes, editar clientes, y eliminar solo clientes que no tengan reservas asociadas",
+        "feat: la cantidad de reservas que tiene cada cliente, se puede ver desde la tabla de clientes.",
+        "feat: acceso rapido para copiar el numero o enviar wsap a un cliente desde la tabla de clientes en la columna Telefono.",
+        "feat: agregado seleccion de idioma, español, ingles o sin especificar, desde la creacion o edicion de reservas",
+        "feat: puedes agregar mas de un mail en configuracion, separados por coma, para recibir el aviso cuando hay una reserva desde la web.",
+        "fix: mejoras en general, optimizacion de consultas, mejoras en la interfaz, y mas."
+      ]
     }
   ]
 }
