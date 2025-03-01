@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { DialogConfirm } from '@/components/dialog-confirm';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,31 +13,41 @@ import {
 
 import { CONFIG } from '@/constants/config';
 import { supportOptions } from '@/constants/navigation';
-import { useModal } from '@/hooks/use-modal';
 import { useAuthStore } from '@/stores/use-auth-store';
 import { ModalChangelog } from './modal-changelog';
+import { useConfirmStore } from '@/utils/confirm-modal/use-confirm-store';
+import { useModalStore } from '@/utils/modal/use-modal-store';
 
 export function DropdownUser() {
   const navigate = useNavigate();
-  const { user, logoutAction, isClosing } = useAuthStore();
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const { openModal } = useModal();
+  const { user, logoutAction } = useAuthStore();
+  const [open, setOpen] = React.useState(false);
+  const { openModal } = useModalStore();
+  const { openConfirm } = useConfirmStore();
 
   const handleLogout = async () => {
-    await logoutAction();
+    // await logoutAction();
+    openConfirm({
+      title: 'Cerrar sesion',
+      description: 'Estas seguro de cerrar sesion?',
+      onConfirm: async () => {
+        await logoutAction();
+      }
+    });
   };
 
   const handleChangelog = () => {
+    setOpen(false);
     openModal({
       title: 'Registro de cambios',
       description: 'Mantente actualizado con los ultimos cambios de la app',
-      component: <ModalChangelog />
+      content: <ModalChangelog />
     });
   };
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary" className="w-full justify-start">
             <Icons.dotCircle className="mr-3 inline-flex h-5 w-5" />
@@ -86,7 +95,7 @@ export function DropdownUser() {
 
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            onClick={() => setOpenDialog(true)}
+            onClick={handleLogout}
             className="cursor-pointer text-left"
           >
             <Icons.logout className="mr-3 h-5 w-5" /> Salir
@@ -101,15 +110,6 @@ export function DropdownUser() {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <DialogConfirm
-        title="¿Seguro que quieres salir?"
-        description="Tus cambios se perderán si dejas la página."
-        onConfirm={handleLogout}
-        isOpen={openDialog}
-        onOpenChange={setOpenDialog}
-        isProcessing={isClosing}
-      />
     </>
   );
 }
