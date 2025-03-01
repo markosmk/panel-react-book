@@ -9,12 +9,13 @@ import { useRouter } from '@/routes/hooks/use-router';
 // Providers
 import { ThemeProvider } from './theme-provider';
 import { SidebarProvider } from '@/hooks/use-sidebar';
-import { ModalProvider } from '@/hooks/use-modal';
+import { ConfirmModalProvider } from '@/utils/confirm-modal/confirm-modal-provider';
+import { ModalProvider } from '@/utils/modal/modal-provider';
 // Components
 import { Button } from '@/components/ui/button';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { NotificationContainer } from '@/components/notifications';
-// Stores
+// Modals
 import { useAuthStore } from '@/stores/use-auth-store';
 
 export const queryClient = new QueryClient();
@@ -65,11 +66,13 @@ export default function AppProvider({
           <QueryClientProvider client={queryClient}>
             <ReactQueryDevtools />
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-              <NotificationContainer />
               <TooltipProvider delayDuration={400}>
-                <ModalProvider>
-                  <SidebarProvider>{children}</SidebarProvider>
-                </ModalProvider>
+                <ConfirmModalProvider />
+                <ModalProvider />
+                <NotificationContainer />
+                {/* <ModalProvider> */}
+                <SidebarProvider>{children}</SidebarProvider>
+                {/* </ModalProvider> */}
               </TooltipProvider>
             </ThemeProvider>
           </QueryClientProvider>
