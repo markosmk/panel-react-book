@@ -29,6 +29,7 @@ export const useConfirmStore = create<ConfirmDialogState>((set) => ({
   closeConfirm: () => {
     set({ isOpen: false });
     setTimeout(() => {
+      document.body.style.pointerEvents = 'auto';
       set({ dialogConfig: null });
     }, 250); // by animation Dialog animate-in and animate-out
   }

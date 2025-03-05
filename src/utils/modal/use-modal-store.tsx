@@ -79,6 +79,7 @@ export const useModalStore = create<ModalState>((set, get) => ({
 
     set({ isOpen: false });
     setTimeout(() => {
+      document.body.style.pointerEvents = 'auto';
       set({ modalConfig: null, isLoading: false });
     }, 250); // by animation Dialog animate-in and animate-out
   }
