@@ -524,11 +524,7 @@ export function BookingEditForm({
                 control={form.control}
                 name="selectedDate"
                 render={({ field }) => {
-                  const selectedDate =
-                    field.value && isValid(parseISO(field.value))
-                      ? parseISO(field.value)
-                      : undefined;
-                  const defaultMonth =
+                  const selectedDateValue =
                     field.value && isValid(parseISO(field.value))
                       ? parseISO(field.value)
                       : undefined;
@@ -539,7 +535,7 @@ export function BookingEditForm({
                         Fecha Reserva
                       </Label>
                       <div className="col-span-3 space-y-1 sm:col-span-2">
-                        <Popover>
+                        <Popover modal={true}>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
@@ -572,7 +568,7 @@ export function BookingEditForm({
                           <PopoverContent className="w-auto p-2" align="end">
                             <Calendar
                               mode="single"
-                              selected={selectedDate}
+                              selected={selectedDateValue}
                               onSelect={(value) => {
                                 if (!value || !isValid(value)) return;
                                 const dateISO = formatISO(value, {
@@ -580,7 +576,7 @@ export function BookingEditForm({
                                 });
                                 field.onChange(dateISO);
                               }}
-                              defaultMonth={defaultMonth}
+                              defaultMonth={selectedDateValue}
                               initialFocus
                               locale={es}
                             />
