@@ -94,6 +94,15 @@
         "feat: puedes agregar mas de un mail en configuracion, separados por coma, para recibir el aviso cuando hay una reserva desde la web.",
         "fix: mejoras en general, optimizacion de consultas, mejoras en la interfaz, y mas."
       ]
+    },
+    {
+      "version": "1.3.1",
+      "date": "2025-03-05",
+      "description": "Correccion de errores en dialogos.",
+      "changes": [
+        "Fix: se corrigio un error que no permitia seleccionar la fecha al crear una reserva manual.",
+        "Fix: se corrigio que el panel quedaba en modo 'solo lectura' (sin aceptar clicks), sucedia al cerrar un dialogo (clickeando fuera del dialogo), solo en dialogos que contenian ingresos de fechas o periodos."
+      ]
     }
   ]
 }
