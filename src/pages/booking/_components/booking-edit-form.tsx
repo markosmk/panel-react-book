@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { CalendarIcon } from 'lucide-react';
 
-import { BookingDetail, Status } from '@/types/booking.types';
+import { BookingDetail, Language, Status } from '@/types/booking.types';
 import { useCreateEditBooking } from '@/services/hooks/booking.mutation';
 import { useTours } from '@/services/hooks/tour.query';
 import { useSchedules } from '@/services/hooks/schedule.query';
@@ -49,6 +49,7 @@ import { useCustomers } from '@/services/hooks/customer.query';
 import { Input } from '@/components/ui/input';
 import { BookingManualParams } from '@/services/booking.service';
 import { useRouter } from '@/routes/hooks/use-router';
+import { LanguageFlag } from '@/components/language-flag';
 
 const baseSchema = z.object({
   tourId: z.string().min(1, 'Debe seleccionar un tour.'),
@@ -82,11 +83,18 @@ const newCustomerSchema = baseSchema.extend({
   customerEmail: z
     .string()
     .email('El email es requerido.')
-    .min(1, 'El email debe tener al menos 1 caracter.'),
+    .min(1, 'El email debe tener al menos 1 caracter.')
+    .or(z.literal(''))
+    .optional(),
   customerPhone: z
     .string()
     .min(1, 'El teléfono es requerido.')
-    .max(30, 'El teléfono no puede tener más de 30 caracteres.')
+    .regex(
+      /^\d{6,30}$/,
+      'El teléfono debe contener solo números y tener entre 6 y 30 caracteres'
+    )
+    .or(z.literal(''))
+    .optional()
 });
 
 const formSchema = existingCustomerSchema.merge(newCustomerSchema);
@@ -212,8 +220,8 @@ export function BookingEditForm({
       } else {
         dataValues.customer = {
           name: values.customerName,
-          email: values.customerEmail,
-          phone: values.customerPhone
+          email: values.customerEmail || '',
+          phone: values.customerPhone || ''
         };
       }
     }
@@ -381,10 +389,7 @@ export function BookingEditForm({
                     name="customerEmail"
                     render={({ field }) => (
                       <FormItem className="grid grid-cols-3 gap-2 space-y-0">
-                        <Label
-                          className="col-span-3 mt-4 w-auto sm:col-span-1"
-                          required
-                        >
+                        <Label className="col-span-3 mt-4 w-auto sm:col-span-1">
                           Email
                         </Label>
                         <div className="col-span-3 space-y-1 sm:col-span-2">
@@ -408,10 +413,7 @@ export function BookingEditForm({
                     name="customerPhone"
                     render={({ field }) => (
                       <FormItem className="grid grid-cols-3 gap-2 space-y-0">
-                        <Label
-                          className="col-span-3 mt-4 w-auto sm:col-span-1"
-                          required
-                        >
+                        <Label className="col-span-3 mt-4 w-auto sm:col-span-1">
                           Telefono
                         </Label>
                         <div className="col-span-3 space-y-1 sm:col-span-2">
@@ -737,8 +739,6 @@ export function BookingEditForm({
                             Idioma
                           </FormLabel>
                           <Select
-                            // onValueChange={field.onChange}
-                            // value={field.value}
                             onValueChange={(value) =>
                               field.onChange(value === 'null' ? null : value)
                             }
@@ -746,48 +746,27 @@ export function BookingEditForm({
                           >
                             <FormControl>
                               <SelectTrigger className="col-span-2 ml-auto h-12 w-full bg-input">
-                                {field.value === '' || field.value === null ? (
-                                  <div className="h-4 w-6 rounded bg-background/50"></div>
-                                ) : (
-                                  <>
-                                    {field.value === 'es' && (
-                                      <img
-                                        src="/assets/flag_spain.png"
-                                        className="h-4 w-6 rounded"
-                                      />
-                                    )}
-                                    {field.value === 'en' && (
-                                      <img
-                                        src="/assets/flag_united_states.png"
-                                        className="h-4 w-6 rounded"
-                                      />
-                                    )}
-                                  </>
-                                )}
+                                <LanguageFlag
+                                  language={(field.value as Language) || null}
+                                />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
                               <SelectItem value="null">
-                                <div className="flex items-center">
-                                  <div className="mr-2 h-4 w-6 rounded bg-gray-active"></div>
+                                <div className="flex items-center gap-x-2">
+                                  <LanguageFlag language={null} />
                                   No especificado
                                 </div>
                               </SelectItem>
                               <SelectItem value={'es'}>
-                                <div className="flex items-center">
-                                  <img
-                                    src="/assets/flag_spain.png"
-                                    className="mr-2 h-4 w-6 rounded"
-                                  />
+                                <div className="flex items-center gap-x-2">
+                                  <LanguageFlag language="es" />
                                   Español
                                 </div>
                               </SelectItem>
                               <SelectItem value={'en'}>
-                                <div className="flex items-center">
-                                  <img
-                                    src="/assets/flag_united_states.png"
-                                    className="mr-2 h-4 w-6 rounded"
-                                  />
+                                <div className="flex items-center gap-x-2">
+                                  <LanguageFlag language="en" />
                                   English
                                 </div>
                               </SelectItem>
@@ -882,7 +861,12 @@ export function BookingEditForm({
         {/* <pre>{JSON.stringify(form.getValues(), null, 2)}</pre> */}
         {/* <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre> */}
 
-        <div className="mt-4 flex items-center justify-end gap-x-2">
+        <div
+          className={cn(
+            'sticky bottom-0 -mx-4 mt-4 flex items-center justify-end gap-x-2 border-t  px-4 py-4 backdrop-blur-sm md:-mx-6 md:px-6',
+            closeModal ? 'bg-background/50' : 'bg-card/50'
+          )}
+        >
           <div className="flex flex-1 items-center">
             {isFetching && (
               <>
