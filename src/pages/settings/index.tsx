@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { GeneralSection } from './_sections/general/general-section';
 import { SecuritySection } from './_sections/security/security-section';
 import { AdvancedSection } from './_sections/advanced/advanced-section';
-import { ComplementsSection } from './_sections/complements/complements-section';
 import { useAuthStore } from '@/stores/use-auth-store';
 import { Role } from '@/types/user.types';
 
@@ -18,9 +17,9 @@ export default function SettingsPage() {
         <TabsList>
           <TabsTrigger value="gral">General</TabsTrigger>
           <TabsTrigger value="security">Seguridad</TabsTrigger>
-          {user?.role === Role.SUPERADMIN && (
+          {/* {user?.role === Role.SUPERADMIN && (
             <TabsTrigger value="restore">Restaurar</TabsTrigger>
-          )}
+          )} */}
           {user?.role === Role.SUPERADMIN && (
             <TabsTrigger value="advanced">Avanzado</TabsTrigger>
           )}
@@ -38,13 +37,13 @@ export default function SettingsPage() {
           </AnimatedContent>
         </TabsContent>
 
-        {user?.role === Role.SUPERADMIN && (
+        {/* {user?.role === Role.SUPERADMIN && (
           <TabsContent value="restore" className="py-4">
             <AnimatedContent>
               <ComplementsSection />
             </AnimatedContent>
           </TabsContent>
-        )}
+        )} */}
 
         {user?.role === Role.SUPERADMIN && (
           <TabsContent value="advanced" className="py-4">
