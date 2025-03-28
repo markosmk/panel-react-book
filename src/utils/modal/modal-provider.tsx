@@ -30,7 +30,7 @@ export const ModalProvider = () => {
           <DialogDescription>{modalConfig.description}</DialogDescription>
         </DialogHeader>
 
-        <DialogBody className="scroller">
+        <DialogBody className={cn('scroller', modalConfig?.classNameBody)}>
           {isLoading ? (
             <PendingContent withOutText sizeIcon="sm" />
           ) : (

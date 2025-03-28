@@ -5,6 +5,7 @@ type ModalConfig = {
   title?: string;
   description?: string;
   className?: string;
+  classNameBody?: string;
   content?: ReactNode;
   fetchData?: (signal: AbortSignal) => Promise<ReactNode>;
   onClose?: () => void;
@@ -33,6 +34,7 @@ export const useModalStore = create<ModalState>((set, get) => ({
           title: config.title,
           description: config.description,
           className: config.className,
+          classNameBody: config.classNameBody,
           content: null
         }
       });
