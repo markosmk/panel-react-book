@@ -103,6 +103,18 @@
         "Fix: se corrigio un error que no permitia seleccionar la fecha al crear una reserva manual.",
         "Fix: se corrigio que el panel quedaba en modo 'solo lectura' (sin aceptar clicks), sucedia al cerrar un dialogo (clickeando fuera del dialogo), solo en dialogos que contenian ingresos de fechas o periodos."
       ]
+    },
+    {
+      "version": "1.4.0",
+      "date": "2025-03-27",
+      "description": "Mejoras en la gestion de horarios y reservas.",
+      "changes": [
+        "Feat Panel Principal: Se agrego el idioma de la reserva en la columna (se muestre el idioma de la primer reserva de ese horario).",
+        "Feat Panel Principal: Se cambio la vista de visualizacion de cada reserva para cada horario, en un formato vertical para una rapida visualizacion. Se puede copiar el identificador de la reserva (para encontrarlo rapido en la seccion de reservas activas).",
+        "Chore: Ahora se permite crear clientes solo con el nombre, agregamos una columna para identificar el cliente si es creado por la web o desde el panel, se puede crear clientes desde la seccion clientes o al crear una reserva manual.",
+        "Chore: En la reserva manual, si se esta agregando un email o telefono de un cliente que existe en la base de datos de clientes, se muestra un mensaje de error, si es un cliente existente debes seleccionarlo de la lista.",
+        "Fix: arreglos menores en la interfaz de usuario."
+      ]
     }
   ]
 }

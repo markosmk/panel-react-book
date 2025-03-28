@@ -11,7 +11,7 @@ export const CONFIG: Config = {
   authStorageMethod: 'localStorage',
   app: {
     name: 'Zorzal Wines',
-    platformVersion: '1.3.1',
+    platformVersion: '1.4.0',
     supportEmail: 'siwebmasteruno@gmail.com',
     supportPhone: '5492616090461'
   }
