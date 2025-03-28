@@ -19,7 +19,8 @@ export function BookingPage() {
   const handleBookingAdd = () => {
     openModal({
       title: 'Crear Reserva',
-      content: <BookingEditForm closeModal={closeModal} />
+      content: <BookingEditForm closeModal={closeModal} />,
+      classNameBody: 'pb-0 md:pb-0'
     });
   };
 

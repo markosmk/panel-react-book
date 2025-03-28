@@ -7,7 +7,7 @@ export default function CreatePage() {
     <div className="relative mx-auto w-full max-w-2xl space-y-8 px-4 pb-4 md:px-6 md:pb-6">
       <HeadingMain title="Crear Reserva" />
       <Card>
-        <CardContent>
+        <CardContent className="pb-0 md:pb-0">
           <BookingEditForm isFetching={false} />
         </CardContent>
       </Card>

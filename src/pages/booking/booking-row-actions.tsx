@@ -54,6 +54,7 @@ export function BookingRowActions({ data: booking }: { data: BookingTable }) {
     openModal({
       title: 'Editar Reserva ' + formatId(booking.id),
       description: 'creado el ' + formatDateOnly(booking.created_at),
+      classNameBody: 'pb-0 md:pb-0',
       fetchData: async (signal) => {
         const response = await getBookingById(booking.id, signal);
         return <BookingEditForm data={response.data} closeModal={closeModal} />;
@@ -124,7 +125,7 @@ export function BookingRowActions({ data: booking }: { data: BookingTable }) {
 
         <FastEditingPopover booking={booking} />
 
-        <TooltipHelper content="Eliminar">
+        {/* <TooltipHelper content="Eliminar">
           <Button
             variant="outline"
             size="icon"
@@ -133,7 +134,7 @@ export function BookingRowActions({ data: booking }: { data: BookingTable }) {
           >
             <Icons.remove className="size-5" />
           </Button>
-        </TooltipHelper>
+        </TooltipHelper> */}
       </div>
 
       {isMobile && (
@@ -159,10 +160,10 @@ export function BookingRowActions({ data: booking }: { data: BookingTable }) {
                 <Icons.transform className="mr-2 size-4" />
                 Cambiar Estado
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setOpenDialog(true)}>
+              {/* <DropdownMenuItem onClick={() => setOpenDialog(true)}>
                 <Icons.remove className="mr-2 size-4" />
                 Eliminar
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
