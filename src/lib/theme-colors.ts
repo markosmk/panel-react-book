@@ -72,7 +72,8 @@ const themes = {
     dark: {
       background: '20 14.3% 4.1%',
       foreground: '0 0% 95%',
-      card: '24 9.8% 10%',
+      card: '220 5.26% 11.18%',
+      // card: '24 9.8% 10%',
       cardForeground: '0 0% 95%',
       popover: '0 0% 9%',
       popoverForeground: '0 0% 95%',
