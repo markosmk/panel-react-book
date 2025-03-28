@@ -18,6 +18,18 @@ const CellPhoneWithActions = ({
   phone: string;
   className?: string;
 }) => {
+  if (!phone) {
+    return (
+      <div
+        className={cn(
+          'ml-2 flex items-center px-1 text-xs text-muted-foreground'
+        )}
+      >
+        No Especificado
+      </div>
+    );
+  }
+
   return (
     <div className={cn('flex items-center', className)}>
       <Button
@@ -99,8 +111,8 @@ export function getColumns(): ColumnDef<CustomerTable>[] {
         return (
           <div className="flex flex-col gap-x-2">
             {row.getValue('name')}
-            <span className="text-xs text-muted-foreground">
-              {row.original.email ?? 'sin correo'}
+            <span className="text-xs text-muted-foreground ">
+              {row.original.email || 'correo no especificado'}
             </span>
           </div>
         );

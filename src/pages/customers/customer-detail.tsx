@@ -1,4 +1,5 @@
 import { SectionInfo } from '@/components/section-info';
+import { formatDateOnly } from '@/lib/utils';
 import type { CustomerDetail as CustomerDetailType } from '@/types/customer.types';
 
 export function CustomerDetail({ data: detail }: { data: CustomerDetailType }) {
@@ -34,22 +35,32 @@ export function CustomerDetail({ data: detail }: { data: CustomerDetailType }) {
                 : detail.about || '-',
             colSpan: 2
           },
-
           {
             label: 'Indico que desea Newsletter?',
             value: detail.wantNewsletter === '1' ? 'Si' : 'No',
             colSpan: 2
           },
-
           {
             label: 'Hospedaje / Alojamiento',
             value: detail.hotel || '-',
             colSpan: 2
           },
-
           {
             label: 'Cantidad de Reservas',
             value: detail.total_bookings || '-',
+            colSpan: 2
+          },
+          {
+            label: 'Creado desde',
+            value: detail.type === 'WEB' ? 'Web' : 'Panel',
+            colSpan: 2
+          },
+          {
+            label: 'Ultima actualización',
+            value:
+              detail.created_at !== detail.updated_at
+                ? formatDateOnly(detail.updated_at, 'dd/MM/yyyy HH:mm')
+                : '-',
             colSpan: 2
           }
         ]}

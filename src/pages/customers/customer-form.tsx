@@ -31,14 +31,17 @@ const baseSchema = z.object({
   email: z
     .string()
     .email('Correo electrónico inválido')
-    .max(150, 'El correo no puede tener más de 150 caracteres'),
+    .max(150, 'El correo no puede tener más de 150 caracteres')
+    .or(z.literal(''))
+    .optional(),
   phone: z
     .string()
-    .min(1, 'El teléfono es requerido.')
     .regex(
-      /^\d{8,30}$/,
-      'El teléfono debe contener solo números y tener entre 8 y 30 caracteres'
-    ),
+      /^\d{6,30}$/,
+      'El teléfono debe contener solo números y tener entre 6 y 30 caracteres'
+    )
+    .or(z.literal(''))
+    .optional(),
   findAbout: z
     .enum([
       'wine',
@@ -114,7 +117,9 @@ export function CustomerForm({
       {
         ...formValues,
         id: data?.id || '',
-        wantNewsletter: formValues.wantNewsletter ? '1' : '0'
+        wantNewsletter: formValues.wantNewsletter ? '1' : '0',
+        email: formValues.email || '',
+        phone: formValues.phone || ''
       },
       {
         onSuccess: () => {
@@ -166,7 +171,7 @@ export function CustomerForm({
             name="email"
             render={({ field }) => (
               <FormItem className="grid grid-cols-3 gap-2 space-y-0">
-                <FormLabel className="col-span-3 mt-4 sm:col-span-1" required>
+                <FormLabel className="col-span-3 mt-4 sm:col-span-1">
                   Correo Electronico
                 </FormLabel>
                 <div className="col-span-3 space-y-1 sm:col-span-2">
@@ -184,7 +189,7 @@ export function CustomerForm({
             name="phone"
             render={({ field }) => (
               <FormItem className="grid grid-cols-3 gap-2 space-y-0">
-                <FormLabel className="col-span-3 mt-4 sm:col-span-1" required>
+                <FormLabel className="col-span-3 mt-4 sm:col-span-1">
                   Telefono
                 </FormLabel>
                 <div className="col-span-3 space-y-1 sm:col-span-2">
