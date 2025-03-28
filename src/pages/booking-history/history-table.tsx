@@ -71,6 +71,10 @@ export function HistoryTable({ data }: { data: BookingTable[] }) {
         label: 'Precio Total'
       },
       {
+        value: 'language',
+        label: 'Idioma'
+      },
+      {
         value: 'status',
         label: 'Estado'
       },
@@ -92,7 +96,8 @@ export function HistoryTable({ data }: { data: BookingTable[] }) {
       },
       columnVisibility: {
         totalPrice: false,
-        id: false
+        id: false,
+        language: false
       }
     },
     getRowId: (originalRow) => originalRow.id,

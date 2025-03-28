@@ -26,6 +26,8 @@ import {
   formatTimeTo24Hour
 } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
+import { HistoryRowActions } from './history-row-actions';
+import { LanguageFlag } from '@/components/language-flag';
 
 export function getColumns(): ColumnDef<BookingTable>[] {
   return [
@@ -170,12 +172,35 @@ export function getColumns(): ColumnDef<BookingTable>[] {
       cell: ({ row }) => <span>{formatPrice(row.original.totalPrice)}</span>
     },
     {
+      accessorKey: 'language',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Idioma"
+          className="hidden sm:flex"
+        />
+      ),
+      cell: ({ row }) => (
+        <div className="hidden flex-col sm:flex">
+          <LanguageFlag language={row.getValue('language')} />
+        </div>
+      ),
+      enableSorting: false
+    },
+
+    {
       accessorKey: 'created_at',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Fecha Creado" />
       ),
       cell: ({ cell }) =>
         formatDateOnly(cell.getValue() as Date, 'd MMMM, yyyy (HH:mm)')
+    },
+    {
+      id: 'actions',
+      enableHiding: false,
+      cell: ({ row }) => <HistoryRowActions data={row.original} />,
+      size: 40
     }
     // {
     //   id: 'actions',
