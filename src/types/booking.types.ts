@@ -1,5 +1,7 @@
 import { Schedule, Tour } from './tour.types';
 
+export type Language = 'es' | 'en' | null;
+
 export enum Status {
   PENDING = 'PENDING',
   CONFIRMED = 'CONFIRMED',

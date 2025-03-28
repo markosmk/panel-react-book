@@ -13,6 +13,7 @@ import { DataTableColumnHeader } from '@/components/data-table/data-table-column
 import { BookingRowActions } from './booking-row-actions';
 import { BookingTable } from '@/types/booking.types';
 import { BadgeStatus } from '@/components/badge-status';
+import { LanguageFlag } from '@/components/language-flag';
 
 export function getColumns(): ColumnDef<BookingTable>[] {
   return [
@@ -202,16 +203,7 @@ export function getColumns(): ColumnDef<BookingTable>[] {
       ),
       cell: ({ row }) => (
         <div className="hidden flex-col sm:flex">
-          {row.getValue('language') === 'es' ? (
-            <img src="/assets/flag_spain.png" className="h-4 w-6 rounded" />
-          ) : row.getValue('language') === 'en' ? (
-            <img
-              src="/assets/flag_united_states.png"
-              className="h-4 w-6 rounded"
-            />
-          ) : (
-            <div className="h-4 w-6 rounded bg-stone-700" />
-          )}
+          <LanguageFlag language={row.getValue('language')} />
         </div>
       ),
       enableSorting: false
@@ -220,7 +212,6 @@ export function getColumns(): ColumnDef<BookingTable>[] {
       id: 'actions',
       enableHiding: false,
       cell: ({ row }) => <BookingRowActions data={row.original} />,
-
       size: 40
     }
   ];

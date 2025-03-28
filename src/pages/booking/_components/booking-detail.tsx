@@ -8,9 +8,10 @@ import {
 import { statusVariant } from '@/components/badge-status';
 import { Alert } from '@/components/ui/alert';
 import { Card } from '@/components/ui/card';
-import type { BookingDetail } from '@/types/booking.types';
+import type { BookingDetail, Language } from '@/types/booking.types';
 import { CardExpandable } from '@/components/card-expandable';
 import { SectionInfo } from '@/components/section-info';
+import { LanguageFlag } from '@/components/language-flag';
 
 export function BookingDetail({ detail }: { detail: BookingDetail }) {
   return (
@@ -46,17 +47,7 @@ export function BookingDetail({ detail }: { detail: BookingDetail }) {
           { label: 'Observaciones', value: detail.notes || '-', colSpan: 2 },
           {
             label: 'Idioma',
-            value:
-              detail.language === 'es' ? (
-                <img src="/assets/flag_spain.png" className="h-4 w-6 rounded" />
-              ) : detail.language === 'en' ? (
-                <img
-                  src="/assets/flag_united_states.png"
-                  className="h-4 w-6 rounded"
-                />
-              ) : (
-                <div className="h-4 w-6 rounded bg-border" />
-              ),
+            value: <LanguageFlag language={detail.language as Language} />,
             colSpan: 1
           }
         ]}
