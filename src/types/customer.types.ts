@@ -14,6 +14,7 @@ export interface CustomerTable {
   created_at: string;
   updated_at: string;
   total_bookings: string;
+  type: string; // WEB | PRIVATE
   observations?: string; // not implemented yet
 }
 
