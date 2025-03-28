@@ -15,6 +15,7 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table';
+import { formatId } from '@/lib/utils';
 
 interface UseDataTableProps<TData>
   extends Omit<
@@ -93,6 +94,10 @@ export function useDataTable<TData>({
       if (columnsToSearch.length > 0) {
         return columnsToSearch.some((column) => {
           const value = row.original[column];
+          if (column === 'id') {
+            const formattedId = formatId(value as string);
+            return checkValue(formattedId);
+          }
           return checkValue(value);
         });
       }

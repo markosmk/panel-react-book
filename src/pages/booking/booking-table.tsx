@@ -28,6 +28,7 @@ const fiveDaysFromNow = new Date(
 export function BookingTable({ data }: { data: BookingType[] }) {
   const columns = React.useMemo(() => getColumns(), []);
   const columnsToSearch: (keyof BookingType)[] = [
+    'id',
     'customer_name',
     'customer_email',
     'customer_phone',
