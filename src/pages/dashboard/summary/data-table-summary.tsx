@@ -11,7 +11,7 @@ import {
   SortingState,
   useReactTable
 } from '@tanstack/react-table';
-import { ArrowUpDownIcon } from 'lucide-react';
+import { ArrowUpDownIcon, CopyIcon } from 'lucide-react';
 
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
@@ -24,10 +24,14 @@ import {
   TableRow
 } from '@/components/ui/table';
 
-import { cn, formatPrice } from '@/lib/utils';
+import { cn, formatId, formatPrice } from '@/lib/utils';
 import { ScheduleSummary } from '@/types/summary.types';
 import { BadgeStatus } from '@/components/badge-status';
 import { EyeClosedIcon, EyeOpenIcon } from '@radix-ui/react-icons';
+import { LanguageFlag } from '@/components/language-flag';
+import { Separator } from '@/components/ui/separator';
+import { toast } from '@/components/notifications';
+import { SectionInfo } from '@/components/section-info';
 
 // import { DataTableActions } from './data-table-actions';
 
@@ -52,9 +56,6 @@ const columns: ColumnDef<ScheduleSummary>[] = [
     cell: ({ row }) => (
       <div className="flex max-w-20 select-none flex-col gap-x-2">
         {row.getValue('schedule_start_time')?.toString().slice(0, 5)}hs
-        <span className="truncate text-xs text-muted-foreground">
-          {row.original.schedule_end_time || ''}
-        </span>
       </div>
     )
   },
@@ -91,7 +92,7 @@ const columns: ColumnDef<ScheduleSummary>[] = [
   },
 
   {
-    accessorKey: 'reservations_count',
+    accessorKey: 'booking_count',
     header: () => (
       <div className="hidden max-w-32 text-xs font-semibold uppercase md:flex">
         Cant. de Reservas
@@ -100,13 +101,13 @@ const columns: ColumnDef<ScheduleSummary>[] = [
     cell: ({ row }) => {
       return (
         <div className="hidden max-w-32 select-none flex-col gap-x-2 text-center md:flex">
-          {row.getValue('reservations_count')}
+          {row.getValue('booking_count')}
         </div>
       );
     }
   },
   {
-    accessorKey: 'total_reserved',
+    accessorKey: 'booking_total_reserved',
     header: () => (
       <div className="hidden max-w-32 text-xs font-semibold uppercase md:flex">
         Cant. de Personas
@@ -115,12 +116,26 @@ const columns: ColumnDef<ScheduleSummary>[] = [
     cell: ({ row }) => {
       return (
         <div className="hidden max-w-32 select-none flex-col gap-x-2 text-center md:flex">
-          {row.getValue('total_reserved')}
+          {row.getValue('booking_total_reserved')}
         </div>
       );
     }
   },
-
+  {
+    accessorKey: 'booking_language',
+    header: () => (
+      <div className="hidden max-w-32 text-xs font-semibold uppercase md:flex">
+        Idioma
+      </div>
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="hidden max-w-32 select-none text-center md:flex">
+          <LanguageFlag language={row.getValue('booking_language')} />
+        </div>
+      );
+    }
+  },
   {
     id: 'actions',
     enableHiding: false,
@@ -142,56 +157,79 @@ const columns: ColumnDef<ScheduleSummary>[] = [
 ];
 
 const renderSubComponent = ({ row }: { row: Row<ScheduleSummary> }) => {
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success('Numero de reserva copiado al portapapeles');
+  };
+
   return (
-    <div className="space-y-4 divide-y bg-background p-2 lg:p-4">
-      {row.original.reservations?.map((reservation) => (
-        <div
-          key={reservation.booking_id}
-          className="flex flex-wrap items-start justify-between gap-4 py-2 first:pt-0 last:pb-0 last:pt-2"
+    <ul className="flex flex-wrap gap-4 bg-black p-4">
+      {row.original.bookings?.map((book) => (
+        <li
+          key={book.booking_id}
+          className="relative flex w-full max-w-80 flex-col rounded-md border bg-card"
         >
-          <div className="flex flex-col items-start">
-            <p className="mb-1 text-xs font-light uppercase text-muted-foreground">
-              Cliente
-            </p>
-            <span className="text-sm font-semibold">
-              {reservation.customer_name}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              {reservation.customer_email} | {reservation.customer_phone}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              Notas: {reservation.booking_notes || 'ninguno'}
-            </span>
+          <div className="flex items-center justify-between border-b p-4">
+            <div className="flex items-center space-x-2">
+              <h3 className="text-sm font-semibold">
+                Reserva {formatId(book.booking_id)}
+              </h3>
+              <button
+                onClick={() =>
+                  copyToClipboard(formatId(book.booking_id).toString())
+                }
+                className="text-muted-foreground hover:text-foreground"
+                title="Copiar número de reserva"
+              >
+                <CopyIcon className="h-4 w-4" />
+              </button>
+            </div>
+            <BadgeStatus status={book.booking_status} />
           </div>
 
-          <div className="flex flex-col items-start">
-            <p className="mb-1 text-xs font-light uppercase text-muted-foreground">
-              Cantidad Reservada
-            </p>
-            <span className="text-sm font-semibold">
-              {reservation.booking_quantity} persona
-              {Number(reservation.booking_quantity) > 1 ? 's' : ''}
-            </span>
-          </div>
+          <SectionInfo
+            items={[
+              {
+                label: 'Nombre',
+                value: book.customer_name || '-',
+                colSpan: 3
+              },
+              {
+                label: 'Email',
+                value: book.customer_email || '-',
+                colSpan: 3
+              },
+              {
+                label: 'Telefono',
+                value: book.customer_phone || '-',
+                colSpan: 3
+              }
+            ]}
+          />
+          <Separator className="my-1" />
+          <SectionInfo
+            items={[
+              {
+                label: 'Cantidad de Personas',
 
-          <div className="flex flex-col items-start">
-            <p className="mb-1 text-xs font-light uppercase text-muted-foreground">
-              Precio Total
-            </p>
-            <span className="text-sm font-semibold">
-              {formatPrice(Number(reservation.booking_total_price))}
-            </span>
-          </div>
-
-          <div className="flex flex-col items-start">
-            <p className="mb-1 text-xs font-light uppercase text-muted-foreground">
-              Estado Actual
-            </p>
-            <BadgeStatus status={reservation.booking_status} />
-          </div>
-        </div>
+                value: `${book.booking_quantity} persona${Number(book.booking_quantity) > 1 ? 's' : ''}`,
+                colSpan: 3
+              },
+              {
+                label: 'Precio Total',
+                value: formatPrice(Number(book.booking_total_price)) || '-',
+                colSpan: 3
+              },
+              {
+                label: 'Notas / Observaciones',
+                value: book.booking_notes || '-',
+                colSpan: 3
+              }
+            ]}
+          />
+        </li>
       ))}
-    </div>
+    </ul>
   );
 };
 

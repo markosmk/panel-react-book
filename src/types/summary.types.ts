@@ -3,16 +3,16 @@ import { Status } from './booking.types';
 export interface ScheduleSummary {
   schedule_id: string;
   schedule_start_time: string;
-  schedule_end_time: string | null;
   tour_id: string;
   tour_name: string;
   tour_description: string;
   tour_capacity: string;
   tour_price: string;
   tour_duration: string;
-  reservations_count: string;
-  total_reserved: string;
-  reservations: Reservation[];
+  booking_language: string;
+  booking_count: string;
+  booking_total_reserved: string;
+  bookings: Reservation[];
 }
 
 export interface Reservation {
