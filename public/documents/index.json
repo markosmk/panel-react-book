@@ -4,6 +4,11 @@
       "name": "intro",
       "path": "intro.md",
       "title": "Introducción"
+    },
+    {
+      "name": "create-booking",
+      "path": "create-booking.md",
+      "title": "Crear o Editar Reserva"
     }
   ]
 }
