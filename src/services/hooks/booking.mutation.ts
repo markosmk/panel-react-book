@@ -97,5 +97,7 @@ export function handleMutationError(error: unknown) {
       message = data.messages.email || data.messages.phone || message;
     }
   }
-  toast.error(message);
+  toast.error(message, {
+    duration: Math.max(3000, message.length * 70)
+  });
 }
