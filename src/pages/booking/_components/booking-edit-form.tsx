@@ -50,11 +50,12 @@ import { Input } from '@/components/ui/input';
 import { BookingManualParams } from '@/services/booking.service';
 import { useRouter } from '@/routes/hooks/use-router';
 import { LanguageFlag } from '@/components/language-flag';
+import { TooltipHelper } from '@/components/tooltip-helper';
 
 const baseSchema = z.object({
   tourId: z.string().min(1, 'Debe seleccionar un tour.'),
   selectedDate: z.string().min(1, 'Debe seleccionar una fecha.'),
-  scheduleId: z.string().min(1, 'Debe seleccionar un cliente.'),
+  scheduleId: z.string().min(1, 'Debe seleccionar un horario.'),
   isExistingCustomer: z.boolean(),
   quantity: z.coerce.number().min(1, 'La cantidad no es valida.'),
   status: z.string().min(1, 'Debe seleccionar un estado.'),
@@ -146,6 +147,7 @@ export function BookingEditForm({
   const watchTourId = form.watch('tourId');
   const watchSelectedDate = form.watch('selectedDate');
   const watchQuantity = form.watch('quantity');
+  const watchScheduleId = form.watch('scheduleId');
   const watchAdditionalIds = form.watch('additionalIds');
   const watchIsExistingCustomer = form.watch('isExistingCustomer');
 
@@ -171,6 +173,30 @@ export function BookingEditForm({
   );
   const { data: customers, isLoading: isLoadingCustomers } = useCustomers();
 
+  const maxQuantity = React.useMemo(() => {
+    if (!watchScheduleId || !schedules?.schedules) return 100;
+
+    const selectedSchedule = schedules.schedules.find(
+      (s) => s.id.toString() === watchScheduleId.toString()
+    );
+
+    if (!selectedSchedule) return 100;
+
+    let max = selectedSchedule.available;
+
+    // Si estamos editando y el horario seleccionado es el mismo que el original,
+    // sumamos la cantidad original al cupo disponible
+    if (
+      isEditing &&
+      data?.scheduleId?.toString() === watchScheduleId.toString() &&
+      data?.quantity
+    ) {
+      max += Number(data.quantity);
+    }
+
+    return max;
+  }, [watchScheduleId, schedules, isEditing, data]);
+
   const calculatePrice = React.useMemo(() => {
     if (!watchTourId || !watchQuantity || watchQuantity < 1) return 0;
 
@@ -182,7 +208,8 @@ export function BookingEditForm({
         return sum + Number(additional?.price || 0);
       }, 0) || 0;
 
-    return (Number(tourPrice) + additionalPrice) * watchQuantity;
+    const total = (Number(tourPrice) + additionalPrice) * watchQuantity;
+    return Math.round(total * 100) / 100;
   }, [watchTourId, watchQuantity, watchAdditionalIds, tours, additionals]);
 
   React.useEffect(() => {
@@ -192,13 +219,31 @@ export function BookingEditForm({
     }
   }, [watchTourId, watchSelectedDate, isFetching]);
 
+  // set scheduleId when data is loaded and reset quantity and totalPrice
   React.useEffect(() => {
-    if (watchTourId && watchSelectedDate) {
+    if (isInitialLoad.current && !isLoadingSchedules && data?.scheduleId) {
+      form.setValue('scheduleId', data?.scheduleId);
+      isInitialLoad.current = false;
+    } else if (
+      !isInitialLoad.current &&
+      watchTourId &&
+      watchSelectedDate &&
+      (watchTourId !== (data?.tourId || '') ||
+        watchSelectedDate !== (data?.schedule?.date || ''))
+    ) {
       form.setValue('scheduleId', '');
+      form.setValue('quantity', 1);
+      form.setValue('totalPrice', 0);
     }
-  }, [watchTourId, watchSelectedDate]);
+  }, [watchTourId, watchSelectedDate, isLoadingSchedules, data]);
 
-  const { mutateAsync, isPending } = useCreateEditBooking();
+  React.useEffect(() => {
+    setDynamicSchema(
+      watchIsExistingCustomer ? existingCustomerSchema : newCustomerSchema
+    );
+  }, [watchIsExistingCustomer]);
+
+  const { mutate, isPending } = useCreateEditBooking();
 
   async function onSubmit(values: FormData) {
     toast.dismiss();
@@ -226,7 +271,7 @@ export function BookingEditForm({
       }
     }
 
-    mutateAsync(
+    mutate(
       {
         id: isEditing && data?.id ? data.id : null,
         data: { ...dataValues }
@@ -247,42 +292,6 @@ export function BookingEditForm({
       }
     );
   }
-
-  React.useEffect(() => {
-    if (isInitialLoad.current && !isLoadingSchedules && data?.scheduleId) {
-      form.setValue('scheduleId', data?.scheduleId);
-      isInitialLoad.current = false;
-    } else if (
-      !isInitialLoad.current &&
-      watchTourId &&
-      watchSelectedDate &&
-      (watchTourId !== data?.tourId ||
-        watchSelectedDate !== data?.schedule?.date)
-    ) {
-      form.setValue('scheduleId', '');
-    }
-  }, [watchTourId, watchSelectedDate, isLoadingSchedules, data]);
-
-  // React.useEffect(() => {
-  // not necesary
-  // if (
-  //   !isLoadingAdditionals &&
-  //   additionals &&
-  //   data.additionals &&
-  //   data.additionals?.length > 0
-  // ) {
-  //   form.setValue(
-  //     'additionalIds',
-  //     data.additionals.map((item) => item.booking_id?.toString())
-  //   );
-  // }
-  // }, [isLoadingAdditionals, data, additionals]);
-
-  React.useEffect(() => {
-    setDynamicSchema(
-      watchIsExistingCustomer ? existingCustomerSchema : newCustomerSchema
-    );
-  }, [watchIsExistingCustomer]);
 
   return (
     <Form {...form}>
@@ -667,7 +676,12 @@ export function BookingEditForm({
                           </FormLabel>
                           <div className="space-y-1">
                             <FormControl>
-                              <InputNumber placeholder="Ej: 12" {...field} />
+                              <InputNumber
+                                placeholder="Ej: 12"
+                                {...field}
+                                max={maxQuantity}
+                                min={1}
+                              />
                             </FormControl>
                             <FormMessage />
                           </div>
@@ -808,23 +822,28 @@ export function BookingEditForm({
                           </FormControl>
                         </div>
                         <div className="col-span-6 space-y-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            className="h-min-12 flex h-12 w-full items-center justify-between rounded-md border-2 border-border px-3 transition-transform active:scale-95"
-                            onClick={() => {
-                              form.setValue('totalPrice', calculatePrice);
-                            }}
+                          <TooltipHelper
+                            content="Haz click para usar el precio calculado, simplemente copia el valor al precio total."
+                            className="w-full"
                           >
-                            <div className="pointer-events-none flex w-full select-none flex-col items-end justify-center">
-                              <span className="text-xs leading-none text-muted-foreground">
-                                Precio Calculado
-                              </span>
-                              <span className="truncate font-mono text-sm font-bold leading-4 text-muted-foreground">
-                                $ {calculatePrice}
-                              </span>
-                            </div>
-                          </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="h-min-12 flex h-12 w-full items-center justify-between rounded-md border-2 border-border px-3 transition-transform active:scale-95"
+                              onClick={() => {
+                                form.setValue('totalPrice', calculatePrice);
+                              }}
+                            >
+                              <div className="pointer-events-none flex w-full select-none flex-col items-end justify-center">
+                                <span className="text-xs leading-none text-muted-foreground">
+                                  Precio Calculado
+                                </span>
+                                <span className="truncate font-mono text-sm font-bold leading-4 text-muted-foreground">
+                                  {formatPrice(calculatePrice)}
+                                </span>
+                              </div>
+                            </Button>
+                          </TooltipHelper>
                         </div>
                       </div>
 
@@ -857,9 +876,6 @@ export function BookingEditForm({
             </div>
           </div>
         </div>
-
-        {/* <pre>{JSON.stringify(form.getValues(), null, 2)}</pre> */}
-        {/* <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre> */}
 
         <div
           className={cn(
