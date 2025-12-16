@@ -422,7 +422,76 @@ export function FormTour({
             name="media"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Url Imagen</FormLabel>
+                <FormLabel>
+                  <div className="flex">
+                    <p>Url Imagen</p>
+                    <div>
+                      <Icons.help
+                        className="ml-2 h-4 w-4 cursor-pointer text-muted-foreground hover:text-foreground"
+                        onClick={() => {
+                          toast.dismiss();
+                          toast.custom((t: number | string) => (
+                            <div className="rounded-lg bg-card  p-4 shadow-lg">
+                              <h3 className="mb-2 font-semibold">
+                                Recomendaciones para la imagen:
+                              </h3>
+                              <ul className="list-inside list-disc space-y-2 text-sm">
+                                <li>
+                                  Utiliza imágenes en formato{' '}
+                                  <strong>cuadrado (1:1)</strong> para una mejor
+                                  visualización
+                                </li>
+                                <li>
+                                  Pasos recomendados:
+                                  <ol className="ml-8 list-decimal space-y-1 pt-1">
+                                    <li>
+                                      Optimizar la imagen en{' '}
+                                      <a
+                                        href="https://squoosh.app"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-primary hover:underline"
+                                      >
+                                        Squoosh.app
+                                      </a>
+                                    </li>
+                                    <li>
+                                      Subir la imagen optimizada a{' '}
+                                      <a
+                                        href="https://postimages.org"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-primary hover:underline"
+                                      >
+                                        PostImages
+                                      </a>
+                                    </li>
+                                    <li>
+                                      Copiar la URL directa que termina en .jpg,
+                                      .png, etc.
+                                    </li>
+                                  </ol>
+                                </li>
+                                <li>
+                                  Formatos aceptados: .jpg, .jpeg, .png, .gif,
+                                  .webp (recomendado)
+                                </li>
+                              </ul>
+                              <Button
+                                type="button"
+                                size="sm"
+                                className="mt-3"
+                                onClick={() => toast.dismiss(t)}
+                              >
+                                Cerrar
+                              </Button>
+                            </div>
+                          ));
+                        }}
+                      />
+                    </div>
+                  </div>
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Ej: https://google.com/image.jpg"

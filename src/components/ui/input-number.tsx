@@ -145,7 +145,7 @@ const InputNumber = React.forwardRef<HTMLInputElement, InputNumberProps>(
             )}
             variant="outline"
             onClick={handleIncrement}
-            disabled={value === max}
+            disabled={props.disabled || value === max}
           >
             <ChevronUp size={15} />
           </Button>
@@ -160,7 +160,7 @@ const InputNumber = React.forwardRef<HTMLInputElement, InputNumberProps>(
             )}
             variant="outline"
             onClick={handleDecrement}
-            disabled={value === min}
+            disabled={props.disabled || value === min}
           >
             <ChevronDown size={15} />
           </Button>

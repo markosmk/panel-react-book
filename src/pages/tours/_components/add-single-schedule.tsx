@@ -85,15 +85,14 @@ export function AddSingleSchedule({
     control: form.control
   });
 
-  const { mutateAsync, isPending } = useModifySingleSchedule();
+  const { mutate, isPending } = useModifySingleSchedule();
 
-  const onSubmitForm = async (values: FormValues) => {
+  const onSubmitForm = (values: FormValues) => {
     toast.dismiss();
-
     const currentDate = date
       ? date
       : formatISO(new Date(), { representation: 'date' });
-    await mutateAsync(
+    mutate(
       {
         tourId,
         action: 'create',
