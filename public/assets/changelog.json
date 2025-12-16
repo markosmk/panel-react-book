@@ -115,6 +115,16 @@
         "Chore: En la reserva manual, si se esta agregando un email o telefono de un cliente que existe en la base de datos de clientes, se muestra un mensaje de error, si es un cliente existente debes seleccionarlo de la lista.",
         "Fix: arreglos menores en la interfaz de usuario."
       ]
+    },
+    {
+      "version": "1.4.5",
+      "date": "2025-12-16",
+      "description": "Ahora esta de forma estricta el bloqueo de idiomas en los tours por horario (independientemente del tour).",
+      "changes": [
+        "Chore: mejoras en el fomrulario de creacion de reservas, se aplica el maximo de cantidad (que depende de la cantidad disponible para ese horario), formateo correcto del precio estimado, correccion en texto de validaciones.",
+        "Chore: dialogo de ayuda para el ingreso de la url de imagen en tours.",
+        "Chore: ayuda (doc) sobre como cambiar el idioma de una reserva."
+      ]
     }
   ]
 }
